@@ -707,7 +707,7 @@ export default function Home(){
             return editable ? (
               <span>
                 <a
-                  href=""
+                  //href=""
                   onClick={() => save(record.id)}
                   style={{
                     marginRight: 8,
@@ -816,7 +816,7 @@ export default function Home(){
         <h1>正圆收款提醒系统</h1>
         <div className='wrap'>
             <div className='nav'>
-                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                
                 <a className={index === 0?('checked'):''} onClick={()=>{
                     setIndex(0);
                     setCol(contractCol);
