@@ -1,6 +1,8 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react'
 import { Link,useHistory} from 'react-router-dom'
-import { Modal,Table, Button,Form,Input, InputNumber, Popconfirm,Item,notification,Select, message} from 'antd';
+import { Modal,Table, Button,Form,Input,  Popconfirm, notification,Select, message} from 'antd';
 import axios from 'axios'
 import './home.scss'
 import './config'
@@ -34,7 +36,7 @@ export default function Home(){
 
 
     //单位性质
-    const unittypes = [{'type':'国企单位'},{'type':'私营单位'},{'type':'合资单位'}]
+    //const unittypes = [{'type':'国企单位'},{'type':'私营单位'},{'type':'合资单位'}]
 
     const unitts = ['国企单位','私营单位','合资单位'];
 
@@ -381,7 +383,7 @@ export default function Home(){
               await axios({
                 method: 'post',
                 headers:{'Content-type':'application/json'},
-                url: 'http://'+ webconfig.ipAndport + '/' + 'zyCollection' + '/delbyContract',
+                url: 'http://'+ webconfig.ipAndport + '/zyCollection/delbyContract',
                 data: target,
               }).then(function (res) {
                 if(res.code === 1){
@@ -697,7 +699,7 @@ export default function Home(){
       //console.log(' col.isOper: ' + col.isOper);
       if (!col.editable) {
 
-        if(col.isOper == true){
+        if(col.isOper === true){
           col.render = (text, record,index) => {
             //console.log('到这里显示了');
             const editable = isEditing(record);
@@ -705,7 +707,7 @@ export default function Home(){
             return editable ? (
               <span>
                 <a
-                  href="javascript:;"
+                  href=""
                   onClick={() => save(record.id)}
                   style={{
                     marginRight: 8,
@@ -721,7 +723,7 @@ export default function Home(){
               </span>
             ) : (
               <span>
-              <Button type="primary" disabled={editingKey != ''} onClick={() => edit(record)}
+              <Button type="primary" disabled={editingKey !== ''} onClick={() => edit(record)}
               style={{
                 marginRight: 8,
               }}>
@@ -731,9 +733,9 @@ export default function Home(){
                   title='确定删除么?'
                   onCancel={()=>cancel}
                   onConfirm={()=>confirmDel(record.id)}
-                  disabled={editingKey != ''||sourceUrl=== 'zyCollection'}
+                  disabled={editingKey !== ''||sourceUrl=== 'zyCollection'}
                  >
-              <Button type="primary" hidden={sourceUrl === 'zyCollection'}  disabled={editingKey != ''}
+              <Button type="primary" hidden={sourceUrl === 'zyCollection'}  disabled={editingKey !== ''}
               style={{
                 marginRight: 8,
               }}>
@@ -745,9 +747,9 @@ export default function Home(){
                   title='确定终止该合同么?'
                   onCancel={()=>cancel}
                   onConfirm={()=>confirmDel(record.id,2)}
-                  disabled={editingKey != ''|| record.status === 2}
+                  disabled={editingKey !== ''|| record.status === 2}
                  >
-              <Button type="primary" hidden={sourceUrl != 'zyContract'}  disabled={editingKey != '' || record.status === 2}
+              <Button type="primary" hidden={sourceUrl !== 'zyContract'}  disabled={editingKey !== '' || record.status === 2}
               style={{
                 marginRight: 8,
               }}>
@@ -814,6 +816,7 @@ export default function Home(){
         <h1>正圆收款提醒系统</h1>
         <div className='wrap'>
             <div className='nav'>
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a className={index === 0?('checked'):''} onClick={()=>{
                     setIndex(0);
                     setCol(contractCol);
