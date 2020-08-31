@@ -1,8 +1,8 @@
-import React,{useState} from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
+//import ReactDOM from 'react-dom';
 import { useHistory} from 'react-router-dom'
 import { Form, Input, Button} from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+//import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './add.scss'
 import axios from 'axios'
 

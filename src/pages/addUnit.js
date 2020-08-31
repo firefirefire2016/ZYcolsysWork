@@ -1,13 +1,12 @@
-import React,{useState,Fragment} from 'react';
-import ReactDOM from 'react-dom';
+import React  from 'react';
+//import ReactDOM from 'react-dom';
 import { useHistory} from 'react-router-dom'
-import { Form, Input, Button,Select,Popconfirm, Alert, message} from 'antd';
+import { Form, Input, Button,Select, message} from 'antd';
 
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+//import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './add.scss'
 import axios from 'axios'
-import { FormInstance } from 'antd/lib/form';
-import mywindow from './config'
+//import { FormInstance } from 'antd/lib/form';
 
 import { webconfig } from '../webConfig'
 

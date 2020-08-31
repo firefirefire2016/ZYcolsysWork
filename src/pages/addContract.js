@@ -1,11 +1,10 @@
-import React,{useState} from 'react';
-import ReactDOM from 'react-dom';
+import React  from 'react';
+//import ReactDOM from 'react-dom';
 import { useHistory} from 'react-router-dom'
 import { Form, Input, Button, message,Select,} from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+//import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './add.scss'
 import axios from 'axios'
-import mywindow from './config'
 
 import { webconfig } from '../webConfig'
 //import cdata from '../../public/contraData.json'
@@ -19,6 +18,8 @@ const AddContractForm = () => {
   //const [mywindowUrl,setUrl] = useState('91a8810fa273.ngrok.io');
 
   const renttypes = ['公开招租','梅花办带合同移交','苗圃场职工安置房','狮山办带合同移交','续租'];
+
+  const [form] = Form.useForm();
 
   const onFinish = async values => {
     //let _contractid = 0;
@@ -34,8 +35,7 @@ const AddContractForm = () => {
         tenant:values.tenant,
         tel_tenant:values.tel_tenant,
         deposit:values.deposit,
-        month_rent:values.month_rent,
-        rentdate:values.rentdate
+        month_rent:values.month_rent
       }
       
       await axios({
@@ -72,16 +72,36 @@ const AddContractForm = () => {
 
           console.log('初始到结束的年月：' + tempsYear + tempsMonth + tempeYear + tempeMonth);
 
-
-
+          //结束的年月改成当前年月
           let date = new Date();
           let currentYear = date.getFullYear();
+          let currentMonth = date.getMonth();
 
-          // console.log(currentYear);
+
+
+          
+
+          console.log('当前年=' + currentYear + '当前月=' + currentMonth);
 
           // console.log(reData.id);
+          //创建收款表
+          createColletions(tempsYear,currentYear,tempsMonth,currentMonth+1,reData);
+          
+          
+      }
+        
+      ).catch(function (error) {
+        message.warn(error.message);
+      });
+    } catch (error) {
+      message.warn(error.message);
+    }
+    
+  };
 
-          let resetyear = false;
+  //创建收款表的实现
+  const createColletions = async (tempsYear,tempeYear,tempsMonth,tempeMonth,reData)=>{
+    let resetyear = false;
 
           let endmonth = 12;
 
@@ -102,7 +122,7 @@ const AddContractForm = () => {
                   status:1,
                   year:year,
                   month:month,
-                  amount_receivable:values.month_rent
+                  amount_receivable:reData.month_rent
                 }
                 await axios({
                   //创建合同后，相应的收款表也创建
@@ -111,6 +131,7 @@ const AddContractForm = () => {
                   url: 'http://'+ webconfig.ipAndport + '/zyCollection/create',
                   data: newCollection,
       
+                // eslint-disable-next-line no-loop-func
                 }).then(function (res){
                   if(res.code === 1){
                     message.warn(res.msg);
@@ -128,49 +149,10 @@ const AddContractForm = () => {
               
             
             }
-
-          // for (let index = 1; index < 13; index++) {
-          //   let newCollection = {
-          //     contractid:reData.id,
-          //     status:1,
-          //     year:currentYear,
-          //     month:index,
-          //     amount_receivable:values.month_rent
-          //   }
-          //   await axios({
-          //     //创建合同后，相应的收款表也创建
-          //     method: 'post',
-          //     headers:{'Content-type':'application/json'},
-          //     url: 'http://'+ mywindowUrl + '/zyCollection/create',
-          //     data: newCollection,
-  
-          //   }).then(function (res){
-          //     if(res.code === 1){
-          //       message.warn(res.msg);
-          //       return;
-          //     }
-          //     else{
-                
-          //       // console.log(res.data);
-          //       //history.push('/home');
-          //     } 
-    
-              
-          //   })
-            
-          //}
           message.success('创建对应收款表成功！');
+
           history.push('/home');
-      }
-        
-      ).catch(function (error) {
-        message.warn(error.message);
-      });
-    } catch (error) {
-      message.warn(error.message);
-    }
-    
-  };
+  }
 
   
   
@@ -178,6 +160,24 @@ const AddContractForm = () => {
 
   const AddContract = async()=>{       
         
+  }
+
+  const BackHome = async()=>{
+    history.push('/home');
+  }
+
+  const ResetValue = async()=>{
+    form.resetFields();
+
+    // let date = new Date();
+    //       let currentYear = date.getFullYear();
+    //       let currentMonth = date.getMonth();
+
+
+
+          
+
+    //       console.log('当前年=' + currentYear + '当前月=' + currentMonth);
   }
 
   return (
@@ -397,6 +397,19 @@ const AddContractForm = () => {
         >
           提交
         </Button>
+        <Button type="primary" htmlType="reset" 
+         //className="login-form-button"
+         className="btn" onClick={ResetValue}
+        >
+          重置
+        </Button>
+        <Button type="primary" htmlType="button" 
+         //className="login-form-button"
+         className="btn" 
+         onClick={BackHome}
+        >
+          返回
+        </Button >
       </Form.Item>
     </Form>
     </div>
