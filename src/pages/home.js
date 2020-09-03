@@ -8,6 +8,7 @@ import './home.scss'
 import './config'
 import { webconfig } from '../webConfig'
 import Wel from './mergeCols'
+import { render } from 'sass';
 //import Modal from 'antd/lib/modal/Modal';
 
 const { Option } = Select;
@@ -491,7 +492,7 @@ export default function Home(){
             title:'合同编号',
             dataIndex:'contractno',
             editable:true
-            //width:'10%'
+            
         },
         {
             title:'起始日期',
