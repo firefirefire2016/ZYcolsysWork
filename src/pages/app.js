@@ -13,7 +13,7 @@ export default function Login(){
     },[])
 
     return     <div className='container'>
-        <h1>欢迎进入正圆物业收款提醒系统</h1>
+        <h1>欢迎进入正圆资产管理系统</h1>
         {/* <Link to='/login' className='linkcss' >进入登陆界面</Link> */}
         <br/>
         <Link to='/home' className='linkcss'>进入主界面</Link>

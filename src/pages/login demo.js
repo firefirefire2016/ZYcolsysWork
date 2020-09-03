@@ -42,7 +42,7 @@ export default function Login(){
             <Button type='primary' onClick={()=>{
                 loginClick(name,password).then((response)=>{
                     let res = response.data;
-                    if(res.code === 0 && name ==='admin' && password ==='admin'){
+                    if(res.code === 0 && name=='admin' && password=='admin'){
                         history.push('/home');
                     }
                     else{

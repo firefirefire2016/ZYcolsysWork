@@ -7,6 +7,7 @@ import axios from 'axios'
 import './home.scss'
 import './config'
 import { webconfig } from '../webConfig'
+import Wel from './mergeCols'
 //import Modal from 'antd/lib/modal/Modal';
 
 const { Option } = Select;
@@ -813,7 +814,7 @@ export default function Home(){
 
     return     <div className='home'>
 
-        <h1>正圆收款提醒系统</h1>
+        <h1>正圆资产管理系统</h1>
         <div className='wrap'>
             <div className='nav'>
                 
@@ -858,11 +859,15 @@ export default function Home(){
                 scroll={{  y: 350 }}
                 />
             </Form>
+            
             <Button className='btn' type='primary' hidden={index===1?true:false} onClick={onAddRecord}>新增</Button>
             
             <br/>
             <Link to="/" className='linkcs'>回到首页</Link>
+
+            <Wel />
         </div>
+        
     </div>
 }
 

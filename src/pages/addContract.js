@@ -17,7 +17,7 @@ const AddContractForm = () => {
 
   //const [mywindowUrl,setUrl] = useState('91a8810fa273.ngrok.io');
 
-  const renttypes = ['公开招租','梅花办带合同移交','苗圃场职工安置房','狮山办带合同移交','续租'];
+  const renttypes = ['公开招租','梅华办带合同移交','苗圃场职工安置房','狮山办带合同移交','续租'];
 
   const [form] = Form.useForm();
 
