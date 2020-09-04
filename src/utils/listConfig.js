@@ -8,7 +8,9 @@ export const contractCol= [
         key:'id',
         align:"center",
         editable:false,
-        render: (txt,record,index) => index +1
+        render: (txt,record,index) => {
+           return index +1
+        }
     },
     {
         title:'合同编号',

@@ -6,7 +6,7 @@ import { createFromIconfontCN } from '@ant-design/icons';
 
 
 import logo from './logo.png';
-import { admins, adminRoutes } from '../../routes/routesData';
+import { admins } from '../../routes/routesData';
 import SubMenu from 'antd/lib/menu/SubMenu';
 
 const IconFont = createFromIconfontCN({

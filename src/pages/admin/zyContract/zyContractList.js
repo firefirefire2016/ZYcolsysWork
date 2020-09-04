@@ -1,14 +1,87 @@
 import React,{useEffect,useState} from 'react'
-import { Card, Table, Button } from 'antd'
+import { Card, Table, Button, Select, Popconfirm } from 'antd'
 import { contractCol } from '../../../utils/listConfig'
 import { getList } from '../../../services/zyService'
+import Form from 'antd/lib/form/Form';
+import '../../home.scss'
 
-
+const { Option } = Select;
 
 function zyContractList() {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [dataSource,setDataSource] = useState([]);
+
+    const EditableCell = ({
+        children,
+        record,
+        isWarn,
+        ...restProps
+      }) => {
+        
+         return (
+          <td {...restProps} type='primary' className=''>
+            
+            {children}
+          </td>
+        );
+      };
+
+    const mergedColumns = cols => cols.map(col => {
+        if (!col.editable) {  
+          if(col.isOper === true){
+            col.render = (text, record,index) => {
+              return  (
+                <span className=''>
+                <Button type="primary" 
+                style={{
+                  marginRight: 8,
+                }}>
+                  编辑
+                </Button>
+                <Popconfirm 
+                    title='确定删除么?'
+                   >
+                <Button type="primary" 
+                style={{
+                  marginRight: 8,
+                }}>
+                      删 除
+                </Button>
+                </Popconfirm>
+  
+                <Popconfirm 
+                    title='确定终止该合同么?'
+                    disabled={ record.status === 2}
+                   >
+                <Button type="primary"  disabled={record.status === 2}
+                style={{
+                  marginRight: 8,
+                }}>
+                      终止
+                </Button>
+                </Popconfirm>
+                
+                </span>
+              );
+            }
+          }
+
+          
+          return col;
+        }
+
+        // col.render = (text, record,index) =>{
+        //     return (
+        //         <span className='warn'>{text}</span>
+        //     )
+        // }
+    
+        return {
+          ...col
+        };
+      });
+
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
@@ -19,64 +92,7 @@ function zyContractList() {
          });
     }, [])
 
-    const contractCol1= [
-        {
-            title:'序号',
-            key:'id',
-            align:"center",
-            editable:false,
-            render: (txt,record,index) => index +1
-        },
-        {
-            title:'合同编号',
-            dataIndex:'contractno',
-            editable:true
-            //width:'10%'
-        },
-        {
-            title:'起始日期',
-            dataIndex:'startdate',
-            editable:true,
-            //width:'12%'
-        },
-        {
-            title:'终止日期',
-            dataIndex:'enddate',
-            editable:true,
-            //width:'12%'
-        },
-        {
-          title:'收款日',
-          dataIndex:'rentdate',
-          editable:true,
-          //width:'10%'
-        },
-        {
-            title:'招租方式',
-            dataIndex:'renttype',
-            editable:true,
-            //width:'10%'
-        },
-        {
-          title:'每月租金',
-          dataIndex:'month_rent',
-          editable:true,
-          //width:'10%'
-        },
-        {
-            title:'产权证编号',
-            dataIndex:'rightno',
-            editable:true,
-            //width:'10%'
-        },
-        {
-          title: '操作',
-          dataIndex: 'operation',
-          editable:false,
-          isOper:true,
-          width:250
-        }
-    ];
+    
 
     return (
         <Card title="合同列表"
@@ -89,14 +105,14 @@ function zyContractList() {
 
 
             <Table
-                // components={{
-                //     body: {
-                //        // cell: EditableCell,
-                //     },
-                // }}
+                components={{
+                    body: {
+                        cell: EditableCell,
+                    },
+                }}
                 rowKey="id"
                 bordered
-                columns={contractCol1}
+                columns={mergedColumns(contractCol)}
                 dataSource={dataSource}
                 size="lager"
                 // scroll={{ x: 'calc(700px + 50%)', y: 350 }}

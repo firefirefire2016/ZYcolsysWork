@@ -5,6 +5,7 @@ import zyContractEdit from "../pages/admin/zyContract/zyContractEdit";
 import NoMatch from "../pages/404";
 import zyRentList from "../pages/admin/zyCollection/zyRentList";
 import propertyRight from "../pages/admin/baseInfo/propertyRight";
+import zyUnitList from "../pages/admin/baseInfo/zyUnitList";
 
 
 
@@ -72,8 +73,8 @@ export const admins = [
                 isShow: true,
                 icon: 'icon-zhanshi'
             }, {
-                path: '/admin/propertyRight',
-                component: propertyRight,
+                path: '/admin/zyUnit',
+                component: zyUnitList,
                 title: '单位资料',
                 isShow: true,
                 icon: 'icon-zhanshi'

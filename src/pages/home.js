@@ -125,13 +125,10 @@ export default function Home(){
           case 'SelectUnit':
             //return record.unit_type?unitts[record.unit_type]:'';
             return unitts[record.unit_type];
-            break;
           case 'SelectRentType':
             return  renttypes[record.renttype];
-            break;
           default:
             return chil;
-            break;
         }
         
       }
