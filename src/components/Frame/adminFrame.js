@@ -42,16 +42,6 @@ function adminFrame(props) {
             {routes.map(route => {
               return (
 
-                // <Menu.Item key={route.path} 
-                //   onClick={p=>{
-                //     props.history.push(p.key);
-                //   }}
-                //   style={{ margin:'20px 0 0 0px' }}>
-                //   <IconFont type={route.icon} style={{fontSize:'30px'}} />
-                //   {route.title}
-                //   </Menu.Item>
-
-
                 <SubMenu key={route.path} icon={<IconFont type={route.icon} style={{ fontSize: '30px' }} />} title={route.title}>
 
                   {route.children.map(child => {
@@ -67,20 +57,6 @@ function adminFrame(props) {
                     )
                   })}
                 </SubMenu>
-                // {route.children.map(child=>{
-                //   return(
-                //   <Menu.Item key={child.path} 
-                //   onClick={p=>{
-                //     props.history.push(p.key);
-                //   }}
-                //   style={{ margin:'20px 0 0 0px' }}>
-                //   <IconFont type={child.icon} style={{fontSize:'30px'}} />
-                //   {child.title}
-                //   </Menu.Item>
-                //   )
-                // })}
-
-
 
               )
             })}

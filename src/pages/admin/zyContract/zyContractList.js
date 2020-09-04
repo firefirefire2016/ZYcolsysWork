@@ -1,11 +1,11 @@
 import React,{useEffect,useState} from 'react'
 import { Card, Table, Button, Select, Popconfirm } from 'antd'
-import { contractCol } from '../../../utils/listConfig'
+import { sysCols } from '../../../utils/listConfig'
 import { getList } from '../../../services/zyService'
 import Form from 'antd/lib/form/Form';
 import '../../home.scss'
 
-const { Option } = Select;
+const cols = sysCols.contractCol;
 
 function zyContractList() {
 
@@ -112,7 +112,7 @@ function zyContractList() {
                 }}
                 rowKey="id"
                 bordered
-                columns={mergedColumns(contractCol)}
+                columns={mergedColumns(cols)}
                 dataSource={dataSource}
                 size="lager"
                 // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
