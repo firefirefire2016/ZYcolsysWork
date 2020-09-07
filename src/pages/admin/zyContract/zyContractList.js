@@ -4,13 +4,14 @@ import { sysCols } from '../../../utils/listConfig'
 import { getList } from '../../../services/zyService'
 import Form from 'antd/lib/form/Form';
 import '../../home.scss'
+import { loadContractData } from '../../../store/actions/zyContractData';
+import { connect } from 'react-redux';
 
 const cols = sysCols.contractCol;
 
-function zyContractList() {
-
+function zyContractList(props) {
+    console.log(props);
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [dataSource,setDataSource] = useState([]);
 
     const EditableCell = ({
         children,
@@ -82,14 +83,26 @@ function zyContractList() {
         };
       });
 
+    const {list,page,total,limit} = props;
+
+    const loadData = () =>{
+      props.dispatch(
+        loadContractData({
+          page,
+          limit:2
+        })
+      );
+    }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-          getList(1,200).then(res=>{
-            console.log(res);
-            //setData(res);
-            setDataSource(res.rows);
-         });
+
+          props.dispatch(
+            loadContractData({
+              page:1,
+              limit:2
+            })
+          );
     }, [])
 
     
@@ -113,8 +126,18 @@ function zyContractList() {
                 rowKey="id"
                 bordered
                 columns={mergedColumns(cols)}
-                dataSource={dataSource}
+                dataSource={list}
                 size="lager"
+                pagination={{total,defaultPageSize:2,
+                  onChange:(p)=>{
+                    //console.log('更换页码为' + this.pageSize);
+                    props.dispatch(loadContractData({page:p,limit}));
+                  },
+                  onShowSizeChange:(current,size)=>{
+
+                  }
+                  }
+                }
                 // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
                 scroll={{ y: 350 }}
             />
@@ -122,5 +145,5 @@ function zyContractList() {
     )
 }
 
-export default zyContractList
+export default connect(state=>state.zyContractData)(zyContractList)
 

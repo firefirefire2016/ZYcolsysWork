@@ -5,7 +5,7 @@ import { get,post,put,del } from '../utils/request'
  * @param {*} page 首页页码
  * @param {*} limit 记录数量
  */
-export function getList(page=1,limit=200){
+export function getList(page,limit){
     
     return get(`/list/3/${page}/${limit}`);
 }
