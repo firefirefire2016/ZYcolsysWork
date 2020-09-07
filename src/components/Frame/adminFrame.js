@@ -3,7 +3,7 @@ import { Layout, Menu, Breadcrumb } from 'antd';
 import { withRouter } from 'react-router-dom';
 import { HomeOutlined, UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
 import { createFromIconfontCN } from '@ant-design/icons';
-
+import { connect } from 'react-redux';
 
 import logo from './logo.png';
 import { admins } from '../../routes/routesData';
@@ -80,4 +80,6 @@ function adminFrame(props) {
   )
 }
 
-export default withRouter(adminFrame) 
+const mapStatetoProps = state => state;
+
+export default connect(mapStatetoProps)(withRouter(adminFrame)) 

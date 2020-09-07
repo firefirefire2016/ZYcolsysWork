@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 //import './index.css';
 import { HashRouter as Router,Switch,Route,Redirect} from 'react-router-dom';
 import "antd/dist/antd.css";
-
+import { Provider } from 'react-redux';
+import store from './store/store';
 import { mainRoutes } from './routes/routesData';
 //import Router from './router';
 import * as serviceWorker from './serviceWorker';
@@ -11,6 +12,7 @@ import Admin from './admin';
 
 
 ReactDOM.render(
+  <Provider store={store}>
     <Router>
       <Switch>
         <Route path="/admin" render={routeProps=><Admin {...routeProps} />}></Route>
@@ -19,7 +21,8 @@ ReactDOM.render(
         })}
         <Redirect to="/noMatch"></Redirect>
       </Switch>
-    </Router>,
+    </Router>
+    </Provider>,
   document.getElementById('root')
 );
 
