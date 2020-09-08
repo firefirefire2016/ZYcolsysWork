@@ -1,149 +1,239 @@
-import React,{useEffect,useState} from 'react'
-import { Card, Table, Button, Select, Popconfirm } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
-import { getList } from '../../../services/zyService'
-import Form from 'antd/lib/form/Form';
 import '../../home.scss'
-import { loadContractData } from '../../../store/actions/zyContractData';
+import { onLoadContractData } from '../../../store/actions/zyContractData';
+import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
+import { selectItems,parseItemtype,parseTypeToLabel} from '../../../utils/ItemUtils';
 
 const cols = sysCols.contractCol;
 
-function zyContractList(props) {
-    console.log(props);
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+const renttypes = selectItems.renttypes;
 
-    const EditableCell = ({
-        children,
-        record,
-        isWarn,
-        ...restProps
-      }) => {
-        
-         return (
-          <td {...restProps} type='primary' className=''>
-            
-            {children}
-          </td>
-        );
-      };
+const { Option } = Select;
 
-    const mergedColumns = cols => cols.map(col => {
-        if (!col.editable) {  
-          if(col.isOper === true){
-            col.render = (text, record,index) => {
-              return  (
-                <span className=''>
-                <Button type="primary" 
-                style={{
-                  marginRight: 8,
-                }}>
-                  编辑
-                </Button>
-                <Popconfirm 
-                    title='确定删除么?'
-                   >
-                <Button type="primary" 
-                style={{
-                  marginRight: 8,
-                }}>
-                      删 除
-                </Button>
-                </Popconfirm>
-  
-                <Popconfirm 
-                    title='确定终止该合同么?'
-                    disabled={ record.status === 2}
-                   >
-                <Button type="primary"  disabled={record.status === 2}
-                style={{
-                  marginRight: 8,
-                }}>
-                      终止
-                </Button>
-                </Popconfirm>
-                
-                </span>
-              );
-            }
-          }
+function ZyContractList(props) {
+  console.log(props);
 
-          
-          return col;
-        }
-
-        // col.render = (text, record,index) =>{
-        //     return (
-        //         <span className='warn'>{text}</span>
-        //     )
-        // }
-    
-        return {
-          ...col
-        };
-      });
-
-    const {list,page,total,limit} = props;
-
-    const loadData = () =>{
-      props.dispatch(
-        loadContractData({
-          page,
-          limit:2
-        })
-      );
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-
-          props.dispatch(
-            loadContractData({
-              page:1,
-              limit:2
-            })
-          );
-    }, [])
-
-    
+  const EditableCell = ({
+    labelType,
+    children,
+    record,
+    isWarn,
+    ...restProps
+  }) => {
 
     return (
-        <Card title="合同列表"
-            extra={
-                <Button type="primary" size="large">
-                    新增合同
+      <td {...restProps} type='primary' className=''>
+
+          {parseTypeToLabel(record,labelType,children)}
+      </td>
+    );
+  };
+
+  
+
+  
+
+  const mergedColumns = cols => cols.map(col => {
+    if (!col.editable) {
+      if (col.isOper === true) {
+        col.render = (text, record, index) => {
+          return (
+            <span className=''>
+              <Button type="primary"
+                style={{
+                  marginRight: 8,
+                }}>
+                编辑
+                </Button>
+              <Popconfirm
+                title='确定删除么?'
+              >
+                <Button type="primary"
+                  style={{
+                    marginRight: 8,
+                  }}>
+                  删 除
+                </Button>
+              </Popconfirm>
+
+              <Popconfirm
+                title='确定终止该合同么?'
+                disabled={record.status === 2}
+              >
+                <Button type="primary" disabled={record.status === 2}
+                  style={{
+                    marginRight: 8,
+                  }}>
+                  终止
+                </Button>
+              </Popconfirm>
+
+            </span>
+          );
+        }
+      }
+
+
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record,rowIndex) => (
+            
+        {
+            //record,
+            labelType:parseItemtype(col.dataIndex),
+            rowIndex,
+            isWarn: record.isWarn?true:false,
+            dataIndex: col.dataIndex,
+            title: col.title,
+            record
+          }
+          )
+    };
+  });
+
+  const { list, page, total, limit,  onLoadData } = props;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+
+    onLoadData(page, limit);
+  }, [])
+
+  const onCreateClick = ()=>{
+    props.history.push('/admin/zyContract/createOne');
+  }
+
+  return (
+    <Card title="合同列表"
+      extra={
+
+        <Button type="primary" size="large" onClick={onCreateClick}>
+          新增合同
            </Button>
 
-            }>
+      }>
 
 
-            <Table
-                components={{
-                    body: {
-                        cell: EditableCell,
-                    },
-                }}
-                rowKey="id"
-                bordered
-                columns={mergedColumns(cols)}
-                dataSource={list}
-                size="lager"
-                pagination={{total,defaultPageSize:2,
-                  onChange:(p)=>{
-                    //console.log('更换页码为' + this.pageSize);
-                    props.dispatch(loadContractData({page:p,limit}));
-                  },
-                  onShowSizeChange:(current,size)=>{
+      <Form
+        layout="inline"
+        className="components-table-demo-control-bar"
+        style={{ marginBottom: 16 }}
+      >
+        <Form.Item
+          name="contractno"
+          label='合同编号'
+          rules={[
+            {
+              message: '请输入合同编号',
+            },
+          ]}
+        >
+          <Input placeholder="合同编号" type="text"
 
-                  }
-                  }
-                }
-                // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
-                scroll={{ y: 350 }}
-            />
-        </Card>
-    )
+          />
+        </Form.Item>
+
+
+        <Form.Item
+          label='招租方式'
+          name="renttype"
+
+          rules={[
+            {
+              message: '请选择招租方式',
+            }]}
+        >
+          <Select style={{ width: 150 }}
+          >
+            {renttypes.map((type, index) => (
+              <Option key={index} value={index}>{type}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          label='起始日期'
+          name="startdate"
+          marginRight='20px'
+          rules={[
+            {
+              message: '请输入起始日期',
+            },
+          ]}
+        >
+          <Input
+            className="site-form-item-icon"
+            type="date"
+            placeholder="起始日期"
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="enddate"
+          label='终止日期'
+          rules={[
+            {
+              message: '请输入终止日期',
+            },
+          ]}
+        >
+          <Input
+            type="date"
+            placeholder="终止日期"
+          />
+        </Form.Item>
+
+        <Form.Item >
+          <Button type="primary">筛选</Button>
+        </Form.Item>
+
+      </Form>
+
+      <Table
+        components={{
+          body: {
+            cell: EditableCell,
+          },
+        }}
+        rowKey="id"
+        bordered
+        columns={mergedColumns(cols)}
+        dataSource={list}
+        size="lager"
+        pagination={{
+          total,
+          showSizeChanger: true,
+          onChange: (p) => {
+            onLoadData(p, limit);
+          },
+          onShowSizeChange: (current, size) => {
+            onLoadData(current, size);
+          }
+        }
+        }
+        // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
+        scroll={{ y: 350 }}
+      />
+    </Card>
+  )
 }
 
-export default connect(state=>state.zyContractData)(zyContractList)
+const mapStateToProps = (state) => {
+  return state.zyContractData;
+}
+
+const mapDispatchToProps = (dispatch, ownprops) => {
+  return {
+    onLoadData: (page, limit) => { onLoadContractData(dispatch, { page, limit }) },
+    onIncreaseClick: () => { increaseAction(dispatch, ownprops) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ZyContractList)
 

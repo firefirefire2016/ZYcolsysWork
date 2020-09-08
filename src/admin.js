@@ -42,7 +42,7 @@ function admin() {
                 )
             })}
             
-
+            <Redirect to="/admin/baseinfo"></Redirect>
             <Redirect to="/noMatch"></Redirect>
             </Switch>
         </Frame>

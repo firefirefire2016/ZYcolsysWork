@@ -106,6 +106,10 @@ export const admins = [
                 path: '/admin/zyContract/edit/:id',
                 component: zyContractEdit,
                 isShow: false
+            }, {
+                path: '/admin/zyContract/createOne',
+                component: zyContractEdit,
+                isShow: false
             }]
     }
 ]

@@ -15,6 +15,7 @@ ReactDOM.render(
   <Provider store={store}>
     <Router>
       <Switch>
+        <Route exact path='/' component={Admin}></Route>
         <Route path="/admin" render={routeProps=><Admin {...routeProps} />}></Route>
         {mainRoutes.map(route=>{
           return <Route key={route.path} {...route}></Route>
