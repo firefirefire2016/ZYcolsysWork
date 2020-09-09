@@ -25,13 +25,13 @@ const { Header, Content, Sider } = Layout;
 //className="site-layout-background"
 function adminFrame(props) {
   return (
-    <Layout>
+    <Layout >
       <Header className="header">
         <div className="logo" >
           <img src={logo} alt="logo" />
         </div>
       </Header>
-      <Layout>
+      <Layout >
         <Sider width={200} style={{ backgroundColor: "#fff" }} >
           <Menu
             mode="inline"
@@ -62,9 +62,10 @@ function adminFrame(props) {
             })}
           </Menu>
         </Sider>
-        <Layout style={{ padding: '16px' }}>
+        <Layout style={{ padding: '16px' }} >
           <Content
             className="site-layout-background"
+            
             style={{
               padding: 24,
               margin: 0,

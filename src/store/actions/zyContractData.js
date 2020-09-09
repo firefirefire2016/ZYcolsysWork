@@ -34,6 +34,16 @@ export const onLoadContractData = async (dispatch,payload) =>{
 
 }
 
+export const onGetEditData = async(dispatch,payload) =>{
+    let {record} = payload;
+
+    dispatch({
+        type:'GET_ONE',
+        payload:{record}
+    })
+
+}
+
 //当更换页面显示行数时，更改limit
 export const onChangeSize = async(dispatch,targetSize)=>{
 

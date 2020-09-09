@@ -2,10 +2,12 @@ import Login from "../pages/login";
 import sysShow from "../pages/admin/dashboard/sysShow";
 import zyContractList from "../pages/admin/zyContract/zyContractList";
 import zyContractEdit from "../pages/admin/zyContract/zyContractEdit";
+import editdemo from "../pages/admin/zyContract/editdemo";
 import NoMatch from "../pages/404";
 import zyRentList from "../pages/admin/zyCollection/zyRentList";
 import propertyRight from "../pages/admin/baseInfo/propertyRight";
 import zyUnitList from "../pages/admin/baseInfo/zyUnitList";
+
 
 
 
@@ -103,7 +105,7 @@ export const admins = [
                 title: '租赁管理',
                 isShow: true
             }, {
-                path: '/admin/zyContract/edit/:id',
+                path: '/admin/zyContract/edit',
                 component: zyContractEdit,
                 isShow: false
             }, {

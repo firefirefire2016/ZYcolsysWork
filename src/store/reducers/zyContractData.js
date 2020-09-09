@@ -10,20 +10,28 @@ export default (state = defaultState, action) => {
     switch (action.type) {
         case 'GET_ALL':
             console.log(action);
-            return { ...state, 
-                list: action.payload.rows, 
-                page: action.payload.page, 
-                total: action.payload.total,
-                limit: action.payload.limit
-             };
-        case 'SET_LIMIT': 
-             return {
+            return {
                 ...state,
-                list: action.payload.rows, 
-                page: action.payload.page, 
+                list: action.payload.rows,
+                page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit
-             }
+            };
+        case 'GET_ONE':
+            console.log(action);
+            return {
+                ...state,
+                record:action.payload.record,
+                visible:true,
+            };
+        case 'SET_LIMIT':
+            return {
+                ...state,
+                list: action.payload.rows,
+                page: action.payload.page,
+                total: action.payload.total,
+                limit: action.payload.limit
+            }
         default:
             return state;
     }

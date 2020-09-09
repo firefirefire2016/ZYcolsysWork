@@ -23,10 +23,10 @@ export const selectItems = {
 }
 
 export const parseInputNode = (item) => {
-  let inputType = parseItemtype(item.dataIndex);
-  let inputNode = <Input type={inputType} placeholder={item.title}/>;
 
-  
+  let inputType = parseItemtype(item.dataIndex);
+
+  let inputNode = <Input type={inputType} placeholder={item.title} />;  
 
   switch (inputType) {
     case 'Unit':

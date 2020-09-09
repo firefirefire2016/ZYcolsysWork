@@ -9,12 +9,14 @@ import { mainRoutes } from './routes/routesData';
 //import Router from './router';
 import * as serviceWorker from './serviceWorker';
 import Admin from './admin';
+import addContract from './pages/addContract'
 
 
 ReactDOM.render(
   <Provider store={store}>
     <Router>
       <Switch>
+        <Route exact path='/addcontract' component={addContract}></Route>
         <Route exact path='/' component={Admin}></Route>
         <Route path="/admin" render={routeProps=><Admin {...routeProps} />}></Route>
         {mainRoutes.map(route=>{

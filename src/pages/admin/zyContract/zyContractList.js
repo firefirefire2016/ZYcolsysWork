@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch } from 'antd'
+import React, { useState, useEffect, useRef } from 'react'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../home.scss'
-import { onLoadContractData } from '../../../store/actions/zyContractData';
+import { onLoadContractData,onGetEditData } from '../../../store/actions/zyContractData';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
-import { selectItems,parseItemtype,parseTypeToLabel} from '../../../utils/ItemUtils';
+import { selectItems,parseItemtype,parseTypeToLabel, parseInputNode} from '../../../utils/ItemUtils';
+import Modal from 'antd/lib/modal/Modal';
 
 const cols = sysCols.contractCol;
 
@@ -13,7 +14,96 @@ const renttypes = selectItems.renttypes;
 
 const { Option } = Select;
 
-function ZyContractList(props) {
+const useResetFormOnCloseModal = ({ form, visible,record}) => {
+  const prevVisibleRef = useRef();
+  useEffect(() => {
+    prevVisibleRef.current = visible;
+  }, [visible]);
+  const prevVisible = prevVisibleRef.current;
+  useEffect(() => {
+    console.log(record);
+    if (!visible && prevVisible) {
+      form.resetFields();
+    }
+    form.setFieldsValue({
+            ...record
+        });
+  }, [visible]);
+};
+
+const ModalForm = (props) => {
+
+  const [form] = Form.useForm();
+
+  //let record = {contractno:'nihao'};
+
+
+
+  // useResetFormOnCloseModal({
+    
+  //   form,
+  //   visible,
+  //   record
+  // });  
+
+  useEffect(() => {
+
+    console.log(props);
+  }, [])
+
+  const onOk = () => {
+   // form.submit();
+
+    const currentdata = form.getFieldValue();
+
+        console.log(currentdata);
+  };
+
+  const ResetValue = async () => {
+    form.resetFields();
+
+  }
+
+  const onCancel = async()=>{
+    console.log(props);
+  }
+
+  return (
+    <Modal title="合同编辑"  onOk={onOk} visible={props.visible} onCancel={onCancel}>
+      <Form form={form} layout="vertical" name="userForm">
+        {cols.filter(item => item.isShow).map(item => {
+                    return (
+                        <Form.Item
+                            name={item.dataIndex}
+                            label={item.title}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: '请输入' + item.title,
+                                },
+                            ]}
+                        >
+                            {parseInputNode(item)}
+                        </Form.Item>
+                    )
+                })}
+                <Form.Item>
+                <Button type="primary" htmlType="reset"
+                    //className="login-form-button"
+                    className="btn" onClick={ResetValue}
+                >
+                    重置
+                </Button>
+                </Form.Item>
+      </Form>
+    </Modal>
+  );
+};
+
+const  ZyContractList =(props)=> {
+
+  const [visible, setVisible] = useState(false);
+
   console.log(props);
 
   const EditableCell = ({
@@ -45,7 +135,9 @@ function ZyContractList(props) {
               <Button type="primary"
                 style={{
                   marginRight: 8,
-                }}>
+                }}
+                onClick={()=>edit(record)}
+                >
                 编辑
                 </Button>
               <Popconfirm
@@ -97,7 +189,7 @@ function ZyContractList(props) {
     };
   });
 
-  const { list, page, total, limit,  onLoadData } = props;
+  const { list, page, total, limit,  onLoadData,onEditClick} = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -108,6 +200,23 @@ function ZyContractList(props) {
   const onCreateClick = ()=>{
     props.history.push('/admin/zyContract/createOne');
   }
+
+  // const onEditClick = (record)=>{
+  //   props.history.push('/admin/zyContract/edit');
+  // }
+
+  const hideUserModal = () => {
+    setVisible(false);
+  };
+
+  const edit = record => {
+
+    //设置要编辑的id
+    onEditClick(record);
+    props.history.push('/admin/zyContract/edit');
+
+
+  };
 
   return (
     <Card title="合同列表"
@@ -194,7 +303,6 @@ function ZyContractList(props) {
         </Form.Item>
 
       </Form>
-
       <Table
         components={{
           body: {
@@ -231,9 +339,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
     onLoadData: (page, limit) => { onLoadContractData(dispatch, { page, limit }) },
-    onIncreaseClick: () => { increaseAction(dispatch, ownprops) }
+    onIncreaseClick: () => { increaseAction(dispatch, ownprops) },
+    onEditClick:(record)=>{ onGetEditData(dispatch,{record})},
   }
 }
+
+//connect(mapStateToProps)(ModalForm)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ZyContractList)
 
