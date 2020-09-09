@@ -55,6 +55,18 @@ export const sysCols = {
             editable:true,
         },
         {
+            title:'承租方',
+            isShow:true,
+            dataIndex:'tenant',
+            editable:true,
+        },
+        {
+            title:'押金',
+            isShow:true,
+            dataIndex:'deposit',
+            editable:true,
+        },
+        {
           title: '操作',
           isShow:false,
           dataIndex: 'operation',

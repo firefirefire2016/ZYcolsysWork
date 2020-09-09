@@ -2,7 +2,7 @@
 const defaultState = {
     list: [],
     page: 1,
-    limit: 3,
+    limit: 10,
     total: 0
 }
 
@@ -21,17 +21,28 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
-                record:action.payload.record,
-                visible:true,
+                record: action.payload.record,
+                isCreating: false,
             };
-        case 'SET_LIMIT':
+        case 'CREATE_ONE':
             return {
                 ...state,
-                list: action.payload.rows,
-                page: action.payload.page,
-                total: action.payload.total,
-                limit: action.payload.limit
-            }
+                isCreating: true,
+            };
+        case 'COMMIT_CREATE':
+            console.log(action);
+            return {
+                ...state,
+                record:action.payload.record,
+                res:action.payload.result
+            };
+        case 'COMMIT_Edit':
+            console.log(action);
+            return {
+                ...state,
+                record:action.payload.record,
+                res:action.payload.result
+            };
         default:
             return state;
     }

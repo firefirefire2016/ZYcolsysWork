@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
+import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractData';
 
 const items = sysCols.contractCol;
 
@@ -12,22 +13,67 @@ function ZyContractEdit(props) {
 
     const [form] = Form.useForm();
 
-    const { record } = props;
+    const { record, isCreating, onEditClick, onCreateClick } = props;
+
+    let obj;
 
     const ResetValue = async () => {
-        const currentdata = form.getFieldValue();
-        console.log(currentdata);
+        form.resetFields();
     }
 
     useEffect(() => {
+        console.log('isCreating == ' + isCreating);
+        console.log(props);
+        if (isCreating === false) {
 
-        let obj = new Object(record);
+            obj = new Object(record);
 
-        form.setFieldsValue({
-            ...obj
-        });
+            form.setFieldsValue({
+                ...obj
+            });
+        }
+        else {
+            form.resetFields();
+        }
 
     }, [])
+
+    const onBackHome = () => {
+        props.history.push('/admin/zyContract');
+    }
+
+
+    //保存提交
+    const onCommitButtonClick = async () => {
+        try {
+            let row = form.getFieldValue();
+
+            var res = 0;
+
+            if (isCreating) {
+
+
+                await onCreateClick(row);
+
+                props.history.push('/admin/zyContract');
+
+            } else {
+                row.id = obj.id;
+                await onEditClick(row);
+                
+                //console.log(props.res);
+
+                props.history.push('/admin/zyContract');
+                // 示例：等待5秒后，如果判断成功，则提示
+
+            }
+
+        } catch (error) {
+            message.warn(error.message);
+        }
+
+
+    }
 
 
     return (
@@ -42,7 +88,7 @@ function ZyContractEdit(props) {
                 //onFinish={onFinish}
                 className='wrap'
             >
-                
+
 
 
                 {items.filter(item => item.isShow).map(item => {
@@ -63,12 +109,25 @@ function ZyContractEdit(props) {
                 })}
 
                 <Form.Item>
+                    <Button type="primary" htmlType="submit"
+                        //className="login-form-button"
+                        className="btn" onClick={onCommitButtonClick}
+                    >
+                        提交
+                    </Button>
                     <Button type="primary" htmlType="reset"
                         //className="login-form-button"
                         className="btn" onClick={ResetValue}
                     >
                         重置
-                </Button>
+                    </Button>
+                    <Button type="primary" htmlType="button"
+                        //className="login-form-button"
+                        className="btn"
+                        onClick={onBackHome}
+                    >
+                        返回
+                    </Button >
                 </Form.Item>
             </Form>
         </Card>
@@ -79,5 +138,12 @@ const mapStateToProps = (state) => {
     return state.zyContractData;
 }
 
-export default connect(mapStateToProps)(ZyContractEdit);
+const mapDispatchToProps = (dispatch, ownprops) => {
+    return {
+        onEditClick: (record) => { onCommitEdit(dispatch, { record }) },
+        onCreateClick: (record) => { onCommitCreate(dispatch, { record }) },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ZyContractEdit);
 
