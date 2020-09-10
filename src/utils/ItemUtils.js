@@ -13,7 +13,7 @@ export const selectItems = {
   renttypes: ['公开招租', '梅华办带合同移交', '苗圃场职工安置房', '狮山办带合同移交', '续租'],
 
 
-  unitts:['国有单位','合资单位','私有单位'],
+  unitts: ['国有单位', '合资单位', '私有单位'],
 
   /**
    * 社区
@@ -26,18 +26,18 @@ export const parseInputNode = (item) => {
 
   let inputType = parseItemtype(item.dataIndex);
 
-  let inputNode = <Input type={inputType} placeholder={item.title} />;  
+  let inputNode = <Input type={inputType} placeholder={item.title} />;
 
   switch (inputType) {
     case 'Unit':
-      inputNode = <Select  placeholder={item.title}>
+      inputNode = <Select placeholder={item.title}>
         {selectItems.units.map((temp, index) => (
           <Option key={index} >{temp}</Option>
         ))}
       </Select>;
       break;
     case 'RentType':
-      inputNode = <Select  placeholder={item.title}>
+      inputNode = <Select placeholder={item.title}>
         {selectItems.renttypes.map((temp, index) => (
           <Option key={index} >{temp}</Option>
         ))}
@@ -82,6 +82,12 @@ export const parseItemtype = (dataIndex) => {
       break;
     case 'renttype':
       itemType = 'RentType';
+      break;
+    case 'month_rent':
+      itemType = 'number';
+      break;
+    case 'rentdate':
+      itemType = 'number';
       break;
     default:
       itemType = 'text';

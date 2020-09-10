@@ -6,6 +6,7 @@ import { onLoadContractData, onGetEditData, onCreateData } from '../../../store/
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
+import { strToTime,timeToStr } from '../../../utils/common'
 import Modal from 'antd/lib/modal/Modal';
 
 const cols = sysCols.contractCol;
@@ -18,6 +19,7 @@ const { Option } = Select;
 const ZyContractList = (props) => {
 
   //console.log(props);
+  const [form] = Form.useForm();
 
   const EditableCell = ({
     labelType,
@@ -111,8 +113,10 @@ const ZyContractList = (props) => {
 
     //onLoadData(page, limit);
     setTimeout(() => {
-      onLoadData(page, limit);
+      onLoadData(1, limit);
     }, 1000);
+
+    console.log(props);
 
     
 
@@ -132,6 +136,30 @@ const ZyContractList = (props) => {
 
   };
 
+  const ResetValue = () => {
+    form.resetFields();
+  }
+
+  const onSelectByParams = ()=>{
+    let row = form.getFieldValue();
+    let {contractno,renttype,startdate,enddate} = row;
+
+    console.log('row=' + JSON.stringify(row) );
+
+    if(startdate){
+      startdate = parseInt(startdate.replace(/-/g, ""));
+    }
+    
+    if(enddate){
+      enddate = parseInt(enddate.replace(/-/g, ""));
+    }
+
+    console.log(startdate  + '  ' + enddate);
+
+    onLoadData(page,limit,contractno,renttype,startdate,enddate);
+
+  }
+
   return (
     <Card title="合同列表"
       extra={
@@ -144,6 +172,7 @@ const ZyContractList = (props) => {
 
 
       <Form
+        form={form}
         layout="inline"
         className="components-table-demo-control-bar"
         style={{ marginBottom: 16 }}
@@ -167,10 +196,10 @@ const ZyContractList = (props) => {
           label='招租方式'
           name="renttype"
 
-          rules={[
-            {
-              message: '请选择招租方式',
-            }]}
+          // rules={[
+          //   {
+          //     message: '请选择招租方式',
+          //   }]}
         >
           <Select style={{ width: 150 }}
           >
@@ -213,7 +242,13 @@ const ZyContractList = (props) => {
         </Form.Item>
 
         <Form.Item >
-          <Button type="primary">筛选</Button>
+          <Button type="primary" onClick={onSelectByParams} >筛选</Button>
+          <Button type="primary" htmlType="reset"
+                        //className="login-form-button"
+                        className="btn" onClick={ResetValue}
+                    >
+                        重置条件
+                    </Button>
         </Form.Item>
 
       </Form>
@@ -229,13 +264,14 @@ const ZyContractList = (props) => {
         dataSource={list}
         size="lager"
         pagination={{
+          
           total,
           showSizeChanger: true,
           onChange: (p) => {
             onLoadData(p, limit);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(current, size);
+            onLoadData(1, size);
           }
         }
         }
@@ -252,7 +288,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit) => { onLoadContractData(dispatch, { page, limit }) },
+    onLoadData: (page, limit,contractno,renttype,startdate,enddate) => { onLoadContractData(dispatch, {page, limit,contractno,renttype,startdate,enddate}) },
     onIncreaseClick: () => { increaseAction(dispatch, ownprops) },
     onEditClick: (record, isCreating) => { onGetEditData(dispatch, { record, isCreating }) },
     onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },

@@ -3,6 +3,7 @@ import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, me
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
+import { strToTime,timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractData';
 
 const items = sysCols.contractCol;
@@ -13,7 +14,7 @@ function ZyContractEdit(props) {
 
     const [form] = Form.useForm();
 
-    const { record, isCreating, onEditClick, onCreateClick,page,limit } = props;
+    const { record, isCreating, onEditClick, onCreateClick, page, limit } = props;
 
     let obj;
 
@@ -26,8 +27,11 @@ function ZyContractEdit(props) {
 
             obj = new Object(record);
 
+            
             form.setFieldsValue({
-                ...obj
+                ...obj,
+                startdate:strToTime(obj.startdate),
+                enddate:strToTime(obj.enddate)
             });
         }
         else {
@@ -43,9 +47,8 @@ function ZyContractEdit(props) {
         props.history.push('/admin/zyContract');
     }
 
-
-    //保存提交
-    const onCommitButtonClick = async () => {
+    const onFinish = async values => {
+        // onCommitButtonClick();
         try {
             let row = form.getFieldValue();
 
@@ -55,17 +58,21 @@ function ZyContractEdit(props) {
 
             console.log(row);
 
+            row.startdate = timeToStr(row.startdate);
+
+            row.enddate = timeToStr(row.enddate);
+
             if (isCreating) {
 
 
-                await onCreateClick(row,page,limit);
+                await onCreateClick(row, page, limit);
 
                 props.history.push('/admin/zyContract');
 
             } else {
                 row.id = obj.id;
-                await onEditClick(row,page,limit);
-                
+                await onEditClick(row, page, limit);
+
                 //console.log(props.res);
 
                 props.history.push('/admin/zyContract');
@@ -76,6 +83,15 @@ function ZyContractEdit(props) {
         } catch (error) {
             message.warn(error.message);
         }
+    }
+
+    const editContract = async () => {
+
+    }
+
+    //保存提交
+    const onCommitButtonClick = async () => {
+
 
 
     }
@@ -90,7 +106,7 @@ function ZyContractEdit(props) {
                 initialValues={{
                     remember: true,
                 }}
-                //onFinish={onFinish}
+                onFinish={onFinish}
                 className='wrap'
             >
 
@@ -116,7 +132,7 @@ function ZyContractEdit(props) {
                 <Form.Item>
                     <Button type="primary" htmlType="submit"
                         //className="login-form-button"
-                        className="btn" onClick={onCommitButtonClick}
+                        className="btn" onClick={editContract}
                     >
                         提交
                     </Button>
@@ -145,8 +161,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-        onEditClick: (record,page,limit) => { onCommitEdit(dispatch, { record,page,limit }) },
-        onCreateClick: (record,page,limit) => { onCommitCreate(dispatch, { record,page,limit}) },
+        onEditClick: (record, page, limit) => { onCommitEdit(dispatch, { record, page, limit }) },
+        onCreateClick: (record, page, limit) => { onCommitCreate(dispatch, { record, page, limit }) },
     }
 }
 
