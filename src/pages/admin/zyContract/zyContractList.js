@@ -9,7 +9,7 @@ import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '..
 import { strToTime,timeToStr } from '../../../utils/common'
 import Modal from 'antd/lib/modal/Modal';
 
-const cols = sysCols.contractCol;
+const cols = sysCols.contractCol.filter(item => item.isShow);
 
 const renttypes = selectItems.renttypes;
 

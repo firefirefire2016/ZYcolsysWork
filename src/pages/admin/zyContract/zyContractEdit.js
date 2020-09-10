@@ -112,7 +112,7 @@ function ZyContractEdit(props) {
 
 
 
-                {items.filter(item => item.isShow).map(item => {
+                {items.filter(item => item.editable).map(item => {
                     return (
                         <Form.Item
                             name={item.dataIndex}

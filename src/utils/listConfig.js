@@ -7,7 +7,7 @@ export const sysCols = {
             key:'id',
             align:"center",
             editable:false,
-            isShow:false,
+            isShow:true,
             render: (txt,record,index) => {
                return index +1
             }
@@ -50,30 +50,88 @@ export const sysCols = {
         },
         {
             title:'产权证编号',
-            isShow:true,
+            isShow:false,
             dataIndex:'rightno',
             editable:true,
         },
         {
             title:'承租方',
-            isShow:true,
+            isShow:false,
             dataIndex:'tenant',
             editable:true,
         },
         {
             title:'押金',
-            isShow:true,
+            isShow:false,
             dataIndex:'deposit',
             editable:true,
         },
         {
           title: '操作',
-          isShow:false,
+          isShow:true,
           dataIndex: 'operation',
           editable:false,
           isOper:true,
           width:250
         }
+    ],
+
+    //收租表
+    rentCol :[
+        {
+            title:'序号',
+            key:'id',
+            align:"center",
+            editable:false,
+            isShow:true,
+            render: (txt,record,index) => {
+               return index +1
+            }
+        },
+        {
+            title:'合同编号',
+            dataIndex:'contractno',
+            isShow:true,
+            editable:true
+        },
+        {
+          title:'收款年份',
+          dataIndex:'year',
+          isShow:true,
+          editable:true
+        },
+        {
+            title:'收款月份',
+            dataIndex:'month',
+            isShow:true,
+            editable:true
+        },
+        {
+            title:'已收款金额',
+            dataIndex:'amount_received',
+            isShow:true,
+            editable:false
+        },
+        {
+            title:'应收金额',
+            dataIndex:'amount_receivable',
+            isShow:true,
+            editable:true
+        },
+        {
+            title:'开票金额',
+            dataIndex:'invoice_amount',
+            isShow:true,
+            editable:true
+        },
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          isShow:true,
+          editable:false,
+          isOper:true
+        }
+        
     ]
 
 }
