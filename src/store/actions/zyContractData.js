@@ -1,5 +1,6 @@
 import { getList, createTarget, modifyOne, delOne } from '../../services/zyService'
 import store from '../store';
+import { message } from 'antd';
 
 //const zyContractData = store.getState().zyContractData;
 
@@ -64,23 +65,29 @@ export const onCreateData = async (dispatch, isCreating) => {
  */
 export const onCommitEdit = async (dispatch, payload) => {
 
-    let { record } = payload;
+    let { record, page, limit } = payload;
 
-    let result;
+    await modifyOne(record).then(async function (result) {
 
-    await modifyOne(record).then(function (res) {
+        await getList(page, limit).then(function(res){
+            dispatch({
+                type: "COMMIT_Edit",
+                payload: { ...res, record,result}
+            })
+            console.log(res);
+            if(result.code === 0){
+                message.info(result.msg);
+            }
+            else{
+                message.warn('修改提交失败');
+            }
+        }
 
-        result = res;
-        //console.log(result);
-        dispatch({
-            type: "COMMIT_Edit",
-            payload: { record, result }
-        })
+        )
+
+        
+        
     })
-
-
-
-
 }
 
 /**
@@ -90,20 +97,28 @@ export const onCommitEdit = async (dispatch, payload) => {
  */
 export const onCommitCreate = async (dispatch, payload) => {
 
-    let { record } = payload;
+    let { record, page, limit } = payload;
 
-    let result;
+    await createTarget(record).then(async function (result) {
 
-    await createTarget(record).then(function (res) {
+        await getList(page, limit).then(function(res){
+            dispatch({
+                type: "COMMIT_CREATE",
+                payload: { ...res, record,result}
+            })
+            console.log(res);
+            if(result.code === 0){
+                message.info(result.msg);
+            }
+            else{
+                message.warn('创建合同失败');
+            }
+        }
 
-        result = res;
+        )
 
-        record = result.data;
-
-        dispatch({
-            type: "COMMIT_CREATE",
-            payload: { record, result }
-        })
+        
+        
     })
 
 

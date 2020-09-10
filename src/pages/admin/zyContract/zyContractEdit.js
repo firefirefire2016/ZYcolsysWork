@@ -13,7 +13,7 @@ function ZyContractEdit(props) {
 
     const [form] = Form.useForm();
 
-    const { record, isCreating, onEditClick, onCreateClick } = props;
+    const { record, isCreating, onEditClick, onCreateClick,page,limit } = props;
 
     let obj;
 
@@ -22,8 +22,6 @@ function ZyContractEdit(props) {
     }
 
     useEffect(() => {
-        console.log('isCreating == ' + isCreating);
-        console.log(props);
         if (isCreating === false) {
 
             obj = new Object(record);
@@ -33,8 +31,11 @@ function ZyContractEdit(props) {
             });
         }
         else {
+            message.info('准备创建');
             form.resetFields();
         }
+
+        console.log(props);
 
     }, [])
 
@@ -50,16 +51,20 @@ function ZyContractEdit(props) {
 
             var res = 0;
 
+            console.log(props);
+
+            console.log(row);
+
             if (isCreating) {
 
 
-                await onCreateClick(row);
+                await onCreateClick(row,page,limit);
 
                 props.history.push('/admin/zyContract');
 
             } else {
                 row.id = obj.id;
-                await onEditClick(row);
+                await onEditClick(row,page,limit);
                 
                 //console.log(props.res);
 
@@ -140,8 +145,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-        onEditClick: (record) => { onCommitEdit(dispatch, { record }) },
-        onCreateClick: (record) => { onCommitCreate(dispatch, { record }) },
+        onEditClick: (record,page,limit) => { onCommitEdit(dispatch, { record,page,limit }) },
+        onCreateClick: (record,page,limit) => { onCommitCreate(dispatch, { record,page,limit}) },
     }
 }
 

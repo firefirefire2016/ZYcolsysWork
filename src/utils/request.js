@@ -6,7 +6,7 @@ const sourceUrl = 'zyContract';
 
 const instance = axios.create({
     baseURL:'http://192.168.0.222:4000/' + sourceUrl,
-    timeout:5000,
+    timeout:0,
     // transformRequest:[function(data){
     //   return data
     // }],

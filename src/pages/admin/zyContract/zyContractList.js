@@ -107,23 +107,10 @@ const ZyContractList = (props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    message.info('加载中...');    
+    message.info('加载中...');  
 
+    //onLoadData(page, limit);
     setTimeout(() => {
-      //console.log(res);
-
-      // if (res) {
-      //   let obj = new Object(res);
-
-      //   if (obj.code === 0) {
-      //     message.info(obj.msg + 'obj.code === 0!!!');
-      //   }
-      //   else {
-      //     message.warn('提交失败');
-      //   }
-
-      // }
-      
       onLoadData(page, limit);
     }, 1000);
 

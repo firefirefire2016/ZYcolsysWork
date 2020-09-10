@@ -34,6 +34,10 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 record:action.payload.record,
+                list: action.payload.rows,
+                page: action.payload.page,
+                total: action.payload.total,
+                limit: action.payload.limit,
                 res:action.payload.result
             };
         case 'COMMIT_Edit':
@@ -41,6 +45,10 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 record:action.payload.record,
+                list: action.payload.rows,
+                page: action.payload.page,
+                total: action.payload.total,
+                limit: action.payload.limit,
                 res:action.payload.result
             };
         default:
