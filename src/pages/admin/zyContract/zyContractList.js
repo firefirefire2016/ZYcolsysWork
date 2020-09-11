@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
-import '../../home.scss'
+import '../../demos/home.scss'
 import { onLoadContractData, onGetEditData, onCreateData,onCommitUpdateStatus } from '../../../store/actions/zyContractData';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
@@ -117,14 +117,16 @@ const ZyContractList = (props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    message.info('加载中...');  
+    message.info('加载中...'); 
+    
+    console.log(props);
 
     //onLoadData(page, limit);
     setTimeout(() => {
       onLoadData(1, limit);
     }, 1000);
 
-    console.log(props);
+    //console.log(props);
 
     
 
@@ -292,7 +294,7 @@ const ZyContractList = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  return state.zyCol;
+  return state.zyContractData;
 }
 
 const mapDispatchToProps = (dispatch, ownprops) => {

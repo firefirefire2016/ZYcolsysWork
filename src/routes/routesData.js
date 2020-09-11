@@ -1,12 +1,13 @@
-import Login from "../pages/login";
+import Login from "../pages/demos/login";
 import sysShow from "../pages/admin/dashboard/sysShow";
 import zyContractList from "../pages/admin/zyContract/zyContractList";
 import zyContractEdit from "../pages/admin/zyContract/zyContractEdit";
 import editdemo from "../pages/admin/zyContract/editdemo";
-import NoMatch from "../pages/404";
+import NoMatch from "../pages/demos/404";
 import zyRentList from "../pages/admin/zyCollection/zyRentList";
 import propertyRight from "../pages/admin/baseInfo/propertyRight";
 import zyUnitList from "../pages/admin/baseInfo/zyUnitList";
+import zyRentDetailList from '../pages/admin/zyCollection/zyRentDetailList';
 
 
 
@@ -99,7 +100,7 @@ export const admins = [
                 icon: 'icon-hetongguanli'
             }, {
                 icon: 'icon-shouyetubiao-05',
-                path: '/admin/zyCollection',
+                path: '/admin/zyRentList',
                 component: zyRentList,
                 // exact:true,
                 title: '租赁管理',
@@ -111,6 +112,10 @@ export const admins = [
             }, {
                 path: '/admin/zyContract/createOne',
                 component: zyContractEdit,
+                isShow: false
+            }, {
+                path: '/admin/zyRentDetailList',
+                component: zyRentDetailList,
                 isShow: false
             }]
     }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
-import '../../home.scss'
-import { onLoadContractData,RentToMergeData } from '../../../store/actions/zyCollectionData';
+import '../../demos/home.scss'
+import { onLoadCollectionData,RentToMergeData,onLoadTargetRent } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
 
@@ -50,9 +50,24 @@ const ZyRentList = (props) => {
                 }}
                 onClick={() => edit(record)}
               >
-                编辑
+                查看账单
                 </Button>
-
+              <Button type="primary"
+                style={{
+                  marginRight: 8,
+                }}
+                onClick={() => getMoney(record)}
+              >
+                收租
+                </Button>
+                <Button type="primary"
+                style={{
+                  marginRight: 8,
+                }}
+                onClick={() => returnMoney(record)}
+              >
+                退租
+                </Button>
             </span>
           );
         }
@@ -79,19 +94,21 @@ const ZyRentList = (props) => {
     };
   });
 
-  const { list, page, total, limit,onLoadData } = props;
+  const { list, page, total, limit,onLoadData,onLoadTartgetData } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');  
 
+    console.log(props);
+
     setTimeout(() => {
     }, 1000);
 
     onLoadData(1, limit);
 
-    console.log(props);
+    //console.log(props);
 
     
 
@@ -100,12 +117,24 @@ const ZyRentList = (props) => {
 
   const edit = record => {
 
+    console.log('record=' + JSON.stringify(record) );
+
+    //let contractid = record.contractid
     //设置要编辑的id
-    // onEditClick(record, false);
-    // props.history.push('/admin/zyContract/edit');
+    onLoadTartgetData(page,limit,record);
+    props.history.push('/admin/zyRentDetailList');
+
 
 
   };
+
+  const getMoney = record =>{
+
+  }
+
+  const returnMoney = record =>{
+    
+  }
 
   const ResetValue = () => {
     form.resetFields();
@@ -119,7 +148,7 @@ const ZyRentList = (props) => {
   }
 
   return (
-    <Card title="账单列表">
+    <Card title="租赁概况列表">
 
 
       <Form
@@ -220,6 +249,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
     onLoadData: (page, limit) => { RentToMergeData(dispatch, {page, limit}) },
+    onLoadTartgetData: (page, limit,record) => { onLoadTargetRent(dispatch, {page, limit,record}) },
+      
   }
 }
 

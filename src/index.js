@@ -9,7 +9,7 @@ import { mainRoutes } from './routes/routesData';
 //import Router from './router';
 import * as serviceWorker from './serviceWorker';
 import Admin from './admin';
-import addContract from './pages/addContract'
+import addContract from './pages/demos/addContract'
 
 
 ReactDOM.render(

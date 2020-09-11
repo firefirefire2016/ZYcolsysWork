@@ -89,6 +89,12 @@ export const sysCols = {
             }
         },
         {
+            title:'合同ID',
+            dataIndex:'contractid',
+            isShow:false,
+            editable:false
+        },
+        {
             title:'合同编号',
             dataIndex:'contractno',
             isShow:true,

@@ -2,7 +2,7 @@
 const defaultState = {
     list: [],
     page: 1,
-    limit: 10,
+    limit: -1,
     total: 0
 }
 
@@ -17,13 +17,24 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit
             };
+        case 'GET_TARGETLIST':
+                console.log(action);
+                return {
+                    ...state,
+                    list: action.payload.rows,
+                    page: action.payload.page,
+                    total: action.payload.total,
+                    limit: action.payload.limit,
+                    contractid:action.payload.contractid
+                };
+            
         case 'MERGE_ALL':
             console.log(action);
             return {
                 ...state,
                 list: action.payload.newList,
                 page: action.payload.page,
-                total: action.payload.total,
+                total: action.payload.newList.length,
                 limit: action.payload.limit
             };
         case 'EDIT_ON':
@@ -31,7 +42,8 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 record: action.payload.record,
-                isCreating: false,
+                contractid:action.payload.contractid,
+                limit:10
             };
         case 'CREATE_ON':
             return {

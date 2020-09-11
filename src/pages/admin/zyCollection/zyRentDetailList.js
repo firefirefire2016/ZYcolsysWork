@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
-import '../../home.scss'
-import { onLoadContractData } from '../../../store/actions/zyCollectionData';
+import '../../demos/home.scss'
+import { onLoadCollectionData,onLoadTargetRentList } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
 
@@ -13,7 +13,7 @@ const cols = sysCols.rentCol.filter(item => item.isShow);
 const { Option } = Select;
 
 
-const ZyRentList = (props) => {
+const ZyRentDetailList = (props) => {
 
   //console.log(props);
   const [form] = Form.useForm();
@@ -79,7 +79,7 @@ const ZyRentList = (props) => {
     };
   });
 
-  const { list, page, total, limit,onLoadData } = props;
+  const { page, total, limit,onLoadData,list,contractid} = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -90,7 +90,7 @@ const ZyRentList = (props) => {
       //onLoadData(1, limit);
     }, 1000);
 
-    onLoadData(1, limit);
+    onLoadData(1, limit,contractid);
 
     console.log(props);
 
@@ -116,34 +116,30 @@ const ZyRentList = (props) => {
    * 筛选
    */
   const onSelectByParams = ()=>{
-    // let row = form.getFieldValue();
-    // let {contractno,renttype,startdate,enddate} = row;
-
-    // console.log('row=' + JSON.stringify(row) );
-
-    // if(startdate){
-    //   startdate = parseInt(startdate.replace(/-/g, ""));
-    // }
-    
-    // if(enddate){
-    //   enddate = parseInt(enddate.replace(/-/g, ""));
-    // }
-
-    // console.log(startdate  + '  ' + enddate);
-
-    // onLoadData(page,limit,contractno,renttype,startdate,enddate);
 
   }
 
   return (
-    <Card title="账单列表">
+    <Card title="账单列表"
+    extra={
+
+      <Button type="primary" size="large" onClick={()=>{
+        props.history.push('/admin/zyRentList');
+      }}>
+              返回
+         </Button>
+
+    }
+    >
 
 
       <Form
         form={form}
         layout="inline"
         className="components-table-demo-control-bar"
-        style={{ marginBottom: 16 }}
+        style={{ marginBottom: 16 }
+        }
+        
       >
         <Form.Item
           name="contractno"
@@ -216,10 +212,10 @@ const ZyRentList = (props) => {
           total,
           showSizeChanger: true,
           onChange: (p) => {
-            onLoadData(p, limit);
+            onLoadData(p, limit,contractid);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size);
+            onLoadData(1, size,contractid);
           }
         }
         }
@@ -231,16 +227,16 @@ const ZyRentList = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  return state.zyContractData;
+  return state.zyCollectionData;
 }
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit) => { onLoadContractData(dispatch, {page, limit}) },
+    onLoadData: (page, limit,contractid) => { onLoadTargetRentList(dispatch, {page, limit,contractid}) },
   }
 }
 
 //connect(mapStateToProps)(ModalForm)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ZyRentList)
+export default connect(mapStateToProps, mapDispatchToProps)(ZyRentDetailList)
 
