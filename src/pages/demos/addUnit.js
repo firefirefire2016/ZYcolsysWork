@@ -8,7 +8,7 @@ import './add.scss'
 import axios from 'axios'
 //import { FormInstance } from 'antd/lib/form';
 
-import { webconfig } from '../webConfig'
+import { webconfig } from '../../webConfig'
 
 const { Option } = Select;
 

@@ -5,8 +5,8 @@ import { Link,useHistory} from 'react-router-dom'
 import { Modal,Table, Button,Form,Input,  Popconfirm, notification,Select, message} from 'antd';
 import axios from 'axios'
 import './home.scss'
-import './config'
-import { webconfig } from '../webConfig'
+import '../config'
+import { webconfig } from '../../webConfig'
 import Wel from './mergeCols'
 import { render } from 'sass';
 //import Modal from 'antd/lib/modal/Modal';

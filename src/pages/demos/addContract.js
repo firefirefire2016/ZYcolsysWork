@@ -6,7 +6,7 @@ import { Form, Input, Button, message,Select,} from 'antd';
 import './add.scss'
 import axios from 'axios'
 
-import { webconfig } from '../webConfig'
+import { webconfig } from '../../webConfig'
 //import cdata from '../../public/contraData.json'
 
 const { Option } = Select;
