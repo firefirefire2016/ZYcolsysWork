@@ -2,12 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../home.scss'
-import { onLoadContractData, onGetEditData, onCreateData } from '../../../store/actions/zyContractData';
-import { increaseAction } from '../../../store/actions/zyCounter';
+import { onLoadContractData } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
-import { strToTime,timeToStr } from '../../../utils/common'
-import Modal from 'antd/lib/modal/Modal';
 
 const cols = sysCols.rentCol.filter(item => item.isShow);
 
@@ -30,7 +27,7 @@ const ZyRentList = (props) => {
   }) => {
 
     return (
-      <td {...restProps} type='primary' className=''>
+      <td {...restProps} type='primary' className='' className={(isWarn )?'warn':''}>
 
         {parseTypeToLabel(record, labelType, children)}
       </td>
@@ -82,17 +79,18 @@ const ZyRentList = (props) => {
     };
   });
 
-  const { list, page, total, limit } = props;
+  const { list, page, total, limit,onLoadData } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');  
 
-    //onLoadData(page, limit);
     setTimeout(() => {
-      onLoadData(1, limit);
+      //onLoadData(1, limit);
     }, 1000);
+
+    onLoadData(1, limit);
 
     console.log(props);
 
@@ -238,7 +236,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit,contractno,renttype,startdate,enddate) => { onLoadContractData(dispatch, {page, limit,contractno,renttype,startdate,enddate}) },
+    onLoadData: (page, limit) => { onLoadContractData(dispatch, {page, limit}) },
   }
 }
 

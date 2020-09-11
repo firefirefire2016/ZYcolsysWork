@@ -31,6 +31,14 @@ export function modifyOne(url,data){
  * 删除目标，修改目标状态为已删除
  * @param {*} data 目标数据
  */
-export function delOne(url,data){
+export function updateOneStatus(url,data){
     return del(url + '/update_status',data);
+}
+
+/**
+ * 根据合同删除收款目标，修改目标状态
+ * @param {*} data 目标数据
+ */
+export function updateALLStatus(url,data){
+    return del(url + '/delbyContract',data);
 }

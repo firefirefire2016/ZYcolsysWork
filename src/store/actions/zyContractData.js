@@ -1,4 +1,4 @@
-import { getList, createTarget, modifyOne, delOne } from '../../services/zyService'
+import { getList, createTarget, modifyOne, updateOneStatus, updateALLStatus } from '../../services/zyService'
 import store from '../store';
 import { message } from 'antd';
 //import { sourceUrl } from '../../utils/request';
@@ -20,7 +20,7 @@ export const onLoadContractData = async (dispatch, payload) => {
 
     console.log(enddate);
 
-    const res = await getList(sourceUrl,page, limit, { contractno, renttype, startdate, enddate });
+    const res = await getList(sourceUrl, page, limit, { contractno, renttype, startdate, enddate });
 
     //console.log(dispatch);
 
@@ -64,9 +64,9 @@ export const onCommitEdit = async (dispatch, payload) => {
 
     let { record, page, limit } = payload;
 
-    await modifyOne(sourceUrl,record).then(async function (result) {
+    await modifyOne(sourceUrl, record).then(async function (result) {
 
-        await getList(sourceUrl,page, limit).then(function (res) {
+        await getList(sourceUrl, page, limit).then(function (res) {
             dispatch({
                 type: "COMMIT_Edit",
                 payload: { ...res, record, result }
@@ -98,11 +98,11 @@ export const onCommitCreate = async (dispatch, payload) => {
 
     let reData;
 
-    await createTarget(sourceUrl,record).then(async function (result) {
+    await createTarget(sourceUrl, record).then(async function (result) {
 
+        reData = result.data;
 
-
-        await getList(sourceUrl,page, limit).then(function (res) {
+        await getList(sourceUrl, page, limit).then(function (res) {
             dispatch({
                 type: "COMMIT_CREATE",
                 payload: { ...res, record, result }
@@ -110,7 +110,7 @@ export const onCommitCreate = async (dispatch, payload) => {
             console.log(res);
             if (result.code === 0) {
                 message.info(result.msg);
-                reData = res.data;
+                
             }
             else {
                 message.warn('创建合同失败');
@@ -124,11 +124,11 @@ export const onCommitCreate = async (dispatch, payload) => {
 
             let tempsYear = parseInt(record.startdate.toString().substring(0, 4));
 
-            let tempsMonth = parseInt(record.startdate.toString().substring(5, 7));
+            let tempsMonth = parseInt(record.startdate.toString().substring(4, 6));
 
             let tempeYear = parseInt(record.enddate.toString().substring(0, 4));
 
-            let tempeMonth = parseInt(record.enddate.toString().substring(5, 7));
+            let tempeMonth = parseInt(record.enddate.toString().substring(4, 6));
 
             console.log('初始到结束的年月：' + tempsYear + tempsMonth + tempeYear + tempeMonth);
 
@@ -139,7 +139,7 @@ export const onCommitCreate = async (dispatch, payload) => {
 
             console.log('当前年=' + currentYear + '当前月=' + currentMonth);
 
-            // console.log(reData.id);
+            //console.log('reData=' + JSON.stringify(reData) );
             //创建收款表
             createColletions(tempsYear, currentYear, tempsMonth, currentMonth + 1, reData);
 
@@ -184,9 +184,16 @@ const createColletions = async (tempsYear, tempeYear, tempsMonth, tempeMonth, re
                 month: month,
                 amount_receivable: reData.month_rent
             }
+
+            console.log(_sourceUrl);
+
+            console.log(newCollection);
+
+
             // eslint-disable-next-line no-loop-func
-            await createTarget(_sourceUrl,newCollection).then(function (res) {
+            await createTarget(_sourceUrl, newCollection).then(function (res) {
                 if (res.code === 1) {
+                    console.log(res);
                     message.warn(res.msg);
                     return;
                 }
@@ -208,8 +215,59 @@ const createColletions = async (tempsYear, tempeYear, tempsMonth, tempeMonth, re
 }
 
 
-    //初始化列表数据，同时获取提醒数据
-    export const onInit = async (dispatch, payload) => {
+//初始化列表数据，同时获取提醒数据
+export const onCommitUpdateStatus = async (dispatch, payload) => {
 
-    }
+    let { id, status, page, limit } = payload;
+
+    console.log(JSON.stringify(payload) );
+
+    await updateOneStatus(sourceUrl, payload).then(async function (result) {
+
+        if (result.code === 1) {
+            //后台问题打印
+            message.warn(result.msg);
+        }
+        else {
+
+            console.log('修改合同状态成功');
+        }
+
+        await updateALLStatus('zyCollection', payload).then(function (res) {
+            if (res.code === 1) {
+                //后台问题打印
+                message.warn(res.msg);
+            }
+            else {
+
+                console.log('修改收款表状态成功');
+            }
+        }
+
+
+        ).then(async function (res) {
+
+            await getList(sourceUrl, page, limit).then(function (res) {
+                dispatch({
+                    type: "GET_ALL",
+                    payload: { ...res, page, limit }
+                })
+                console.log(res);
+                if (res.code === 0) {
+                    message.info(res.msg);
+                }
+                else {
+                    message.warn('修改状态提交失败');
+                }
+
+
+            })
+            
+
+         }
+        )
+        
+    })
+}
+
 

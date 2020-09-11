@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../home.scss'
-import { onLoadContractData, onGetEditData, onCreateData } from '../../../store/actions/zyContractData';
+import { onLoadContractData, onGetEditData, onCreateData,onCommitUpdateStatus } from '../../../store/actions/zyContractData';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
@@ -55,18 +55,11 @@ const ZyContractList = (props) => {
               >
                 编辑
                 </Button>
-              <Popconfirm
-                title='确定删除么?'
-              >
-                <Button type="primary"
-                  style={{
-                    marginRight: 8,
-                  }}>
-                  删 除
-                </Button>
-              </Popconfirm>
+
+              
 
               <Popconfirm
+                onConfirm={()=>onConfirmDel(record.id,2,page,limit)}
                 title='确定终止该合同么?'
                 disabled={record.status === 2}
               >
@@ -75,6 +68,21 @@ const ZyContractList = (props) => {
                     marginRight: 8,
                   }}>
                   终止
+                </Button>
+              </Popconfirm>
+
+              <Popconfirm
+                title='确定删除该合同么?'
+                onConfirm={()=>{
+                  onConfirmDel(record.id,-1,page,limit)
+                }}
+              >
+                <Button type="primary"
+                  
+                  style={{
+                    marginRight: 8,
+                  }}>
+                  删 除
                 </Button>
               </Popconfirm>
 
@@ -104,7 +112,7 @@ const ZyContractList = (props) => {
     };
   });
 
-  const { list, page, total, limit, onLoadData, onCreateClick, onEditClick, res } = props;
+  const { list, page, total, limit, onLoadData, onCreateClick, onEditClick, res,onConfirmDel } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -126,6 +134,7 @@ const ZyContractList = (props) => {
     onCreateClick(true);
     props.history.push('/admin/zyContract/createOne');
   }
+
 
   const edit = record => {
 
@@ -292,6 +301,7 @@ const mapDispatchToProps = (dispatch, ownprops) => {
     onIncreaseClick: () => { increaseAction(dispatch, ownprops) },
     onEditClick: (record, isCreating) => { onGetEditData(dispatch, { record, isCreating }) },
     onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },
+    onConfirmDel:(id,status,page,limit) => { onCommitUpdateStatus(dispatch,{id,status,page,limit}) }
   }
 }
 
