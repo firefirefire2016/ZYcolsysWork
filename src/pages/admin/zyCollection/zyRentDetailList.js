@@ -2,21 +2,18 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../home.scss'
-import { onLoadContractData, onGetEditData, onCreateData,onCommitUpdateStatus } from '../../../store/actions/zyContractData';
-import { increaseAction } from '../../../store/actions/zyCounter';
+import { onLoadContractData } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
-import { strToTime,timeToStr } from '../../../utils/common'
-import Modal from 'antd/lib/modal/Modal';
 
-const cols = sysCols.contractCol.filter(item => item.isShow);
+const cols = sysCols.rentCol.filter(item => item.isShow);
 
-const renttypes = selectItems.renttypes;
+//const renttypes = selectItems.renttypes;
 
 const { Option } = Select;
 
 
-const ZyContractList = (props) => {
+const ZyRentList = (props) => {
 
   //console.log(props);
   const [form] = Form.useForm();
@@ -30,7 +27,7 @@ const ZyContractList = (props) => {
   }) => {
 
     return (
-      <td {...restProps} type='primary' className=''>
+      <td {...restProps} type='primary' className='' className={(isWarn )?'warn':''}>
 
         {parseTypeToLabel(record, labelType, children)}
       </td>
@@ -55,36 +52,6 @@ const ZyContractList = (props) => {
               >
                 编辑
                 </Button>
-
-              
-
-              <Popconfirm
-                onConfirm={()=>onConfirmDel(record.id,2,page,limit)}
-                title='确定终止该合同么?'
-                disabled={record.status === 2}
-              >
-                <Button type="primary" disabled={record.status === 2}
-                  style={{
-                    marginRight: 8,
-                  }}>
-                  终止
-                </Button>
-              </Popconfirm>
-
-              <Popconfirm
-                title='确定删除该合同么?'
-                onConfirm={()=>{
-                  onConfirmDel(record.id,-1,page,limit)
-                }}
-              >
-                <Button type="primary"
-                  
-                  style={{
-                    marginRight: 8,
-                  }}>
-                  删 除
-                </Button>
-              </Popconfirm>
 
             </span>
           );
@@ -112,17 +79,18 @@ const ZyContractList = (props) => {
     };
   });
 
-  const { list, page, total, limit, onLoadData, onCreateClick, onEditClick, res,onConfirmDel } = props;
+  const { list, page, total, limit,onLoadData } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');  
 
-    //onLoadData(page, limit);
     setTimeout(() => {
-      onLoadData(1, limit);
+      //onLoadData(1, limit);
     }, 1000);
+
+    onLoadData(1, limit);
 
     console.log(props);
 
@@ -130,17 +98,12 @@ const ZyContractList = (props) => {
 
   }, [])
 
-  const create = () => {
-    onCreateClick(true);
-    props.history.push('/admin/zyContract/createOne');
-  }
-
 
   const edit = record => {
 
     //设置要编辑的id
-    onEditClick(record, false);
-    props.history.push('/admin/zyContract/edit');
+    // onEditClick(record, false);
+    // props.history.push('/admin/zyContract/edit');
 
 
   };
@@ -149,35 +112,31 @@ const ZyContractList = (props) => {
     form.resetFields();
   }
 
+  /**
+   * 筛选
+   */
   const onSelectByParams = ()=>{
-    let row = form.getFieldValue();
-    let {contractno,renttype,startdate,enddate} = row;
+    // let row = form.getFieldValue();
+    // let {contractno,renttype,startdate,enddate} = row;
 
-    console.log('row=' + JSON.stringify(row) );
+    // console.log('row=' + JSON.stringify(row) );
 
-    if(startdate){
-      startdate = parseInt(startdate.replace(/-/g, ""));
-    }
+    // if(startdate){
+    //   startdate = parseInt(startdate.replace(/-/g, ""));
+    // }
     
-    if(enddate){
-      enddate = parseInt(enddate.replace(/-/g, ""));
-    }
+    // if(enddate){
+    //   enddate = parseInt(enddate.replace(/-/g, ""));
+    // }
 
-    console.log(startdate  + '  ' + enddate);
+    // console.log(startdate  + '  ' + enddate);
 
-    onLoadData(page,limit,contractno,renttype,startdate,enddate);
+    // onLoadData(page,limit,contractno,renttype,startdate,enddate);
 
   }
 
   return (
-    <Card title="合同列表"
-      extra={
-
-        <Button type="primary" size="large" onClick={create}>
-          新增合同
-           </Button>
-
-      }>
+    <Card title="账单列表">
 
 
       <Form
@@ -188,65 +147,45 @@ const ZyContractList = (props) => {
       >
         <Form.Item
           name="contractno"
-          label='合同编号'
-          rules={[
-            {
-              message: '请输入合同编号',
-            },
-          ]}
+          label='筛选条件1'
         >
-          <Input placeholder="合同编号" type="text"
+          <Input placeholder="筛选条件1" type="text"
 
           />
         </Form.Item>
 
 
         <Form.Item
-          label='招租方式'
+          label='筛选条件2'
           name="renttype"
-
-          // rules={[
-          //   {
-          //     message: '请选择招租方式',
-          //   }]}
         >
           <Select style={{ width: 150 }}
           >
-            {renttypes.map((type, index) => (
+            {/* {renttypes.map((type, index) => (
               <Option key={index} value={index}>{type}</Option>
-            ))}
+            ))} */}
           </Select>
         </Form.Item>
 
         <Form.Item
-          label='起始日期'
+          label='筛选条件3'
           name="startdate"
           marginRight='20px'
-          rules={[
-            {
-              message: '请输入起始日期',
-            },
-          ]}
         >
           <Input
             className="site-form-item-icon"
             type="date"
-            placeholder="起始日期"
+            placeholder="筛选条件3"
           />
         </Form.Item>
 
         <Form.Item
           name="enddate"
-          label='终止日期'
-          rules={[
-            {
-              message: '请输入终止日期',
-            },
-          ]}
+          label='筛选条件4'
         >
           <Input
             type="date"
-            placeholder="终止日期"
+            placeholder="筛选条件4"
           />
         </Form.Item>
 
@@ -292,20 +231,16 @@ const ZyContractList = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  return state.zyCol;
+  return state.zyContractData;
 }
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit,contractno,renttype,startdate,enddate) => { onLoadContractData(dispatch, {page, limit,contractno,renttype,startdate,enddate}) },
-    onIncreaseClick: () => { increaseAction(dispatch, ownprops) },
-    onEditClick: (record, isCreating) => { onGetEditData(dispatch, { record, isCreating }) },
-    onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },
-    onConfirmDel:(id,status,page,limit) => { onCommitUpdateStatus(dispatch,{id,status,page,limit}) }
+    onLoadData: (page, limit) => { onLoadContractData(dispatch, {page, limit}) },
   }
 }
 
 //connect(mapStateToProps)(ModalForm)
 
-export default connect(mapStateToProps, mapDispatchToProps)(ZyContractList)
+export default connect(mapStateToProps, mapDispatchToProps)(ZyRentList)
 

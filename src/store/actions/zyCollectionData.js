@@ -9,6 +9,60 @@ import Modal from 'antd/lib/modal/Modal';
 
 const sourceUrl = 'zyCollection';
 
+export const RentToMergeData = async (dispatch,payload)=>{
+
+    console.log('payload = ' + JSON.stringify(payload));
+
+    let { page, limit } = payload;
+
+    let req = {};
+
+    const res = await getList(sourceUrl, page, limit, req);
+
+    let newList = [];
+
+    //加载数据需要合并分析
+    let rows = res.rows;
+    //遍历每月账单，合并一起
+
+    let contracts = [];
+
+    rows.forEach((row, index, rows) => {
+
+        if(contracts.includes(row.contractid)){
+            contracts.push(row.contractid);
+            let item = {
+                contractid:row.contractid,
+                contractno:row.contractno,
+                tenant:row.zycontract.tenant,
+                rentdate:row.zycontract.rentdate,
+                totalAmount:row.amount_received,
+                current_received:row.amount_received,
+                current_invoice:row.current_invoice,
+                month_rent:row.zycontract.month_rent
+            }
+            newList.push(item);
+        }
+        else{
+            for (const item in newList) {
+                if(item.contractid === row.contractid){
+                    item.totalAmount += row.amount_received;
+                    break
+                }
+            }
+        }
+
+
+    })
+
+    dispatch({
+        type: 'MERGE_ALL',
+        payload: {...res, page, limit,newList }
+    })
+
+
+}
+
 
 //加载列表数据，推送到reducer
 export const onLoadContractData = async (dispatch, payload) => {

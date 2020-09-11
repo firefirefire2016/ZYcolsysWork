@@ -17,6 +17,15 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit
             };
+        case 'MERGE_ALL':
+            console.log(action);
+            return {
+                ...state,
+                list: action.payload.newList,
+                page: action.payload.page,
+                total: action.payload.total,
+                limit: action.payload.limit
+            };
         case 'EDIT_ON':
             console.log(action);
             return {
@@ -33,23 +42,23 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
-                record:action.payload.record,
+                record: action.payload.record,
                 list: action.payload.rows,
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                res:action.payload.result
+                res: action.payload.result
             };
         case 'COMMIT_Edit':
             console.log(action);
             return {
                 ...state,
-                record:action.payload.record,
+                record: action.payload.record,
                 list: action.payload.rows,
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                res:action.payload.result
+                res: action.payload.result
             };
         default:
             return state;

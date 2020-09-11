@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../home.scss'
-import { onLoadContractData } from '../../../store/actions/zyCollectionData';
+import { onLoadContractData,RentToMergeData } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
 
-const cols = sysCols.rentCol.filter(item => item.isShow);
+const cols = sysCols.MergeRentCol.filter(item => item.isShow);
 
 //const renttypes = selectItems.renttypes;
 
@@ -87,7 +87,6 @@ const ZyRentList = (props) => {
     message.info('加载中...');  
 
     setTimeout(() => {
-      //onLoadData(1, limit);
     }, 1000);
 
     onLoadData(1, limit);
@@ -116,22 +115,6 @@ const ZyRentList = (props) => {
    * 筛选
    */
   const onSelectByParams = ()=>{
-    // let row = form.getFieldValue();
-    // let {contractno,renttype,startdate,enddate} = row;
-
-    // console.log('row=' + JSON.stringify(row) );
-
-    // if(startdate){
-    //   startdate = parseInt(startdate.replace(/-/g, ""));
-    // }
-    
-    // if(enddate){
-    //   enddate = parseInt(enddate.replace(/-/g, ""));
-    // }
-
-    // console.log(startdate  + '  ' + enddate);
-
-    // onLoadData(page,limit,contractno,renttype,startdate,enddate);
 
   }
 
@@ -231,16 +214,15 @@ const ZyRentList = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  return state.zyContractData;
+  return state.zyCollectionData;
 }
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit) => { onLoadContractData(dispatch, {page, limit}) },
+    onLoadData: (page, limit) => { RentToMergeData(dispatch, {page, limit}) },
   }
 }
 
-//connect(mapStateToProps)(ModalForm)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ZyRentList)
 

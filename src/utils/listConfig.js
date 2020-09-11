@@ -76,6 +76,70 @@ export const sysCols = {
         }
     ],
 
+    //收租汇总表
+    MergeRentCol :[
+        {
+            title:'序号',
+            key:'id',
+            align:"center",
+            editable:false,
+            isShow:true,
+            render: (txt,record,index) => {
+               return index +1
+            }
+        },
+        {
+            title:'合同编号',
+            dataIndex:'contractno',
+            isShow:true,
+            editable:false
+        },
+        {
+            title:'承租方',
+            dataIndex:'tenant',
+            isShow:true,
+            editable:false
+        },
+        {
+            title:'收租日',
+            dataIndex:'rentdate',
+            isShow:true,
+            editable:false
+        },
+        {
+          title:'累计收款总额',
+          dataIndex:'totalAmount',
+          isShow:true,
+          editable:false
+        },
+        {
+            title:'当前月份收款额',
+            dataIndex:'current_received',
+            isShow:true,
+            editable:false
+        },
+        {
+            title:'当前月份开票金额',
+            dataIndex:'current_invoice',
+            isShow:true,
+            editable:false
+        },
+        {
+            title:'月租金额',
+            dataIndex:'month_rent',
+            isShow:true,
+            editable:false
+        },
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          isShow:true,
+          editable:false,
+          isOper:true
+        }
+        
+    ],
+
     //收租表
     rentCol :[
         {
