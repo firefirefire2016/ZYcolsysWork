@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadCollectionData,onLoadTargetRentList } from '../../../store/actions/zyCollectionData';
+import { onLoadTargetRentList, onEditDetail } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
+import { parseItemtype, parseTypeToLabel } from '../../../utils/ItemUtils';
 
 const cols = sysCols.rentCol.filter(item => item.isShow);
 
@@ -18,6 +18,8 @@ const ZyRentDetailList = (props) => {
   //console.log(props);
   const [form] = Form.useForm();
 
+  const [isInit, setIsInit] = useState(true);
+
   const EditableCell = ({
     labelType,
     children,
@@ -27,14 +29,16 @@ const ZyRentDetailList = (props) => {
   }) => {
 
     return (
-      <td {...restProps} type='primary' className='' className={(isWarn )?'warn':''}>
+      <td {...restProps} type='primary' className='' className={(isWarn) ? 'warn' : ''}>
 
         {parseTypeToLabel(record, labelType, children)}
       </td>
     );
   };
 
+  const onCommitEdit = record => {
 
+  }
 
 
 
@@ -52,7 +56,22 @@ const ZyRentDetailList = (props) => {
               >
                 编辑
                 </Button>
-
+              {/* <Button type="primary"
+                style={{
+                  marginRight: 8,
+                }}
+                onClick={() => getMoney(record)}
+              >
+                收租
+                </Button>
+                <Button type="primary"
+                style={{
+                  marginRight: 8,
+                }}
+                onClick={() => returnMoney(record)}
+              >
+                退租
+                </Button> */}
             </span>
           );
         }
@@ -79,22 +98,29 @@ const ZyRentDetailList = (props) => {
     };
   });
 
-  const { page, total, limit,onLoadData,list,contractid} = props;
+  const { page, total, limit, onLoadData, list, contractid, onEditOne } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    message.info('加载中...');  
+    message.info('加载中...');
 
     setTimeout(() => {
       //onLoadData(1, limit);
     }, 1000);
 
-    onLoadData(1, limit,contractid);
+    if (isInit) {
+      onLoadData(1, -1, contractid);
+      setIsInit(false);
+    }
+    else {
+      onLoadData(1, limit, contractid);
+    }
+
 
     console.log(props);
 
-    
+
 
   }, [])
 
@@ -102,9 +128,10 @@ const ZyRentDetailList = (props) => {
   const edit = record => {
 
     //设置要编辑的id
-    // onEditClick(record, false);
-    // props.history.push('/admin/zyContract/edit');
-
+    onEditOne(record);
+    //props.history.push('/admin/');
+    //props.history.push('/admin/zyRentList');
+    props.history.push('/admin/zyRentDetailListEdit');
 
   };
 
@@ -115,21 +142,21 @@ const ZyRentDetailList = (props) => {
   /**
    * 筛选
    */
-  const onSelectByParams = ()=>{
+  const onSelectByParams = () => {
 
   }
 
   return (
     <Card title="账单列表"
-    extra={
+      extra={
 
-      <Button type="primary" size="large" onClick={()=>{
-        props.history.push('/admin/zyRentList');
-      }}>
-              返回
+        <Button type="primary" size="large" onClick={() => {
+          props.history.push('/admin/zyRentList');
+        }}>
+          返回
          </Button>
 
-    }
+      }
     >
 
 
@@ -139,7 +166,7 @@ const ZyRentDetailList = (props) => {
         className="components-table-demo-control-bar"
         style={{ marginBottom: 16 }
         }
-        
+
       >
         <Form.Item
           name="contractno"
@@ -188,10 +215,10 @@ const ZyRentDetailList = (props) => {
         <Form.Item >
           <Button type="primary" onClick={onSelectByParams} >筛选</Button>
           <Button type="primary" htmlType="reset"
-                        //className="login-form-button"
-                        className="btn" onClick={ResetValue}
-                    >
-                        重置条件
+            //className="login-form-button"
+            className="btn" onClick={ResetValue}
+          >
+            重置条件
                     </Button>
         </Form.Item>
 
@@ -208,14 +235,16 @@ const ZyRentDetailList = (props) => {
         dataSource={list}
         size="lager"
         pagination={{
-          
+
           total,
           showSizeChanger: true,
-          onChange: (p) => {
-            onLoadData(p, limit,contractid);
+          onChange: (p, size) => {
+            //console.log('contractid = ' + contractid);
+
+            onLoadData(p, size, contractid);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size,contractid);
+            onLoadData(1, size, contractid);
           }
         }
         }
@@ -232,7 +261,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit,contractid) => { onLoadTargetRentList(dispatch, {page, limit,contractid}) },
+    onLoadData: (page, limit, contractid) => { onLoadTargetRentList(dispatch, { page, limit, contractid }) },
+    onEditOne: (record) => { onEditDetail(dispatch, { record }) },
   }
 }
 

@@ -2,7 +2,7 @@
 const defaultState = {
     list: [],
     page: 1,
-    limit: -1,
+    limit: 10,
     total: 0
 }
 
@@ -18,16 +18,16 @@ export default (state = defaultState, action) => {
                 limit: action.payload.limit
             };
         case 'GET_TARGETLIST':
-                console.log(action);
-                return {
-                    ...state,
-                    list: action.payload.rows,
-                    page: action.payload.page,
-                    total: action.payload.total,
-                    limit: action.payload.limit,
-                    contractid:action.payload.contractid
-                };
-            
+            console.log(action);
+            return {
+                ...state,
+                list: action.payload.rows,
+                page: action.payload.page,
+                total: action.payload.total,
+                limit: action.payload.limit,
+                contractid: action.payload.contractid
+            };
+
         case 'MERGE_ALL':
             console.log(action);
             return {
@@ -42,13 +42,8 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 record: action.payload.record,
-                contractid:action.payload.contractid,
-                limit:10
-            };
-        case 'CREATE_ON':
-            return {
-                ...state,
-                isCreating: true,
+                contractid: action.payload.contractid,
+                limit: 10
             };
         case 'COMMIT_CREATE':
             console.log(action);
@@ -60,6 +55,13 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit,
                 res: action.payload.result
+            };
+        case 'GET_ONEDETAIL':
+            console.log(action);
+            return {
+                ...state,
+                record: action.payload.record,
+                isCreating: false,
             };
         case 'COMMIT_Edit':
             console.log(action);

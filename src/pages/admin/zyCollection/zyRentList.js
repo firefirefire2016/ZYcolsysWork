@@ -18,6 +18,8 @@ const ZyRentList = (props) => {
   //console.log(props);
   const [form] = Form.useForm();
 
+  const [isInit,setIsInit] = useState(true);
+
   const EditableCell = ({
     labelType,
     children,
@@ -52,22 +54,7 @@ const ZyRentList = (props) => {
               >
                 查看账单
                 </Button>
-              <Button type="primary"
-                style={{
-                  marginRight: 8,
-                }}
-                onClick={() => getMoney(record)}
-              >
-                收租
-                </Button>
-                <Button type="primary"
-                style={{
-                  marginRight: 8,
-                }}
-                onClick={() => returnMoney(record)}
-              >
-                退租
-                </Button>
+              
             </span>
           );
         }
@@ -106,7 +93,14 @@ const ZyRentList = (props) => {
     setTimeout(() => {
     }, 1000);
 
-    onLoadData(1, limit);
+    if(isInit){
+      onLoadData(1, -1);
+      setIsInit(false);
+    }
+    else{
+      onLoadData(1, limit);
+    }
+    
 
     //console.log(props);
 
@@ -128,13 +122,7 @@ const ZyRentList = (props) => {
 
   };
 
-  const getMoney = record =>{
-
-  }
-
-  const returnMoney = record =>{
-    
-  }
+  
 
   const ResetValue = () => {
     form.resetFields();

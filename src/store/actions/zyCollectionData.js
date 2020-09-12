@@ -1,21 +1,24 @@
-import React  from 'react'
+import React from 'react'
 import { getList, createTarget, modifyOne, delOne } from '../../services/zyService'
 import store from '../store';
-import { message, Button,notification } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
+import { message, Button, notification, Modal } from 'antd';
+//import Modal from 'antd/lib/modal/Modal';
 //import { sourceUrl } from '../../utils/request';
 
 //const zyContractData = store.getState().zyContractData;
 
 const sourceUrl = 'zyCollection';
 
-export const RentToMergeData = async (dispatch,payload)=>{
+export const RentToMergeData = async (dispatch, payload) => {
 
     //console.log('payload = ' + JSON.stringify(payload));
 
-    let { page,limit} = payload;
+    let { page, limit } = payload;
 
     //let limit = {};
+
+    //console.log('limit:' + limit);
+
 
     let req = {};
 
@@ -27,87 +30,70 @@ export const RentToMergeData = async (dispatch,payload)=>{
     let rows = res.rows;
     //遍历每月账单，合并一起
 
+    NoticeStart(rows);
+
+
+
+
     let contracts = [];
 
-    console.log(' res.rows = ' + rows)
+    //console.log(' res.rows = ' + rows)
 
     rows.forEach((row, index, rows) => {
-        if(!contracts.includes(row.contractid)){
+        if (!contracts.includes(row.contractid)) {
             console.log(' id = ' + row.contractid)
             contracts.push(row.contractid);
             let item = {
-                contractid:row.contractid,
-                contractno:row.zycontract.contractno,
-                tenant:row.zycontract.tenant,
-                rentdate:row.zycontract.rentdate,
-                totalAmount:row.amount_received,
-                current_received:row.amount_received,
-                current_invoice:row.current_invoice,
-                month_rent:row.zycontract.month_rent
+                contractid: row.contractid,
+                contractno: row.zycontract.contractno,
+                tenant: row.zycontract.tenant,
+                rentdate: row.zycontract.rentdate,
+                totalAmount: row.amount_received,
+                current_received: row.amount_received,
+                current_invoice: row.current_invoice,
+                month_rent: row.zycontract.month_rent
             }
             newList.push(item);
         }
-        else{
+        else {
             for (const item in newList) {
-                if(item.contractid === row.contractid){
+                if (item.contractid === row.contractid) {
                     item.totalAmount += row.amount_received;
                     break
                 }
             }
         }
-        
+
 
     })
 
-     //console.log('contracts = ' + JSON.stringify(contracts) );
-
-     console.log('newList = ' + newList);
+    console.log('newList = ' + newList);
 
     dispatch({
         type: 'MERGE_ALL',
-        payload: {...res, page, limit,newList }
+        payload: { ...res, page, limit, newList }
     })
 
 
 }
 
-export const onLoadTargetRent = async(dispatch,payload) =>{
+export const onLoadTargetRent = async (dispatch, payload) => {
     let { record } = payload;
 
     let contractid = record.contractid;
 
     dispatch({
         type: 'EDIT_ON',
-        payload: { record,contractid }
+        payload: { record, contractid }
     })
 }
 
-//加载列表数据，推送到reducer
-export const onLoadTargetRentList = async (dispatch, payload) => {
-
-    console.log('payload = ' + JSON.stringify(payload));
-
-    let { page, limit,contractid } = payload;
-
-    console.log(' contractid = ' + contractid);
-
-    console.log(' payload = ' + payload);
-
-    const res = await getList(sourceUrl, page, limit, {contractid});
-
-    //console.log('res === ' + JSON.stringify(res));
-
-    
-
-    let rows = res.rows;
-    //let warnDetails = '';
+const NoticeStart = (rows) => {
+    //let rows = new Object(temps);
     let warnArray = [];
     var contractSum = [0];
     var notices = [];
     rows.forEach((row, index, rows) => {
-        //console.log(' value: ' + JSON.stringify(value) );
-        //console.log(' index: ' + JSON.stringify(index));
-        //console.log(' row: ' + JSON.stringify(row));
         row['contractno'] = row.zycontract.contractno;
         row['isWarn'] = 0;
         //如果已收金额小于应收金额，则提醒
@@ -136,17 +122,33 @@ export const onLoadTargetRentList = async (dispatch, payload) => {
 
         }
 
-        if (row.isWarn === 1 ) {
-            var noticecontent = '合同编号为' + row.contractno + '的' + row.year + '年' + row.month +
-                '月份的租金未收齐，请留意!';
+        if (row.isWarn === 1) {
+            // var noticecontent = '合同编号为' + row.contractno + '的' + row.year + '年' + row.month +
+            //     '月份的租金未收齐，请留意!';            
 
             var key = row.contractid;
 
             var notice = {};
             notice.id = key;
-            notice.content = noticecontent;
 
-            notices.push(notice);
+            var hasNotice = false;
+
+            for (let index = 0; index < notices.length; index++) {
+                // console.log('notice.id:' + notice.id)
+                // console.log('key:' + key)
+                if (notices[index].id === key) {
+                    hasNotice = true;
+                }
+
+            }
+
+            if (!hasNotice) {
+                var noticecontent = '合同编号为' + row.contractno + '的租金有未收齐的情况，请留意！';
+                notice.content = noticecontent;
+
+                notices.push(notice);
+            }
+
 
             var info = row.year + '年' + row.month + '月份的租金目前只收到' + row.amount_received +
                 '，仍拖欠' + (row.amount_receivable - row.amount_received) + '元<br/>';
@@ -172,6 +174,7 @@ export const onLoadTargetRentList = async (dispatch, payload) => {
 
     });
 
+
     let time = 1;
     notices.forEach((notice, index, nos) => {
         warnArray.forEach((warn, index, warns) => {
@@ -183,10 +186,30 @@ export const onLoadTargetRentList = async (dispatch, payload) => {
         })
 
     })
+}
+
+//加载列表数据，推送到reducer
+export const onLoadTargetRentList = async (dispatch, payload) => {
+
+    console.log('payload = ' + JSON.stringify(payload));
+
+    let { page, limit, contractid } = payload;
+
+    console.log(' contractid = ' + contractid);
+
+    console.log(' payload = ' + payload);
+
+    const res = await getList(sourceUrl, page, limit, { contractid });
+
+
+
+    let rows = res.rows;
+    //let warnDetails = '';
+    NoticeStart(rows);
 
     dispatch({
         type: 'GET_TARGETLIST',
-        payload: { ...res, page, limit,contractid }
+        payload: { ...res, page, limit, contractid }
     })
 
 
@@ -198,13 +221,13 @@ export const onLoadCollectionData = async (dispatch, payload) => {
 
     console.log('payload = ' + JSON.stringify(payload));
 
-    let { page, limit  } = payload;
+    let { page, limit } = payload;
 
     const res = await getList(sourceUrl, page, limit, {});
 
     //console.log('res === ' + JSON.stringify(res));
 
-    
+
 
     let rows = res.rows;
     //let warnDetails = '';
@@ -243,7 +266,7 @@ export const onLoadCollectionData = async (dispatch, payload) => {
 
         }
 
-        if (row.isWarn === 1 ) {
+        if (row.isWarn === 1) {
             var noticecontent = '合同编号为' + row.contractno + '的' + row.year + '年' + row.month +
                 '月份的租金未收齐，请留意!';
 
@@ -329,35 +352,27 @@ const openNotification = (title, description, modaltitle, detail, type, time) =>
     });
 };
 
-function detailInfo(title,content) {
+function detailInfo(title, content) {
     Modal.info({
-      title,
-      content:(<div dangerouslySetInnerHTML={{ __html: content }}/>),
-      onOk() {},
-      okText:'好的'
+        title,
+        content: (<div dangerouslySetInnerHTML={{ __html: content }} />),
+        onOk() { },
+        okText: '好的'
     });
-  }
-
-
-
-export const onEditData = async (dispatch, payload) => {
-    let { record } = payload;
-
-    dispatch({
-        type: 'EDIT_ON',
-        payload: { record }
-    })
-
 }
 
-export const onCreateData = async (dispatch, isCreating) => {
 
-    console.log(isCreating);
+
+export const onEditDetail = async (dispatch, payload) => {
+    let { record } = payload;
+
+    let id = record.id;
 
     dispatch({
-        type: 'CREATE_ON'
-    })
+        type: 'GET_ONEDETAIL',
 
+        payload: { record, id }
+    })
 }
 
 /**

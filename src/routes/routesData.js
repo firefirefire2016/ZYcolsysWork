@@ -8,7 +8,8 @@ import zyRentList from "../pages/admin/zyCollection/zyRentList";
 import propertyRight from "../pages/admin/baseInfo/propertyRight";
 import zyUnitList from "../pages/admin/baseInfo/zyUnitList";
 import zyRentDetailList from '../pages/admin/zyCollection/zyRentDetailList';
-
+import zyRentDetailEdit from '../pages/admin/zyCollection/zyRentDetailEdit';
+import zyRentEdit from '../pages/admin/zyCollection/zyRentEdit';
 
 
 
@@ -20,7 +21,10 @@ export const mainRoutes = [{
     component: NoMatch
 }]
 
-export const adminRoutes = [
+/**
+ * 示例路由
+ */
+export const adminRoutess = [
     {
         path: '/admin/sysShow',
         component: sysShow,
@@ -117,6 +121,12 @@ export const admins = [
                 path: '/admin/zyRentDetailList',
                 component: zyRentDetailList,
                 isShow: false
-            }]
+            }, {
+                //icon: 'icon-shouyetubiao-05',
+                path: '/admin/zyRentDetailListEdit',
+                component: zyRentDetailEdit,
+                isShow: false,
+            },           
+        ]
     }
 ]
