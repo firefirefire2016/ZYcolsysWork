@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadTargetRentList, onEditDetail } from '../../../store/actions/zyCollectionData';
+import { onLoadTargetRentList, onEditDetail,onLoadTargetListByREQ} from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
-import { parseItemtype, parseTypeToLabel } from '../../../utils/ItemUtils';
+import { parseItemtype, parseTypeToLabel, consoleTarget } from '../../../utils/ItemUtils';
 
 const cols = sysCols.rentCol.filter(item => item.isShow);
 
@@ -28,6 +28,7 @@ const ZyRentDetailList = (props) => {
     ...restProps
   }) => {
 
+
     return (
       <td {...restProps} type='primary' className='' className={(isWarn) ? 'warn' : ''}>
 
@@ -35,12 +36,6 @@ const ZyRentDetailList = (props) => {
       </td>
     );
   };
-
-  const onCommitEdit = record => {
-
-  }
-
-
 
   const mergedColumns = cols => cols.map(col => {
     if (!col.editable) {
@@ -78,7 +73,7 @@ const ZyRentDetailList = (props) => {
       }
 
 
-      return col;
+
     }
 
     return {
@@ -90,6 +85,7 @@ const ZyRentDetailList = (props) => {
           labelType: parseItemtype(col.dataIndex),
           rowIndex,
           isWarn: record.isWarn ? true : false,
+          //isWarn:consoleTarget(record),
           dataIndex: col.dataIndex,
           title: col.title,
           record
@@ -98,7 +94,7 @@ const ZyRentDetailList = (props) => {
     };
   });
 
-  const { page, total, limit, onLoadData, list, contractid, onEditOne } = props;
+  const { page, total, limit, onLoadData, list, contractid, onEditOne,SelectByREQ } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -106,16 +102,16 @@ const ZyRentDetailList = (props) => {
     message.info('加载中...');
 
     setTimeout(() => {
-      //onLoadData(1, limit);
-    }, 1000);
+      if (isInit) {
+        onLoadData(1, -1, contractid,isInit);
+        setIsInit(false);
+      }
+      else {
+        onLoadData(1, limit, contractid,isInit);
+      }
+    }, 100);
 
-    if (isInit) {
-      onLoadData(1, -1, contractid);
-      setIsInit(false);
-    }
-    else {
-      onLoadData(1, limit, contractid);
-    }
+
 
 
     console.log(props);
@@ -129,8 +125,6 @@ const ZyRentDetailList = (props) => {
 
     //设置要编辑的id
     onEditOne(record);
-    //props.history.push('/admin/');
-    //props.history.push('/admin/zyRentList');
     props.history.push('/admin/zyRentDetailListEdit');
 
   };
@@ -144,7 +138,33 @@ const ZyRentDetailList = (props) => {
    */
   const onSelectByParams = () => {
 
+    let reqs = form.getFieldsValue();
+
+    let year = reqs['year'];
+
+    let month = reqs['month'];
+
+    let amount_received = reqs['amount_received'];
+
+    let invoice_amount = reqs['invoice_amount'];
+
+    SelectByREQ(year,month,amount_received,invoice_amount,page,limit,contractid,isInit);
   }
+
+  const onChangeSize = (page ,limit ) => {
+    let reqs = form.getFieldsValue();
+
+    let year = reqs['year'];
+
+    let month = reqs['month'];
+
+    let amount_received = reqs['amount_received'];
+
+    let invoice_amount = reqs['invoice_amount'];
+
+    SelectByREQ(year,month,amount_received,invoice_amount,page,limit,contractid,isInit);
+  }
+
 
   return (
     <Card title="账单列表"
@@ -169,46 +189,43 @@ const ZyRentDetailList = (props) => {
 
       >
         <Form.Item
-          name="contractno"
-          label='筛选条件1'
+          name="year"
+          label='收款年份'
         >
-          <Input placeholder="筛选条件1" type="text"
+          <Input placeholder="收款年份" type="number"
 
           />
         </Form.Item>
 
 
         <Form.Item
-          label='筛选条件2'
-          name="renttype"
+          label='收款月份'
+          name="month"
         >
-          <Select style={{ width: 150 }}
-          >
-            {/* {renttypes.map((type, index) => (
-              <Option key={index} value={index}>{type}</Option>
-            ))} */}
-          </Select>
+          <Input placeholder="收款月份" type="number"
+
+          />
         </Form.Item>
 
         <Form.Item
-          label='筛选条件3'
-          name="startdate"
+          label='已收款金额>='
+          name="amount_received"
           marginRight='20px'
         >
           <Input
             className="site-form-item-icon"
-            type="date"
-            placeholder="筛选条件3"
+            type="number"
+            placeholder="已收款金额"
           />
         </Form.Item>
 
         <Form.Item
-          name="enddate"
-          label='筛选条件4'
+          name="invoice_amount"
+          label='开票金额>='
         >
           <Input
-            type="date"
-            placeholder="筛选条件4"
+            type="number"
+            placeholder="开票金额"
           />
         </Form.Item>
 
@@ -241,10 +258,10 @@ const ZyRentDetailList = (props) => {
           onChange: (p, size) => {
             //console.log('contractid = ' + contractid);
 
-            onLoadData(p, size, contractid);
+            onChangeSize(p, size);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size, contractid);
+            onChangeSize(1, size);
           }
         }
         }
@@ -261,12 +278,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit, contractid) => { onLoadTargetRentList(dispatch, { page, limit, contractid }) },
+    onLoadData: (page, limit, contractid,isInit) => { onLoadTargetRentList(dispatch, { page, limit, contractid,isInit }) },
     onEditOne: (record) => { onEditDetail(dispatch, { record }) },
+    SelectByREQ:(year,month,amount_received,invoice_amount,page,limit,contractid,isInit) =>
+     { onLoadTargetListByREQ(dispatch,{year,month,amount_received,invoice_amount,page,limit,contractid,isInit}) },
   }
 }
 
-//connect(mapStateToProps)(ModalForm)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ZyRentDetailList)
 

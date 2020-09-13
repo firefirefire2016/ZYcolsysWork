@@ -8,6 +8,14 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'MERGE_REQ':
+            return{
+                ...state,
+                list: action.payload.rows,
+                page: action.payload.page,
+                total: action.payload.total,
+                limit: action.payload.limit
+            }
         case 'GET_ALL':
             console.log(action);
             return {

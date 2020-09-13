@@ -2,11 +2,14 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadCollectionData,RentToMergeData,onLoadTargetRent } from '../../../store/actions/zyCollectionData';
+import { onLoadCollectionData,RentToMergeData,onLoadTargetRent} from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
+import { selectItems, parseItemtype, parseTypeToLabel,consoleTarget } from '../../../utils/ItemUtils';
+import { rentMergeQuery } from '../../../utils/common';
 
 const cols = sysCols.MergeRentCol.filter(item => item.isShow);
+
+const ysorno = selectItems.yesOrNo;
 
 //const renttypes = selectItems.renttypes;
 
@@ -41,6 +44,7 @@ const ZyRentList = (props) => {
 
 
   const mergedColumns = cols => cols.map(col => {
+    //console.log(list);
     if (!col.editable) {
       if (col.isOper === true) {
         col.render = (text, record, index) => {
@@ -61,7 +65,7 @@ const ZyRentList = (props) => {
       }
 
 
-      return col;
+      
     }
 
     return {
@@ -72,7 +76,8 @@ const ZyRentList = (props) => {
           //record,
           labelType: parseItemtype(col.dataIndex),
           rowIndex,
-          isWarn: record.isWarn ? true : false,
+          isWarn: record.isWarn ===1 ? true : false,
+          //isWarn:consoleTarget(record),
           dataIndex: col.dataIndex,
           title: col.title,
           record
@@ -81,20 +86,23 @@ const ZyRentList = (props) => {
     };
   });
 
-  const { list, page, total, limit,onLoadData,onLoadTartgetData } = props;
+
+  const { list, page, total, limit,onLoadData,onLoadTartgetData,SelectByREQ } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');  
 
-    console.log(props);
+    
 
     setTimeout(() => {
     }, 1000);
 
     if(isInit){
-      onLoadData(1, -1);
+
+      console.log(' Init = ' + isInit);
+      onLoadData(1, -1,isInit);
       setIsInit(false);
     }
     else{
@@ -102,20 +110,23 @@ const ZyRentList = (props) => {
     }
     
 
-    //console.log(props);
+    //console.log(list);
 
     
 
   }, [])
 
+  
+
 
   const edit = record => {
-
-    console.log('record=' + JSON.stringify(record) );
+    //console.log(list);
+    //console.log('record=' + JSON.stringify(record) );
 
     //let contractid = record.contractid
     //设置要编辑的id
     onLoadTartgetData(page,limit,record);
+
     props.history.push('/admin/zyRentDetailList');
 
 
@@ -132,7 +143,19 @@ const ZyRentList = (props) => {
    * 筛选
    */
   const onSelectByParams = ()=>{
+    let reqs = form.getFieldsValue();
 
+    let tenant = reqs['tenant'];
+
+    let month_rent = reqs['month_rent'];
+
+    let isOwe = reqs['isOwe'];
+
+    let needInvoice = reqs['needInvoice'];
+
+    //console.log( reqs);
+
+    SelectByREQ(tenant,month_rent,isOwe,needInvoice,page,limit);
   }
 
   return (
@@ -146,47 +169,49 @@ const ZyRentList = (props) => {
         style={{ marginBottom: 16 }}
       >
         <Form.Item
-          name="contractno"
-          label='筛选条件1'
+          name="tenant"
+          label='承租方'
         >
-          <Input placeholder="筛选条件1" type="text"
+          <Input placeholder="承租方" type="text"
 
           />
         </Form.Item>
 
 
         <Form.Item
-          label='筛选条件2'
-          name="renttype"
+          label='月租>='
+          name="month_rent"
         >
-          <Select style={{ width: 150 }}
-          >
+          <Input placeholder="月租" type="text"/>
             {/* {renttypes.map((type, index) => (
               <Option key={index} value={index}>{type}</Option>
             ))} */}
-          </Select>
         </Form.Item>
 
         <Form.Item
-          label='筛选条件3'
-          name="startdate"
+          label='是否欠租'
+          name="isOwe"
           marginRight='20px'
         >
-          <Input
-            className="site-form-item-icon"
-            type="date"
-            placeholder="筛选条件3"
-          />
+          <Select style={{width:'100px'}}
+          >
+            {ysorno.map((type, index) => (
+              <Option key={index} value={index}>{type}</Option>
+            ))}
+            </Select>
+
         </Form.Item>
 
         <Form.Item
-          name="enddate"
-          label='筛选条件4'
+          name="needInvoice"
+          label='有发票未完成'
         >
-          <Input
-            type="date"
-            placeholder="筛选条件4"
-          />
+          <Select style={{width:'100px'}}
+          >
+            {ysorno.map((type, index) => (
+              <Option key={index} value={index}>{type}</Option>
+            ))}
+            </Select>
         </Form.Item>
 
         <Form.Item >
@@ -236,9 +261,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit) => { RentToMergeData(dispatch, {page, limit}) },
+    onLoadData: (page, limit,isInit) => { RentToMergeData(dispatch, {page, limit,isInit}) },
     onLoadTartgetData: (page, limit,record) => { onLoadTargetRent(dispatch, {page, limit,record}) },
-      
+    SelectByREQ:(tenant,month_rent,isOwe,needInvoice,page,limit) => { RentToMergeData(dispatch,{tenant,month_rent,isOwe,needInvoice,page,limit}) },
   }
 }
 

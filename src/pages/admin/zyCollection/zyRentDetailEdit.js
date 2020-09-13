@@ -6,7 +6,7 @@ import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '..
 import { strToTime,timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyCollectionData';
 
-const items = sysCols.rentCol;
+const items = sysCols.rentCol.filter(item=>item.isInEdit);
 
 
 
@@ -19,7 +19,21 @@ function ZyRentDetailEdit(props) {
     let obj;
 
     const ResetValue = async () => {
-        form.resetFields();
+        
+         var editables = items.filter(item=>item.editable);
+
+         var values = form.getFieldsValue();
+
+         editables.forEach(ele => {
+            values[ele.dataIndex] = 0;
+         });
+         
+
+         form.setFieldsValue({
+            ...values
+         })
+
+           
     }
 
     useEffect(() => {
@@ -31,16 +45,12 @@ function ZyRentDetailEdit(props) {
             
             form.setFieldsValue({
                 ...obj
-                // startdate:strToTime(obj.startdate),
-                // enddate:strToTime(obj.enddate)
             });
         }
         else {
             message.info('准备创建');
             form.resetFields();
         }
-
-        //console.log(props);
 
     }, [])
 
@@ -51,16 +61,16 @@ function ZyRentDetailEdit(props) {
     const onFinish = async values => {
         // onCommitButtonClick();
         try {
+            
             let row = form.getFieldValue();
-
 
             if (isCreating) {
 
             } else {
-                row.id = obj.id;
-                await onEditClick(row, page, limit);
 
-                //console.log(props.res);
+                row.id = obj.id;
+
+                await onEditClick(row, page, limit);
 
                 props.history.push('/admin/zyRentDetailList');
                 // 示例：等待5秒后，如果判断成功，则提示
@@ -96,11 +106,12 @@ function ZyRentDetailEdit(props) {
 
 
 
-                {items.filter(item => item.editable).map(item => {
+                {items.map(item => {
                     return (
                         <Form.Item
                             name={item.dataIndex}
                             label={item.title}
+                            
                             rules={[
                                 {
                                     required: true,

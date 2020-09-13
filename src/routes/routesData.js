@@ -122,7 +122,6 @@ export const admins = [
                 component: zyRentDetailList,
                 isShow: false
             }, {
-                //icon: 'icon-shouyetubiao-05',
                 path: '/admin/zyRentDetailListEdit',
                 component: zyRentDetailEdit,
                 isShow: false,

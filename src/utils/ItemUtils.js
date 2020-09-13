@@ -15,6 +15,7 @@ export const selectItems = {
 
   unitts: ['国有单位', '合资单位', '私有单位'],
 
+  yesOrNo: ['否','是'],
   /**
    * 社区
    */
@@ -26,7 +27,9 @@ export const parseInputNode = (item) => {
 
   let inputType = parseItemtype(item.dataIndex);
 
-  let inputNode = <Input type={inputType} placeholder={item.title} />;
+  var editble = item.editable;
+
+  let inputNode = <Input type={inputType} placeholder={item.title} disabled={!editble}/>;
 
   switch (inputType) {
     case 'Unit':
@@ -55,10 +58,18 @@ export const parseTypeToLabel = (record, labelType, chil) => {
   switch (labelType) {
     case 'RentType':
       return selectItems.renttypes[record.renttype];
+    case 'isOweType':
+      return selectItems.yesOrNo[record.isOwe];
+    case 'needInvoiceType':
+        return selectItems.yesOrNo[record.needInvoice]; 
     default:
       return chil;
   }
 
+}
+
+export const consoleTarget = (target)=>{
+  console.log('taget:' + JSON.stringify(target)  );
 }
 
 
@@ -82,6 +93,12 @@ export const parseItemtype = (dataIndex) => {
       break;
     case 'renttype':
       itemType = 'RentType';
+      break;
+    case 'isOwe':
+      itemType = 'isOweType';
+      break;
+    case 'needInvoice':
+      itemType = 'needInvoiceType';
       break;
     case 'month_rent':
       itemType = 'number';

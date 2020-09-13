@@ -119,14 +119,14 @@ export const sysCols = {
           editable:false
         },
         {
-            title:'当前月份收款额',
-            dataIndex:'current_received',
+            title:'是否有欠租',
+            dataIndex:'isOwe',
             isShow:true,
             editable:false
         },
         {
-            title:'当前月份开票金额',
-            dataIndex:'current_invoice',
+            title:'有发票未完成',
+            dataIndex:'needInvoice',
             isShow:true,
             editable:false
         },
@@ -153,6 +153,7 @@ export const sysCols = {
             key:'id',
             align:"center",
             editable:false,
+            isInEdit:false,
             isShow:true,
             render: (txt,record,index) => {
                return index +1
@@ -162,41 +163,48 @@ export const sysCols = {
             title:'合同编号',
             dataIndex:'contractno',
             isShow:true,
-            editable:true
+            isInEdit:true,
+            editable:false
         },
         {
           title:'收款年份',
           dataIndex:'year',
+          isInEdit:true,
           isShow:true,
-          editable:true
+          editable:false
         },
         {
             title:'收款月份',
             dataIndex:'month',
-            isShow:true,
-            editable:true
-        },
-        {
-            title:'已收款金额',
-            dataIndex:'amount_received',
+            isInEdit:true,
             isShow:true,
             editable:false
         },
         {
-            title:'应收金额',
-            dataIndex:'amount_receivable',
+            title:'已收款金额',
+            dataIndex:'amount_received',
+            isInEdit:true,
             isShow:true,
             editable:true
         },
         {
+            title:'应收金额',
+            dataIndex:'amount_receivable',
+            isInEdit:true,
+            isShow:true,
+            editable:false
+        },
+        {
             title:'开票金额',
             dataIndex:'invoice_amount',
+            isInEdit:true,
             isShow:true,
             editable:true
         },
         {
           title: '操作',
           dataIndex: 'operation',
+          isInEdit:false,
           isShow:true,
           editable:false,
           isOper:true
