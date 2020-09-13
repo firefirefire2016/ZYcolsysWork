@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Select, Input } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -15,7 +16,7 @@ export const selectItems = {
 
   unitts: ['国有单位', '合资单位', '私有单位'],
 
-  yesOrNo: ['否','是'],
+  yesOrNo: ['否', '是'],
   /**
    * 社区
    */
@@ -29,18 +30,23 @@ export const parseInputNode = (item) => {
 
   var editble = item.editable;
 
-  let inputNode = <Input type={inputType} placeholder={item.title} disabled={!editble}/>;
+  let inputNode = <Input type={inputType} placeholder={item.title} disabled={!editble}
+    style={{ width: '200px' }} />;
+
+
+
+
 
   switch (inputType) {
     case 'Unit':
-      inputNode = <Select placeholder={item.title}>
+      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}>
         {selectItems.units.map((temp, index) => (
           <Option key={index} >{temp}</Option>
         ))}
       </Select>;
       break;
     case 'RentType':
-      inputNode = <Select placeholder={item.title}>
+      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}>
         {selectItems.renttypes.map((temp, index) => (
           <Option key={index} >{temp}</Option>
         ))}
@@ -61,15 +67,15 @@ export const parseTypeToLabel = (record, labelType, chil) => {
     case 'isOweType':
       return selectItems.yesOrNo[record.isOwe];
     case 'needInvoiceType':
-        return selectItems.yesOrNo[record.needInvoice]; 
+      return selectItems.yesOrNo[record.needInvoice];
     default:
       return chil;
   }
 
 }
 
-export const consoleTarget = (target)=>{
-  console.log('taget:' + JSON.stringify(target)  );
+export const consoleTarget = (target) => {
+  console.log('taget:' + JSON.stringify(target));
 }
 
 

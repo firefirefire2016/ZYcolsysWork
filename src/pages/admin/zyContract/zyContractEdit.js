@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
 import { strToTime,timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractData';
+import {  PlusOutlined } from '@ant-design/icons';
 
 const items = sysCols.contractCol;
 
@@ -96,6 +97,20 @@ function ZyContractEdit(props) {
 
     }
 
+    const getPlus = (item) =>{
+        if(item.dataIndex === 'rightno'){
+            return(
+                <PlusOutlined
+                    className="dynamic-delete-button"
+                    style={{ margin: '0 8px' }}
+                    onClick={() => {
+                    }}
+                  />
+                  )
+        }       
+            
+    }
+
 
     return (
         <Card>
@@ -125,6 +140,7 @@ function ZyContractEdit(props) {
                             ]}
                         >
                             {parseInputNode(item)}
+                            {getPlus(item)}
                         </Form.Item>
                     )
                 })}

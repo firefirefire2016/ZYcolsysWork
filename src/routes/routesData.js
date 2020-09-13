@@ -79,13 +79,14 @@ export const admins = [
                 title: '产权资料',
                 isShow: true,
                 icon: 'icon-zhanshi'
-            }, {
-                path: '/admin/zyUnit',
-                component: zyUnitList,
-                title: '单位资料',
-                isShow: true,
-                icon: 'icon-zhanshi'
             }
+            // , {
+            //     path: '/admin/zyUnit',
+            //     component: zyUnitList,
+            //     title: '单位资料',
+            //     isShow: true,
+            //     icon: 'icon-zhanshi'
+            // }
             ]
     },
     {
