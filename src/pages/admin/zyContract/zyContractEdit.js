@@ -101,11 +101,16 @@ function ZyContractEdit(props) {
         if(item.dataIndex === 'rightno'){
             return(
                 <PlusOutlined
+                    defaultValue='你好'
+                    title='你好'
+                    value='你好'
+                    
                     className="dynamic-delete-button"
                     style={{ margin: '0 8px' }}
                     onClick={() => {
                     }}
                   />
+                  
                   )
         }       
             
