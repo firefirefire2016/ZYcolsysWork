@@ -1,4 +1,6 @@
 export function strToTime(str) {
+    console.log(str);
+
     var year = str.substring(0, 4);
 
     var month = str.substring(4, 6);

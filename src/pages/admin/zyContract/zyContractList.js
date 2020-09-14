@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadContractData, onGetEditData, onCreateData,onCommitUpdateStatus } from '../../../store/actions/zyContractData';
+import { onLoadContractData, onGetEditData, onCreateData, onCommitUpdateStatus } from '../../../store/actions/zyContractData';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
-import { strToTime,timeToStr } from '../../../utils/common'
+import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, consoleTarget } from '../../../utils/ItemUtils';
+import { strToTime, timeToStr } from '../../../utils/common'
 import Modal from 'antd/lib/modal/Modal';
 
 const cols = sysCols.contractCol.filter(item => item.isShow);
@@ -56,14 +56,14 @@ const ZyContractList = (props) => {
                 编辑
                 </Button>
 
-              
+
 
               <Popconfirm
-                onConfirm={()=>onConfirmDel(record.id,2,page,limit)}
+                onConfirm={() => onConfirmDel(record.id, 0, page, limit)}
                 title='确定终止该合同么?'
-                disabled={record.status === 2}
+                disabled={record.contract_status === 0}
               >
-                <Button type="primary" disabled={record.status === 2}
+                <Button type="primary" disabled={record.contract_status === 0}
                   style={{
                     marginRight: 8,
                   }}>
@@ -73,12 +73,12 @@ const ZyContractList = (props) => {
 
               <Popconfirm
                 title='确定删除该合同么?'
-                onConfirm={()=>{
-                  onConfirmDel(record.id,-1,page,limit)
+                onConfirm={() => {
+                  onConfirmDel(record.id, -1, page, limit)
                 }}
               >
                 <Button type="primary"
-                  
+
                   style={{
                     marginRight: 8,
                   }}>
@@ -112,23 +112,23 @@ const ZyContractList = (props) => {
     };
   });
 
-  const { list, page, total, limit, onLoadData, onCreateClick, onEditClick, res,onConfirmDel } = props;
+  const { list, page, total, limit, onLoadData, onCreateClick, onEditClick, res, onConfirmDel } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    message.info('加载中...'); 
-    
+    message.info('加载中...');
+
     console.log(props);
 
     //onLoadData(page, limit);
     setTimeout(() => {
-      onLoadData(1, limit);
+      onLoadData(1, limit,{contract_status:-2});
     }, 1000);
 
     //console.log(props);
 
-    
+
 
   }, [])
 
@@ -151,23 +151,41 @@ const ZyContractList = (props) => {
     form.resetFields();
   }
 
-  const onSelectByParams = ()=>{
+  const onSelectByParams = () => {
     let row = form.getFieldValue();
-    let {contractno,renttype,startdate,enddate} = row;
+    let { startdate, enddate } = row;
 
-    console.log('row=' + JSON.stringify(row) );
+    console.log(startdate);
+
+    if (startdate && startdate.indexOf('-')!==-1) {      
+      row.startdate = startdate.replace(/-/g, "");
+    }
+
+    if (enddate && enddate.indexOf('-')!==-1) {
+      row.enddate = enddate.replace(/-/g, "");
+    }    
+
+    let req = {...row};
+
+    console.log(row);
 
     if(startdate){
-      startdate = parseInt(startdate.replace(/-/g, ""));
+      var str = row.startdate;
+
+      row.startdate = strToTime(str);
     }
-    
+
     if(enddate){
-      enddate = parseInt(enddate.replace(/-/g, ""));
+      var str2 = row.enddate;
+
+      row.enddate = strToTime(str2);
     }
 
-    console.log(startdate  + '  ' + enddate);
+    if(!req.contract_status && req.contract_status !== 0){
+      req.contract_status = -2;
+    }
 
-    onLoadData(page,limit,contractno,renttype,startdate,enddate);
+    onLoadData(page, limit, req);
 
   }
 
@@ -202,22 +220,31 @@ const ZyContractList = (props) => {
           />
         </Form.Item>
 
+        <Form.Item
+          label='地址'
+          name="address"
+        >
+          <Input placeholder="地址" type="text"
+
+          />
+        </Form.Item>
 
         <Form.Item
-          label='招租方式'
-          name="renttype"
-
-          // rules={[
-          //   {
-          //     message: '请选择招租方式',
-          //   }]}
+          label='对接人'
+          name="agentman"
         >
-          <Select style={{ width: 150 }}
-          >
-            {renttypes.map((type, index) => (
-              <Option key={index} value={index}>{type}</Option>
-            ))}
-          </Select>
+          <Input placeholder="对接人" type="text"
+
+          />
+        </Form.Item>
+
+        <Form.Item
+          label='承租方'
+          name="tenant"
+        >
+          <Input placeholder="承租方" type="text"
+
+          />
         </Form.Item>
 
         <Form.Item
@@ -252,17 +279,30 @@ const ZyContractList = (props) => {
           />
         </Form.Item>
 
+        <Form.Item
+          label='合同状态'
+          name="contract_status"
+        >
+          <Select style={{ width: 150 }}
+          >
+            {selectItems.contract_status.map((type, index) => (
+              <Option key={index} value={index}>{type}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+
         <Form.Item >
           <Button type="primary" onClick={onSelectByParams} >筛选</Button>
           <Button type="primary" htmlType="reset"
-                        //className="login-form-button"
-                        className="btn" onClick={ResetValue}
-                    >
-                        重置条件
+            //className="login-form-button"
+            className="btn" onClick={ResetValue}
+          >
+            重置条件
                     </Button>
         </Form.Item>
 
       </Form>
+
       <Table
         components={{
           body: {
@@ -275,7 +315,7 @@ const ZyContractList = (props) => {
         dataSource={list}
         size="lager"
         pagination={{
-          
+
           total,
           showSizeChanger: true,
           onChange: (p) => {
@@ -299,11 +339,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit,contractno,renttype,startdate,enddate) => { onLoadContractData(dispatch, {page, limit,contractno,renttype,startdate,enddate}) },
+    onLoadData: (page, limit, req) => { onLoadContractData(dispatch, { page, limit, req }) },
     onIncreaseClick: () => { increaseAction(dispatch, ownprops) },
     onEditClick: (record, isCreating) => { onGetEditData(dispatch, { record, isCreating }) },
     onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },
-    onConfirmDel:(id,status,page,limit) => { onCommitUpdateStatus(dispatch,{id,status,page,limit}) }
+    onConfirmDel: (id, contract_status, page, limit) => { onCommitUpdateStatus(dispatch, { id, contract_status, page, limit }) }
   }
 }
 

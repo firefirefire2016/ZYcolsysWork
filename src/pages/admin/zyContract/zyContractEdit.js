@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
+import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode,parseRules, consoleTarget } from '../../../utils/ItemUtils';
 import { strToTime,timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractData';
 import {  PlusOutlined } from '@ant-design/icons';
@@ -28,11 +28,20 @@ function ZyContractEdit(props) {
 
             obj = new Object(record);
 
+            let nItems = items.filter(item=>{
+                return (parseItemtype(item.dataIndex) === 'date')})
+             
+             nItems.forEach((item, index, items) => {
+                 if(obj[item.dataIndex]){
+                    obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
+                 }
+                
+ 
+             })
+
             
             form.setFieldsValue({
-                ...obj,
-                startdate:strToTime(obj.startdate),
-                enddate:strToTime(obj.enddate)
+                ...obj
             });
         }
         else {
@@ -49,19 +58,25 @@ function ZyContractEdit(props) {
     }
 
     const onFinish = async values => {
-        // onCommitButtonClick();
         try {
+
             let row = form.getFieldValue();
 
             var res = 0;
 
-            console.log(props);
-
             console.log(row);
 
-            row.startdate = timeToStr(row.startdate);
 
-            row.enddate = timeToStr(row.enddate);
+            let nItems = items.filter(item=>{
+               return (parseItemtype(item.dataIndex) === 'date')})
+
+            //console.log('什么情况' + nItems);
+            
+            nItems.forEach((item, index, items) => {
+                row[item.dataIndex] = timeToStr(row[item.dataIndex]);
+
+            })
+
 
             if (isCreating) {
 
@@ -73,8 +88,6 @@ function ZyContractEdit(props) {
             } else {
                 row.id = obj.id;
                 await onEditClick(row, page, limit);
-
-                //console.log(props.res);
 
                 props.history.push('/admin/zyContract');
                 // 示例：等待5秒后，如果判断成功，则提示
@@ -101,9 +114,6 @@ function ZyContractEdit(props) {
         if(item.dataIndex === 'rightno'){
             return(
                 <PlusOutlined
-                    defaultValue='你好'
-                    title='你好'
-                    value='你好'
                     
                     className="dynamic-delete-button"
                     style={{ margin: '0 8px' }}
@@ -123,9 +133,11 @@ function ZyContractEdit(props) {
                 title="合同编辑表单"
                 name="contractAdd"
                 //className="login-form"
-                initialValues={{
-                    remember: true,
-                }}
+                layout="inline"
+                // initialValues={{
+                //     remember: true,
+                // }}
+                
                 onFinish={onFinish}
                 className='wrap'
             >
@@ -137,15 +149,12 @@ function ZyContractEdit(props) {
                         <Form.Item
                             name={item.dataIndex}
                             label={item.title}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: '请输入' + item.title,
-                                },
-                            ]}
+                            style={{margin:'auto'}}
+                            rules={
+                                parseRules(item)
+                            }
                         >
                             {parseInputNode(item)}
-                            {getPlus(item)}
                         </Form.Item>
                     )
                 })}

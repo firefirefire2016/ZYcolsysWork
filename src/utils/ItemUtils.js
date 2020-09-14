@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Select, Input } from 'antd';
+import { Select, Input, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -20,7 +20,36 @@ export const selectItems = {
   /**
    * 社区
    */
-  communitys: ['翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲']
+  communitys: ['翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲'],
+
+  /**
+   * 合同状态
+   */
+  contract_status: ['作废(已终止)','执行中', '草稿', '退租中', '退租待结算', '已到期'],
+
+  rentmodes: ['固定租金', '费率', '其他'],
+
+}
+
+export const parseRules = (item) => {
+  if (item.dataIndex === 'quitdate') {
+    return (
+      [
+        {
+          required: false,
+          message: '请输入' + item.title,
+        }
+      ]
+    )
+  }
+  return (
+    [
+      {
+        required: true,
+        message: '请输入' + item.title,
+      }
+    ]
+  )
 
 }
 
@@ -38,7 +67,7 @@ export const parseInputNode = (item) => {
 
 
   switch (inputType) {
-    case 'Unit':
+    case 'UnitType':
       inputNode = <Select placeholder={item.title} style={{ width: '200px' }}>
         {selectItems.units.map((temp, index) => (
           <Option key={index} >{temp}</Option>
@@ -52,7 +81,36 @@ export const parseInputNode = (item) => {
         ))}
       </Select>;
       break;
+    case 'RentMode':
+      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}
+        onSelect={() => {
+          // message.success('添加');
+        }}
+      >
 
+        {selectItems.rentmodes.map((temp, index) => (
+          <Option key={index} >{temp}</Option>
+        ))}
+      </Select>;
+      break;
+    case 'ContractStatus':
+      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}
+        onSelect={() => {
+        }}
+      >
+
+        {selectItems.contract_status.map((temp, index) => (
+          <Option key={index} >{temp}</Option>
+        ))}
+      </Select>;
+      break;
+    case 'NeedCopy':
+      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}>
+        {selectItems.yesOrNo.map((temp, index) => (
+          <Option key={index} >{temp}</Option>
+        ))}
+      </Select>;
+      break;
     default:
       break;
   }
@@ -60,6 +118,12 @@ export const parseInputNode = (item) => {
   return inputNode;
 }
 
+/**
+ * 把数据转换成要显示的内容
+ * @param {*} record 记录
+ * @param {*} labelType 显示类型
+ * @param {*} chil chilren
+ */
 export const parseTypeToLabel = (record, labelType, chil) => {
   switch (labelType) {
     case 'RentType':
@@ -82,10 +146,28 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'contract_status':
+      itemType = 'ContractStatus';
+      break;
     case 'startdate':
       itemType = 'date';
       break;
     case 'enddate':
+      itemType = 'date';
+      break;
+    case 'firstdate':
+      itemType = 'date';
+      break;
+    case 'signdate':
+      itemType = 'date';
+      break;
+    case 'rentmode':
+      itemType = 'RentMode';
+      break;
+    case 'needcopy':
+      itemType = 'NeedCopy';
+      break;
+    case 'quitdate':
       itemType = 'date';
       break;
     case 'deposit':

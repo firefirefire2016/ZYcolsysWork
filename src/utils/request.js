@@ -43,7 +43,7 @@ instance.interceptors.response.use(function (response) {
  * @param {*} params 查询条件
  */
 export function get(url, params, req) {
-  console.log(req);
+  //console.log(req);
   console.log('url=' + url + 'params = ' + params);
   if (!req) {
     req = {}

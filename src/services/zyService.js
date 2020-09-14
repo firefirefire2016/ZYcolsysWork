@@ -6,8 +6,8 @@ import { get,post,put,del } from '../utils/request'
  * @param {*} limit 记录数量
  */
 export function getList(url,page,limit,req){
-    //return get(`/list/3/${page}/${limit}`);
-    return get(url + '/list/3/' + page +'/' + limit,{page,limit},req);
+    //return get(`/list/0/${page}/${limit}`);
+    return get(url + '/list/' + page +'/' + limit,{page,limit},req);
 }
 
 /**

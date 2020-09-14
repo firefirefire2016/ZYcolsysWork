@@ -62,24 +62,22 @@ export const RentToMergeData = async (dispatch, payload) => {
                 tenant: row.zycontract.tenant,
                 rentdate: row.zycontract.rentdate,
                 totalAmount: amount_received,
-                isOwe: 1,//是否有欠租
-                needInvoice: 1,//有发票未完成
+                isOwe: 0,//是否有欠租
+                needInvoice: 0,//有发票未完成
                 month_rent: row.zycontract.month_rent,
                 //totalAmount_receivable:row.amount_receivable,//总应收款
                 //totalAmount_invoice:row.invoice_amount//总开票
                 isWarn: 0
             }
 
-            if (amount_received >= amount_receivable) {
-                item.isOwe = 0;
+            if (amount_received < amount_receivable) {
+                item.isOwe = 1;
+                item.isWarn = 1;
             }
 
-            if (invoice_amount >= amount_receivable) {
-                item.needInvoice = 0;
-            }
-
-            if (invoice_amount >= amount_receivable && amount_received >= amount_receivable) {
-                item.isWarn = 0;
+            if (invoice_amount < amount_receivable) {
+                item.needInvoice = 1;
+                item.isWarn = 1;
             }
 
             newList.push(item);
@@ -104,6 +102,8 @@ export const RentToMergeData = async (dispatch, payload) => {
 
 
     })
+
+    
 
     if (isOwe === 1) {
         newList = newList.filter(list => list.isOwe === 1);
@@ -166,7 +166,7 @@ const NoticeStart = (rows, isInit) => {
 
         let monthInt = parseInt(row.month);
 
-        if ((amount_received < amount_receivable || invoice_amount < amount_receivable) && row.status === 1) {
+        if ((amount_received < amount_receivable || invoice_amount < amount_receivable) && row.contract_status === 1) {
             if (yearInt < currentYear) {
                 row.isWarn = 1;
             }
@@ -349,7 +349,7 @@ export const onLoadCollectionData = async (dispatch, payload) => {
 
         let monthInt = parseInt(row.month);
 
-        if (row.amount_received - row.amount_receivable < 0 && row.status === 1) {
+        if (row.amount_received - row.amount_receivable < 0 && row.contract_status === 1) {
             if (yearInt < currentYear) {
                 row.isWarn = 1;
             }

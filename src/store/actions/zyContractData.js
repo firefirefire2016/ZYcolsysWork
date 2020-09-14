@@ -13,16 +13,14 @@ export const onLoadContractData = async (dispatch, payload) => {
 
     console.log('payload = ' + JSON.stringify(payload));
 
-    let { page, limit, contractno, renttype, startdate, enddate } = payload;
+    let { page, limit, req } = payload;
 
 
-    console.log(startdate);
+     console.log(JSON.stringify(payload) );
 
-    console.log(enddate);
+    // console.log(enddate);
 
-    const res = await getList(sourceUrl, page, limit, { contractno, renttype, startdate, enddate });
-
-    //console.log(dispatch);
+    const res = await getList(sourceUrl, page, limit, req);
 
     dispatch({
         type: 'GET_ALL',
@@ -66,21 +64,36 @@ export const onCommitEdit = async (dispatch, payload) => {
 
     await modifyOne(sourceUrl, record).then(async function (result) {
 
-        await getList(sourceUrl, page, limit).then(function (res) {
-            dispatch({
-                type: "COMMIT_Edit",
-                payload: { ...res, record, result }
-            })
-            console.log(res);
+        // await getList(sourceUrl, page, limit).then(function (res) {
+        //     dispatch({
+        //         type: "COMMIT_Edit",
+        //         payload: { ...res, record, result }
+        //     })
+        //     console.log(res);
             if (result.code === 0) {
                 message.info(result.msg);
             }
             else {
                 message.warn('修改提交失败');
             }
-        }
 
-        )
+            await updateALLStatus('zyCollection', payload).then(function (res) {
+                if (res.code === 1) {
+                    //后台问题打印
+                    message.warn(res.msg);
+                }
+                else {
+    
+                    console.log('修改收款表状态成功');
+                }
+            }
+    
+    
+            )
+
+        // }
+
+        // )
 
 
 

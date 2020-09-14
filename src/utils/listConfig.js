@@ -87,6 +87,14 @@ export const sysCols = {
             width: 250
         }
     ],
+    // rentcycle: DataTypes.STRING,//付款周期
+    // firstdate:DataTypes.STRING,//首期收款日
+    // signdate:DataTypes.STRING,//签订日期
+    // agentman:DataTypes.STRING,//对接人 
+    // rentmode:DataTypes.STRING,//租金模式 
+    // needcopy:DataTypes.STRING,//是否需要抄表
+    // quitdate:DataTypes.STRING,//退租日期
+    // property_name:DataTypes.STRING,//物业名称
     contractCol: [
         {
             title: '序号',
@@ -111,7 +119,7 @@ export const sysCols = {
             editable: true,
         },
         {
-            title: '终止日期',
+            title: '到期日期',
             isShow: true,
             dataIndex: 'enddate',
             editable: true,
@@ -124,8 +132,14 @@ export const sysCols = {
         },
         {
             title: '招租方式',
-            isShow: true,
+            isShow: false,
             dataIndex: 'renttype',
+            editable: true,
+        },
+        {
+            title: '地址',
+            isShow: true,
+            dataIndex: 'address',
             editable: true,
         },
         {
@@ -141,7 +155,7 @@ export const sysCols = {
             editable: true,
         },
         {
-            title: '承租方',
+            title: '客户名称',
             isShow: false,
             dataIndex: 'tenant',
             editable: true,
@@ -150,6 +164,60 @@ export const sysCols = {
             title: '押金',
             isShow: false,
             dataIndex: 'deposit',
+            editable: true,
+        },
+        {
+            title: '付款周期',
+            isShow: false,
+            dataIndex: 'rentcycle',
+            editable: true,
+        },
+        {
+            title: '首期收款日',
+            isShow: false,
+            dataIndex: 'firstdate',
+            editable: true,
+        },
+        {
+            title: '签订日期',
+            isShow: true,
+            dataIndex: 'signdate',
+            editable: true,
+        },
+        {
+            title: '对接人',
+            isShow: true,
+            dataIndex: 'agentman',
+            editable: true,
+        },
+        {
+            title: '租金模式',
+            isShow: false,
+            dataIndex: 'rentmode',
+            editable: true,
+        },
+        {
+            title: '是否需要抄表',
+            isShow: false,
+            dataIndex: 'needcopy',
+            editable: true,
+        },
+        {
+            title: '退租日期',
+            isShow: true,
+            dataIndex: 'quitdate',
+            editable: true,
+        },
+        {
+            title: '物业名称',
+            isShow: false,
+            dataIndex: 'property_name',
+            editable: true,
+        },
+        {
+            title: '合同状态',
+            isShow: false,
+            dataIndex: 'contract_status',
             editable: true,
         },
         {
