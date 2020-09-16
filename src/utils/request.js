@@ -44,6 +44,7 @@ instance.interceptors.response.use(function (response) {
  */
 export function get(url, params, req) {
   //console.log(req);
+  //http://192.168.0.222:4000/zyCollection/list/:page/:limit
   console.log('url=' + url + 'params = ' + params);
   if (!req) {
     req = {}

@@ -101,12 +101,12 @@ const ZyRentList = (props) => {
 
     if(isInit){
 
-      console.log(' Init = ' + isInit);
-      onLoadData(1, -1,isInit);
+     // console.log(' Init = ' + isInit);
+      onLoadData(1, -1,{isInit,contract_status:-2});
       setIsInit(false);
     }
     else{
-      onLoadData(1, limit);
+      onLoadData(1, limit,{isInit,contract_status:-2});
     }
     
 
@@ -154,9 +154,33 @@ const ZyRentList = (props) => {
     let needInvoice = reqs['needInvoice'];
 
     //console.log( reqs);
+    //page, limit,req
 
-    SelectByREQ(tenant,month_rent,isOwe,needInvoice,page,limit);
+    //SelectByREQ(tenant,month_rent,isOwe,needInvoice,page,limit);
+    SelectByREQ(page, limit,{tenant,month_rent,isOwe,needInvoice});
   }
+
+  /**
+   * 筛选
+   */
+  const onChangePageOrSize = (p,size)=>{
+    let reqs = form.getFieldsValue();
+
+    let tenant = reqs['tenant'];
+
+    let month_rent = reqs['month_rent'];
+
+    let isOwe = reqs['isOwe'];
+
+    let needInvoice = reqs['needInvoice'];
+
+    //console.log( reqs);
+    //page, limit,req
+
+    //SelectByREQ(tenant,month_rent,isOwe,needInvoice,page,limit);
+    SelectByREQ(p, size,{tenant,month_rent,isOwe,needInvoice});
+  }
+
 
   return (
     <Card title="租赁概况列表">
@@ -241,10 +265,10 @@ const ZyRentList = (props) => {
           total,
           showSizeChanger: true,
           onChange: (p) => {
-            onLoadData(p, limit);
+            onChangePageOrSize(p, limit);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size);
+            onChangePageOrSize(1, size);
           }
         }
         }
@@ -261,9 +285,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit,isInit) => { RentToMergeData(dispatch, {page, limit,isInit}) },
+    onLoadData: (page, limit,req) => { RentToMergeData(dispatch, {page, limit,req}) },
     onLoadTartgetData: (page, limit,record) => { onLoadTargetRent(dispatch, {page, limit,record}) },
-    SelectByREQ:(tenant,month_rent,isOwe,needInvoice,page,limit) => { RentToMergeData(dispatch,{tenant,month_rent,isOwe,needInvoice,page,limit}) },
+    SelectByREQ:(page, limit,req) => { RentToMergeData(dispatch,{page, limit,req}) },
   }
 }
 

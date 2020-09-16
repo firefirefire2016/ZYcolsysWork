@@ -12,15 +12,18 @@ const sourceUrl = 'zyCollection';
 
 export const RentToMergeData = async (dispatch, payload) => {
 
-    //console.log('payload = ' + JSON.stringify(payload));
 
-    let { page, limit, isInit, tenant, month_rent, isOwe, needInvoice } = payload;
+    let { page, limit, req } = payload;
 
-    //let req = {};
+    //console.log('req:' + req);
+
+    let {isInit,isOwe,needInvoice} = payload.req;
+
+    console.log('req:' + JSON.stringify(req) );
 
     let _isInit = isInit;
 
-    const res = await getList(sourceUrl, page, limit, { month_rent });
+    const res = await getList(sourceUrl, page, limit,req );
 
     let newList = [];
 

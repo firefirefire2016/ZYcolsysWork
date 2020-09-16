@@ -34,8 +34,7 @@ function ZyContractEdit(props) {
              nItems.forEach((item, index, items) => {
                  if(obj[item.dataIndex]){
                     obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
-                 }
-                
+                 }           
  
              })
 
@@ -87,6 +86,9 @@ function ZyContractEdit(props) {
 
             } else {
                 row.id = obj.id;
+
+                //console.log(row);
+
                 await onEditClick(row, page, limit);
 
                 props.history.push('/admin/zyContract');

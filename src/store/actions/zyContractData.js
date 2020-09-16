@@ -18,7 +18,6 @@ export const onLoadContractData = async (dispatch, payload) => {
 
      console.log(JSON.stringify(payload) );
 
-    // console.log(enddate);
 
     const res = await getList(sourceUrl, page, limit, req);
 
@@ -77,7 +76,7 @@ export const onCommitEdit = async (dispatch, payload) => {
                 message.warn('修改提交失败');
             }
 
-            await updateALLStatus('zyCollection', payload).then(function (res) {
+            await updateALLStatus('zyCollection', record).then(function (res) {
                 if (res.code === 1) {
                     //后台问题打印
                     message.warn(res.msg);

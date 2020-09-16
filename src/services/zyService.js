@@ -7,6 +7,7 @@ import { get,post,put,del } from '../utils/request'
  */
 export function getList(url,page,limit,req){
     //return get(`/list/0/${page}/${limit}`);
+    //http://192.168.0.222:4000/zyCollection/list/:page/:limit
     return get(url + '/list/' + page +'/' + limit,{page,limit},req);
 }
 

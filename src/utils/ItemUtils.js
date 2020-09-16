@@ -25,31 +25,36 @@ export const selectItems = {
   /**
    * 合同状态
    */
-  contract_status: ['作废(已终止)','执行中', '草稿', '退租中', '退租待结算', '已到期'],
+  //contract_status: ['作废(已终止)', '执行中', '草稿', '退租中', '退租待结算', '已到期'],
+
+  contract_status: ['你好', '执行中', '草稿', '退租中', '退租待结算', '已到期'],
 
   rentmodes: ['固定租金', '费率', '其他'],
 
 }
 
 export const parseRules = (item) => {
-  if (item.dataIndex === 'quitdate') {
-    return (
-      [
-        {
-          required: false,
-          message: '请输入' + item.title,
-        }
-      ]
-    )
+  switch (item.dataIndex) {
+    case 'quitdate':
+      return (
+        [
+          {
+            required: false,
+            message: '请输入' + item.title,
+          }
+        ]
+      )
+    default:
+      return (
+        [
+          {
+            required: true,
+            message: '请输入' + item.title,
+          }
+        ]
+      )
   }
-  return (
-    [
-      {
-        required: true,
-        message: '请输入' + item.title,
-      }
-    ]
-  )
+
 
 }
 
@@ -84,7 +89,6 @@ export const parseInputNode = (item) => {
     case 'RentMode':
       inputNode = <Select placeholder={item.title} style={{ width: '200px' }}
         onSelect={() => {
-          // message.success('添加');
         }}
       >
 
@@ -93,14 +97,15 @@ export const parseInputNode = (item) => {
         ))}
       </Select>;
       break;
+      //合同状态，注意这个取值是int类型，跟vachar不一样
     case 'ContractStatus':
       inputNode = <Select placeholder={item.title} style={{ width: '200px' }}
         onSelect={() => {
         }}
       >
-
+        
         {selectItems.contract_status.map((temp, index) => (
-          <Option key={index} >{temp}</Option>
+          <Option key={index} value={index} >{temp}</Option>
         ))}
       </Select>;
       break;
