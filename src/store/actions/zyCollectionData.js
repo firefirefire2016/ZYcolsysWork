@@ -2,6 +2,7 @@ import React from 'react'
 import { getList, modifyOne } from '../../services/zyService'
 import { message, Button, notification, Modal } from 'antd';
 import { rentMergeQuery } from '../../utils/common'
+import { consoleTarget } from '../../utils/ItemUtils';
 //import Modal from 'antd/lib/modal/Modal';
 //import { sourceUrl } from '../../utils/request';
 
@@ -17,13 +18,13 @@ export const RentToMergeData = async (dispatch, payload) => {
 
     //console.log('req:' + req);
 
-    let {isInit,isOwe,needInvoice} = payload.req;
+    let { isInit, isOwe, needInvoice } = payload.req;
 
-    console.log('req:' + JSON.stringify(req) );
+    console.log('req:' + JSON.stringify(req));
 
     let _isInit = isInit;
 
-    const res = await getList(sourceUrl, page, limit,req );
+    const res = await getList(sourceUrl, page, limit, req);
 
     let newList = [];
 
@@ -106,7 +107,7 @@ export const RentToMergeData = async (dispatch, payload) => {
 
     })
 
-    
+
 
     if (isOwe === 1) {
         newList = newList.filter(list => list.isOwe === 1);
@@ -133,6 +134,7 @@ export const RentToMergeData = async (dispatch, payload) => {
 }
 
 export const onLoadTargetRent = async (dispatch, payload) => {
+
     let { record } = payload;
 
     let contractid = record.contractid;
@@ -260,166 +262,55 @@ const NoticeStart = (rows, isInit) => {
     })
 }
 
-//加载列表数据，推送到reducer
+//加载账单详情列表
 export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
-   // console.log('payload = ' + JSON.stringify(payload));
+    let { page, limit, req } = payload;
 
-    let { year, month, amount_received, invoice_amount, page, limit, contractid,isInit } = payload;
-
-    // console.log(' contractid = ' + contractid);
-
-    // console.log(' payload = ' + payload);
+    let { isInit,contractno,property_name,rentdate } = req;
 
     let _isInit = isInit;
 
-    const res = await getList(sourceUrl, page, limit, { contractid, year, month, amount_received, invoice_amount });
+    consoleTarget(req);
 
-
-
-    let rows = res.rows;
-    //let warnDetails = '';
-    NoticeStart(rows,_isInit);
-
-    dispatch({
-        type: 'GET_TARGETLIST',
-        payload: { ...res, page, limit, contractid }
-    })
-
-
-}
-
-//加载列表数据，推送到reducer
-export const onLoadTargetRentList = async (dispatch, payload) => {
-
-    console.log('payload = ' + JSON.stringify(payload));
-
-    let { page, limit, contractid,isInit } = payload;
-
-    let _isInit = isInit;
-
-    const res = await getList(sourceUrl, page, limit, { contractid });
-
-
+    const res = await getList(sourceUrl, page, limit, req);
 
     let rows = res.rows;
-    //let warnDetails = '';
-    NoticeStart(rows,_isInit);
 
-    dispatch({
-        type: 'GET_TARGETLIST',
-        payload: { ...res, page, limit, contractid }
-    })
+    NoticeStart(rows, _isInit);
 
+    let newList = [];
 
-}
-
-
-//加载列表数据，推送到reducer
-export const onLoadCollectionData = async (dispatch, payload) => {
-
-    console.log('payload = ' + JSON.stringify(payload));
-
-    let { page, limit } = payload;
-
-    const res = await getList(sourceUrl, page, limit, {});
-
-    //console.log('res === ' + JSON.stringify(res));
-
-
-
-    let rows = res.rows;
-    //let warnDetails = '';
-    let warnArray = [];
-    var contractSum = [0];
-    var notices = [];
     rows.forEach((row, index, rows) => {
-        //console.log(' value: ' + JSON.stringify(value) );
-        //console.log(' index: ' + JSON.stringify(index));
-        //console.log(' row: ' + JSON.stringify(row));
-        row['contractno'] = row.zycontract.contractno;
-        row['isWarn'] = 0;
-        //如果已收金额小于应收金额，则提醒
-        //console.log(' 差额：' + (row.amount_received < row.amount_receivable)); 
-        let date = new Date();
-        let currentYear = date.getFullYear();
+        let invoice_amount = parseFloat(row.invoice_amount);
+        let amount_received = parseFloat(row.amount_received);
+        let amount_receivable = parseFloat(row.amount_receivable);
+        let invoice_limit = parseFloat(row.invoice_limit);
 
-        let currentMonth = date.getMonth() + 1;
+        row.property_name = row.zycontract.property_name;
+        row.rentdate = parseInt(row.zycontract.rentdate);
 
-        console.log('当前月份为' + currentMonth + '当前年份为' + currentYear);
+        if(invoice_amount < invoice_limit || amount_received < amount_receivable){
+            row.isWarn = 1;
+        }   
 
-        let yearInt = parseInt(row.year);
-
-        let monthInt = parseInt(row.month);
-
-        if (row.amount_received - row.amount_receivable < 0 && row.contract_status === 1) {
-            if (yearInt < currentYear) {
-                row.isWarn = 1;
-            }
-            else if (yearInt === currentYear && monthInt <= currentMonth) {
-                row.isWarn = 1;
-            }
-            else {
-                row.isWarn = 0;
-            }
-
-        }
-
-        if (row.isWarn === 1) {
-            var noticecontent = '合同编号为' + row.contractno + '的' + row.year + '年' + row.month +
-                '月份的租金未收齐，请留意!';
-
-            var key = row.contractid;
-
-            var notice = {};
-            notice.id = key;
-            notice.content = noticecontent;
-
-            notices.push(notice);
-
-            var info = row.year + '年' + row.month + '月份的租金目前只收到' + row.amount_received +
-                '，仍拖欠' + (row.amount_receivable - row.amount_received) + '元<br/>';
-
-
-            if (!contractSum.includes(row.contractid)) {
-                contractSum.push(row.contractid);
-                let temp = {};
-                temp.title = '合同编号为' + row.contractno + '的收款情况如下:';
-                temp.contractid = row.contractid;
-                temp.detail = info;
-                warnArray.push(temp);
-            }
-
-            warnArray.forEach((warn, index, warns) => {
-                if (warn.contractid === row.contractid) {
-                    warn.detail += info;
-                    return;
-                }
-
-            })
-        }
-
-    });
-
-    let time = 1;
-    notices.forEach((notice, index, nos) => {
-        warnArray.forEach((warn, index, warns) => {
-            if (notice.id === warn.contractid) {
-                openNotification('租金拖欠', notice.content, warn.title, warn.detail, 'warning', time);
-                time = time + 0.3;
-                return;
-            }
-        })
-
+        newList.push(row);
     })
 
+    let total = res.total;
+
+    
+  
+
     dispatch({
-        type: 'GET_ALL',
-        payload: { ...res, page, limit }
+        type: 'GET_TARGETLIST',
+        payload: { page, limit,newList,total }
     })
 
 
 }
+
+
 
 //弹窗欠款提醒
 const openNotification = (title, description, modaltitle, detail, type, time) => {

@@ -108,9 +108,16 @@ export const admins = [
                 path: '/admin/zyRentList',
                 component: zyRentList,
                 // exact:true,
-                title: '租赁管理',
+                title: '本期账单',
                 isShow: true
             }, {
+                icon: 'icon-shouyetubiao-05',
+                path: '/admin/zyRentDetailList',
+                component: zyRentDetailList,
+                // exact:true,
+                title: '详细账单',
+                isShow: true
+            },{
                 path: '/admin/zyContract/edit',
                 component: zyContractEdit,
                 isShow: false
@@ -119,11 +126,7 @@ export const admins = [
                 component: zyContractEdit,
                 isShow: false
             }, {
-                path: '/admin/zyRentDetailList',
-                component: zyRentDetailList,
-                isShow: false
-            }, {
-                path: '/admin/zyRentDetailListEdit',
+                path: '/admin/zyRentDetailList/edit',
                 component: zyRentDetailEdit,
                 isShow: false,
             },           

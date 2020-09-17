@@ -270,7 +270,8 @@ export const sysCols = {
             title: '累计收款总额',
             dataIndex: 'totalAmount',
             isShow: true,
-            editable: false
+            editable: false,
+            //render: text => <a>{text}</a>
         },
         {
             title: '是否有欠租',
@@ -300,7 +301,7 @@ export const sysCols = {
 
     ],
 
-    //收租表
+    //收租详情表
     rentCol: [
         {
             title: '序号',
@@ -316,44 +317,120 @@ export const sysCols = {
         {
             title: '合同编号',
             dataIndex: 'contractno',
-            isShow: true,
+            isShow: false,
             isInEdit: true,
-            editable: false
+            editable: true,
+            isSelect:true,
         },
         {
-            title: '收款年份',
-            dataIndex: 'year',
-            isInEdit: true,
+            title: '账单编号',
+            dataIndex: 'billno',
             isShow: true,
-            editable: false
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
         },
         {
-            title: '收款月份',
-            dataIndex: 'month',
+            title: '收款项目',
+            dataIndex: 'itemname',
             isInEdit: true,
             isShow: true,
-            editable: false
+            editable: true,
+            isSelect:true,
         },
         {
-            title: '已收款金额',
-            dataIndex: 'amount_received',
+            title: '物业名称',
+            dataIndex: 'property_name',
             isInEdit: true,
             isShow: true,
-            editable: true
+            editable: false,
+            isSelect:true,
+        },
+        {
+            title: '收款日',
+            dataIndex: 'rentdate',
+            isInEdit: true,
+            isShow: true,
+            editable: false,
+            isSelect:true,
+        },
+        {
+            title: '账单开始日期',
+            dataIndex: 'startdate',
+            isInEdit: true,
+            isShow: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '账单结束日期',
+            dataIndex: 'enddate',
+            isInEdit: true,
+            isShow: true,
+            editable: true,
+            isSelect:true,
         },
         {
             title: '应收金额',
             dataIndex: 'amount_receivable',
             isInEdit: true,
             isShow: true,
-            editable: false
+            editable: true
         },
         {
-            title: '开票金额',
-            dataIndex: 'invoice_amount',
+            title: '实收金额',
+            dataIndex: 'amount_received',
+            isInEdit: true,
+            isShow: true,
+            editable: true,
+            isSelect:false,
+        },
+        {
+            title: '实收金额',
+            dataIndex: 'amount_select',
+            isSelect:true,
+        },  
+        {
+            title: '实开票',
+            dataIndex: 'invoice_select',
+            isSelect:true,
+        },      
+        {
+            title: '应开票',
+            dataIndex: 'invoice_limit',
             isInEdit: true,
             isShow: true,
             editable: true
+        },
+        {
+            title: '实开票',
+            dataIndex: 'invoice_amount',
+            isInEdit: true,
+            isShow: true,
+            editable: true,
+            isSelect:false,
+        },
+        {
+            title: '逾期情况',
+            dataIndex: 'overstate',
+            isInEdit: true,
+            isShow: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '收款日期',
+            dataIndex: 'collectdate',
+            isInEdit: false,
+            isShow: false,
+            editable: false
+        },
+        {
+            title: '开票日期',
+            dataIndex: 'invoicedate',
+            isInEdit: false,
+            isShow: false,
+            editable: false
         },
         {
             title: '操作',

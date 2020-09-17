@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadTargetRentList, onEditDetail,onLoadTargetListByREQ} from '../../../store/actions/zyCollectionData';
+import { onEditDetail, onLoadTargetListByREQ } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
-import { parseItemtype, parseTypeToLabel, consoleTarget } from '../../../utils/ItemUtils';
+import { parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
+
+const selectItems = sysCols.rentCol.filter(item => item.isSelect);
 
 const cols = sysCols.rentCol.filter(item => item.isShow);
 
@@ -41,34 +43,90 @@ const ZyRentDetailList = (props) => {
     if (!col.editable) {
       if (col.isOper === true) {
         col.render = (text, record, index) => {
-          return (
-            <span className=''>
-              <Button type="primary"
-                style={{
-                  marginRight: 8,
-                }}
-                onClick={() => edit(record)}
-              >
-                编辑
-                </Button>
-              {/* <Button type="primary"
-                style={{
-                  marginRight: 8,
-                }}
-                onClick={() => getMoney(record)}
-              >
-                收租
-                </Button>
-                <Button type="primary"
-                style={{
-                  marginRight: 8,
-                }}
-                onClick={() => returnMoney(record)}
-              >
-                退租
-                </Button> */}
-            </span>
-          );
+          switch (record.itemname) {
+            case 1://合同租金
+              return (
+                <span className=''>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => getRent(record)}
+                  >
+                    收款
+                  </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => getInvoice(record)}
+                  >
+                    开票
+                  </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => loadDetail(record)}
+                  >
+                    详情
+                  </Button>
+                </span>
+              )
+            case 2://押金
+              return (
+                <span className=''>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => edit(record)}
+                  >
+                    编辑
+                  </Button>
+                </span>
+              )
+            case 3://管理费
+              return (
+                <span className=''>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => edit(record)}
+                  >
+                    编辑
+                  </Button>
+                </span>
+              )
+            case 4://其他
+              return (
+                <span className=''>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => edit(record)}
+                  >
+                    编辑
+                  </Button>
+                </span>
+              )
+            default:
+              break;
+          }
+          // return (
+          //   <span className=''>
+          //     <Button type="primary"
+          //       style={{
+          //         marginRight: 8,
+          //       }}
+          //       onClick={() => edit(record)}
+          //     >
+          //       编辑
+          //       </Button>
+          //   </span>
+          // );
         }
       }
 
@@ -85,7 +143,6 @@ const ZyRentDetailList = (props) => {
           labelType: parseItemtype(col.dataIndex),
           rowIndex,
           isWarn: record.isWarn ? true : false,
-          //isWarn:consoleTarget(record),
           dataIndex: col.dataIndex,
           title: col.title,
           record
@@ -94,7 +151,7 @@ const ZyRentDetailList = (props) => {
     };
   });
 
-  const { page, total, limit, onLoadData, list, contractid, onEditOne,SelectByREQ } = props;
+  const { page, total, limit, list, contractid, contractno, overstate, onEditOne, SelectByREQ } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -103,31 +160,50 @@ const ZyRentDetailList = (props) => {
 
     setTimeout(() => {
       if (isInit) {
-        onLoadData(1, -1, contractid,isInit);
+        //onLoadData(1, -1, contractid,isInit);
+        SelectByREQ(1, -1, { contractid, isInit });
         setIsInit(false);
       }
       else {
-        onLoadData(1, limit, contractid,isInit);
+        form.setFieldsValue({
+          contractno,
+          overstate
+        })
+        SelectByREQ(1, limit, { contractid, isInit, contractno, overstate });
+        //onLoadData(1, limit, contractid,isInit);
       }
     }, 100);
 
-
-
-
-    console.log(props);
-
-
-
   }, [])
 
+  //收款
+  const getRent = record => {
 
+  }
+
+  //开票
+  const getInvoice = record => {
+
+  }
+
+  //详情
+  const loadDetail = record => {
+
+  }
+
+  //编辑
   const edit = record => {
 
     //设置要编辑的id
     onEditOne(record);
-    props.history.push('/admin/zyRentDetailListEdit');
+    props.history.push('/admin/zyRentDetailList/edit');
 
   };
+
+  //删除
+  const del = record => {
+
+  }
 
   const ResetValue = () => {
     form.resetFields();
@@ -140,40 +216,31 @@ const ZyRentDetailList = (props) => {
 
     let reqs = form.getFieldsValue();
 
-    let year = reqs['year'];
+    reqs.contractno = contractno;
 
-    let month = reqs['month'];
-
-    let amount_received = reqs['amount_received'];
-
-    let invoice_amount = reqs['invoice_amount'];
-
-    SelectByREQ(year,month,amount_received,invoice_amount,page,limit,contractid,isInit);
+    SelectByREQ(page, limit, reqs);
   }
 
-  const onChangeSize = (page ,limit ) => {
+  /**
+   * 切换页码或更改显示行数的时候出发
+   * @param {*} page 
+   * @param {*} limit 
+   */
+  const onChangeSize = (page, limit) => {
     let reqs = form.getFieldsValue();
 
-    let year = reqs['year'];
-
-    let month = reqs['month'];
-
-    let amount_received = reqs['amount_received'];
-
-    let invoice_amount = reqs['invoice_amount'];
-
-    SelectByREQ(year,month,amount_received,invoice_amount,page,limit,contractid,isInit);
+    SelectByREQ(page, limit, reqs);
   }
 
 
   return (
-    <Card title="账单列表"
+    <Card title="账单详情"
       extra={
 
         <Button type="primary" size="large" onClick={() => {
           props.history.push('/admin/zyRentList');
         }}>
-          返回
+          本期账单
          </Button>
 
       }
@@ -188,46 +255,22 @@ const ZyRentDetailList = (props) => {
         }
 
       >
-        <Form.Item
-          name="year"
-          label='收款年份'
-        >
-          <Input placeholder="收款年份" type="number"
-
-          />
-        </Form.Item>
-
-
-        <Form.Item
-          label='收款月份'
-          name="month"
-        >
-          <Input placeholder="收款月份" type="number"
-
-          />
-        </Form.Item>
-
-        <Form.Item
-          label='已收款金额>='
-          name="amount_received"
-          marginRight='20px'
-        >
-          <Input
-            className="site-form-item-icon"
-            type="number"
-            placeholder="已收款金额"
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="invoice_amount"
-          label='开票金额>='
-        >
-          <Input
-            type="number"
-            placeholder="开票金额"
-          />
-        </Form.Item>
+        {selectItems.map(item => {
+          return (
+            <Form.Item
+              name={item.dataIndex}
+              label={item.title}
+              rules={[
+                {
+                  required: true,
+                  message: item.title,
+                },
+              ]}
+            >
+              {parseInputNode(item)}
+            </Form.Item>
+          )
+        })}
 
         <Form.Item >
           <Button type="primary" onClick={onSelectByParams} >筛选</Button>
@@ -278,10 +321,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onLoadData: (page, limit, contractid,isInit) => { onLoadTargetRentList(dispatch, { page, limit, contractid,isInit }) },
+    //onLoadData: (page, limit, contractid,isInit) => { onLoadTargetRentList(dispatch, { page, limit, contractid,isInit }) },
     onEditOne: (record) => { onEditDetail(dispatch, { record }) },
-    SelectByREQ:(year,month,amount_received,invoice_amount,page,limit,contractid,isInit) =>
-     { onLoadTargetListByREQ(dispatch,{year,month,amount_received,invoice_amount,page,limit,contractid,isInit}) },
+    SelectByREQ: (page, limit, req) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
   }
 }
 

@@ -21,6 +21,15 @@ function ZyContractEdit(props) {
 
     const ResetValue = async () => {
         form.resetFields();
+
+        // let testdate = new Date('2020-02-28');
+
+        // testdate.setDate(testdate.getDate() + 1);
+
+        // console.log(testdate.toLocaleString()) ;
+
+       // testdate.getDate()
+
     }
 
     useEffect(() => {

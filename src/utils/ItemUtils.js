@@ -16,6 +16,14 @@ export const selectItems = {
 
   unitts: ['国有单位', '合资单位', '私有单位'],
 
+  itemnames: ['全部', '合同租金', '押金', '管理费', '其他'],
+
+  overstates: ['全部', '即将逾期', '逾期', '正常'],
+
+  amountselect: ['全部', '未缴费', '其他'],
+
+  invoiceselect: ['全部', '未开票', '其他'],
+
   yesOrNo: ['否', '是'],
   /**
    * 社区
@@ -58,6 +66,40 @@ export const parseRules = (item) => {
 
 }
 
+const getSelects = (items, isValue) => {
+  if (isValue) {
+    return (
+      <Select placeholder={items.title} style={{ width: '200px' }}
+        onSelect={() => {
+        }}
+        optionFilterProp='children'
+        filterOption={(input, option) =>
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
+        showSearch={true}
+      >
+        {items.map((temp, index) => (
+          <Option key={index} value={index}>{temp}</Option>
+        ))}
+      </Select>
+    )
+  }
+  return (
+    <Select placeholder={items.title} style={{ width: '200px' }}
+      onSelect={() => {
+      }}
+      optionFilterProp='children'
+      filterOption={(input, option) =>
+        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      }
+      showSearch={true}>
+      {items.map((temp, index) => (
+        <Option key={index} >{temp}</Option>
+      ))}
+    </Select>
+  )
+}
+
 export const parseInputNode = (item) => {
 
   let inputType = parseItemtype(item.dataIndex);
@@ -65,56 +107,43 @@ export const parseInputNode = (item) => {
   var editble = item.editable;
 
   let inputNode = <Input type={inputType} placeholder={item.title} disabled={!editble}
-    style={{ width: '200px' }} />;
+    style={{ width: '200px' }
+    } />;
 
-
-
+  if (item.isSelect) {
+    inputNode = <Input type={inputType} placeholder={item.title}
+      style={{ width: '200px' }
+      } />;
+  }
 
 
   switch (inputType) {
     case 'UnitType':
-      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}>
-        {selectItems.units.map((temp, index) => (
-          <Option key={index} >{temp}</Option>
-        ))}
-      </Select>;
+      inputNode = getSelects(selectItems.unitts);
       break;
     case 'RentType':
-      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}>
-        {selectItems.renttypes.map((temp, index) => (
-          <Option key={index} >{temp}</Option>
-        ))}
-      </Select>;
+      inputNode = getSelects(selectItems.renttypes);
       break;
     case 'RentMode':
-      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}
-        onSelect={() => {
-        }}
-      >
-
-        {selectItems.rentmodes.map((temp, index) => (
-          <Option key={index} >{temp}</Option>
-        ))}
-      </Select>;
+      inputNode = getSelects(selectItems.rentmodes);
       break;
-      //合同状态，注意这个取值是int类型，跟vachar不一样
     case 'ContractStatus':
-      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}
-        onSelect={() => {
-        }}
-      >
-        
-        {selectItems.contract_status.map((temp, index) => (
-          <Option key={index} value={index} >{temp}</Option>
-        ))}
-      </Select>;
+      inputNode = getSelects(selectItems.contract_status, true);
       break;
     case 'NeedCopy':
-      inputNode = <Select placeholder={item.title} style={{ width: '200px' }}>
-        {selectItems.yesOrNo.map((temp, index) => (
-          <Option key={index} >{temp}</Option>
-        ))}
-      </Select>;
+      inputNode = getSelects(selectItems.yesOrNo);
+      break;
+    case 'Amountselect':
+      inputNode = getSelects(selectItems.amountselect);
+      break;
+    case 'Invoiceselect':
+      inputNode = getSelects(selectItems.invoiceselect);
+      break;
+    case 'OverState':
+      inputNode = getSelects(selectItems.overstates);
+      break;
+    case 'ItemNames':
+      inputNode = getSelects(selectItems.itemnames);
       break;
     default:
       break;
@@ -137,6 +166,22 @@ export const parseTypeToLabel = (record, labelType, chil) => {
       return selectItems.yesOrNo[record.isOwe];
     case 'needInvoiceType':
       return selectItems.yesOrNo[record.needInvoice];
+    case 'Amountlabel':
+      if (parseFloat(record.amount_received) > 0) {
+        return chil;
+      }
+      if (parseFloat(record.amount_received) === 0) {
+        return selectItems.amountselect[1];
+      }
+      return chil;
+    case 'Invoicelabel':
+      if (parseFloat(record.invoice_amount) > 0) {
+        return chil;
+      }
+      if (parseFloat(record.invoice_amount) === 0) {
+        return selectItems.invoiceselect[1];
+      }
+      return chil;
     default:
       return chil;
   }
@@ -151,6 +196,24 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'amount_received':
+      itemType = 'Amountlabel';
+      break;
+    case 'invoice_amount':
+      itemType = 'Invoicelabel';
+      break;
+    case 'amount_select':
+      itemType = 'Amountselect';
+      break;
+    case 'invoice_select':
+      itemType = 'Invoiceselect';
+      break;
+    case 'overstate':
+      itemType = 'OverState';
+      break;
+    case 'itemname':
+      itemType = 'ItemNames';
+      break;
     case 'contract_status':
       itemType = 'ContractStatus';
       break;

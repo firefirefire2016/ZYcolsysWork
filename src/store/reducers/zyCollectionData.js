@@ -29,11 +29,10 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
-                list: action.payload.rows,
+                list: action.payload.newList,
                 page: action.payload.page,
                 total: action.payload.total,
-                limit: action.payload.limit,
-                contractid: action.payload.contractid
+                limit: action.payload.limit
             };
 
         case 'MERGE_ALL':
