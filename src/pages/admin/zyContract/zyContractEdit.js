@@ -78,7 +78,6 @@ function ZyContractEdit(props) {
             let nItems = items.filter(item=>{
                return (parseItemtype(item.dataIndex) === 'date')})
 
-            //console.log('什么情况' + nItems);
             
             nItems.forEach((item, index, items) => {
                 row[item.dataIndex] = timeToStr(row[item.dataIndex]);

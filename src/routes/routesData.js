@@ -126,7 +126,7 @@ export const admins = [
                 component: zyContractEdit,
                 isShow: false
             }, {
-                path: '/admin/zyRentDetailList/edit',
+                path: '/admin/zyRentDetail/edit',
                 component: zyRentDetailEdit,
                 isShow: false,
             },           

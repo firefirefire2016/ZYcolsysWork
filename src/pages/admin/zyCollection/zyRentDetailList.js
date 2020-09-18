@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onEditDetail, onLoadTargetListByREQ } from '../../../store/actions/zyCollectionData';
+import { onEditDetail, onLoadTargetListByREQ,onCreateData } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
 
@@ -25,6 +25,7 @@ const ZyRentDetailList = (props) => {
   const EditableCell = ({
     labelType,
     children,
+    dataIndex,
     record,
     isWarn,
     ...restProps
@@ -32,9 +33,10 @@ const ZyRentDetailList = (props) => {
 
 
     return (
+      // eslint-disable-next-line react/jsx-no-duplicate-props
       <td {...restProps} type='primary' className='' className={(isWarn) ? 'warn' : ''}>
 
-        {parseTypeToLabel(record, labelType, children)}
+        {parseTypeToLabel(record, dataIndex, children)}
       </td>
     );
   };
@@ -140,7 +142,7 @@ const ZyRentDetailList = (props) => {
 
         {
           //record,
-          labelType: parseItemtype(col.dataIndex),
+          labelType: col.dataIndex,
           rowIndex,
           isWarn: record.isWarn ? true : false,
           dataIndex: col.dataIndex,
@@ -151,7 +153,7 @@ const ZyRentDetailList = (props) => {
     };
   });
 
-  const { page, total, limit, list, contractid, contractno, overstate, onEditOne, SelectByREQ } = props;
+  const { page, total, limit, list, contractid, contractno, overstate, onEditOne, SelectByREQ,onCreate } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -165,6 +167,7 @@ const ZyRentDetailList = (props) => {
         setIsInit(false);
       }
       else {
+        //从本期账单过来的话
         form.setFieldsValue({
           contractno,
           overstate
@@ -234,15 +237,22 @@ const ZyRentDetailList = (props) => {
 
 
   return (
-    <Card title="账单详情"
+    <Card title="账单明细"
       extra={
-
+<Form.Item >
         <Button type="primary" size="large" onClick={() => {
           props.history.push('/admin/zyRentList');
         }}>
           本期账单
          </Button>
-
+         <Button type="primary" size="large" onClick={() => {
+           //设置要编辑的id
+           onCreate(true);
+          props.history.push('/admin/zyRentDetail/edit');
+        }}>
+          新增
+         </Button>
+         </Form.Item>
       }
     >
 
@@ -321,6 +331,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
+    onCreate:(isCreating) => {onCreateData(dispatch,isCreating)},
     //onLoadData: (page, limit, contractid,isInit) => { onLoadTargetRentList(dispatch, { page, limit, contractid,isInit }) },
     onEditOne: (record) => { onEditDetail(dispatch, { record }) },
     SelectByREQ: (page, limit, req) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },

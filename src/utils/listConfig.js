@@ -315,8 +315,13 @@ export const sysCols = {
             }
         },
         {
-            title: '合同编号',
+            title: '合同编号2',
             dataIndex: 'contractno',
+            isShow: false,
+        },
+        {
+            title: '合同编号',
+            dataIndex: 'select_contractno',
             isShow: false,
             isInEdit: true,
             editable: true,
@@ -388,11 +393,13 @@ export const sysCols = {
         {
             title: '实收金额',
             dataIndex: 'amount_select',
+            //isInEdit: true,
             isSelect:true,
         },  
         {
             title: '实开票',
             dataIndex: 'invoice_select',
+            //isInEdit: true,
             isSelect:true,
         },      
         {
@@ -421,16 +428,16 @@ export const sysCols = {
         {
             title: '收款日期',
             dataIndex: 'collectdate',
-            isInEdit: false,
+            isInEdit: true,
             isShow: false,
-            editable: false
+            editable: true
         },
         {
             title: '开票日期',
             dataIndex: 'invoicedate',
-            isInEdit: false,
+            isInEdit: true,
             isShow: false,
-            editable: false
+            editable: true
         },
         {
             title: '操作',

@@ -66,10 +66,10 @@ export const parseRules = (item) => {
 
 }
 
-const getSelects = (items, isValue) => {
+const getSelects = (item, selects, isValue) => {
   if (isValue) {
     return (
-      <Select placeholder={items.title} style={{ width: '200px' }}
+      <Select placeholder={item.title} style={{ width: '200px' }}
         onSelect={() => {
         }}
         optionFilterProp='children'
@@ -78,14 +78,14 @@ const getSelects = (items, isValue) => {
         }
         showSearch={true}
       >
-        {items.map((temp, index) => (
+        {selects.map((temp, index) => (
           <Option key={index} value={index}>{temp}</Option>
         ))}
       </Select>
     )
   }
   return (
-    <Select placeholder={items.title} style={{ width: '200px' }}
+    <Select placeholder={item.title} style={{ width: '200px' }}
       onSelect={() => {
       }}
       optionFilterProp='children'
@@ -93,14 +93,14 @@ const getSelects = (items, isValue) => {
         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
       showSearch={true}>
-      {items.map((temp, index) => (
+      {selects.map((temp, index) => (
         <Option key={index} >{temp}</Option>
       ))}
     </Select>
   )
 }
 
-export const parseInputNode = (item) => {
+export const parseInputNode = (item,selects) => {
 
   let inputType = parseItemtype(item.dataIndex);
 
@@ -118,32 +118,37 @@ export const parseInputNode = (item) => {
 
 
   switch (inputType) {
+    case 'Contractnoselect':
+      if(selects){
+        inputNode = getSelects(item,selects);
+      }      
+      break;
     case 'UnitType':
-      inputNode = getSelects(selectItems.unitts);
+      inputNode = getSelects(item,selectItems.unitts);
       break;
     case 'RentType':
-      inputNode = getSelects(selectItems.renttypes);
+      inputNode = getSelects(item,selectItems.renttypes);
       break;
     case 'RentMode':
-      inputNode = getSelects(selectItems.rentmodes);
+      inputNode = getSelects(item,selectItems.rentmodes);
       break;
     case 'ContractStatus':
-      inputNode = getSelects(selectItems.contract_status, true);
+      inputNode = getSelects(item,selectItems.contract_status, true);
       break;
     case 'NeedCopy':
-      inputNode = getSelects(selectItems.yesOrNo);
+      inputNode = getSelects(item,selectItems.yesOrNo);
       break;
     case 'Amountselect':
-      inputNode = getSelects(selectItems.amountselect);
+      inputNode = getSelects(item,selectItems.amountselect);
       break;
     case 'Invoiceselect':
-      inputNode = getSelects(selectItems.invoiceselect);
+      inputNode = getSelects(item,selectItems.invoiceselect);
       break;
     case 'OverState':
-      inputNode = getSelects(selectItems.overstates);
+      inputNode = getSelects(item,selectItems.overstates);
       break;
     case 'ItemNames':
-      inputNode = getSelects(selectItems.itemnames);
+      inputNode = getSelects(item,selectItems.itemnames);
       break;
     default:
       break;
@@ -158,15 +163,11 @@ export const parseInputNode = (item) => {
  * @param {*} labelType 显示类型
  * @param {*} chil chilren
  */
-export const parseTypeToLabel = (record, labelType, chil) => {
-  switch (labelType) {
-    case 'RentType':
+export const parseTypeToLabel = (record, dataIndex, chil) => {
+  switch (dataIndex) {
+    case 'renttype':
       return selectItems.renttypes[record.renttype];
-    case 'isOweType':
-      return selectItems.yesOrNo[record.isOwe];
-    case 'needInvoiceType':
-      return selectItems.yesOrNo[record.needInvoice];
-    case 'Amountlabel':
+    case 'amount_received':
       if (parseFloat(record.amount_received) > 0) {
         return chil;
       }
@@ -174,7 +175,7 @@ export const parseTypeToLabel = (record, labelType, chil) => {
         return selectItems.amountselect[1];
       }
       return chil;
-    case 'Invoicelabel':
+    case 'invoice_amount':
       if (parseFloat(record.invoice_amount) > 0) {
         return chil;
       }
@@ -196,11 +197,26 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'select_contractno':
+      itemType = 'Contractnoselect';
+      break;
+    case 'amount_receivable':
+      itemType = 'number';
+      break;
     case 'amount_received':
-      itemType = 'Amountlabel';
+      itemType = 'number';
+      break;
+    case 'invoice_limit':
+      itemType = 'number';
       break;
     case 'invoice_amount':
-      itemType = 'Invoicelabel';
+      itemType = 'number';
+      break;
+    case 'invoicedate':
+      itemType = 'date';
+      break;
+    case 'collectdate':
+      itemType = 'date';
       break;
     case 'amount_select':
       itemType = 'Amountselect';

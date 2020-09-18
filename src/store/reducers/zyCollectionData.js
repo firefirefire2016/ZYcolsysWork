@@ -9,7 +9,7 @@ const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case 'MERGE_REQ':
-            return{
+            return {
                 ...state,
                 list: action.payload.rows,
                 page: action.payload.page,
@@ -63,11 +63,17 @@ export default (state = defaultState, action) => {
                 limit: action.payload.limit,
                 res: action.payload.result
             };
+        case 'CREATE_ONE':
+            return {
+                ...state,
+                isCreating: true,
+            };
         case 'GET_ONEDETAIL':
             console.log(action);
             return {
                 ...state,
                 record: action.payload.record,
+                id: action.payload.id,
                 isCreating: false,
             };
         case 'COMMIT_Edit':

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getList, modifyOne } from '../../services/zyService'
+import { getList, modifyOne, createTarget } from '../../services/zyService'
 import { message, Button, notification, Modal } from 'antd';
 import { rentMergeQuery } from '../../utils/common'
 import { consoleTarget } from '../../utils/ItemUtils';
@@ -267,7 +267,7 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let { page, limit, req } = payload;
 
-    let { isInit,contractno,property_name,rentdate } = req;
+    let { isInit, contractno, property_name, rentdate } = req;
 
     let _isInit = isInit;
 
@@ -289,22 +289,23 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
         row.property_name = row.zycontract.property_name;
         row.rentdate = parseInt(row.zycontract.rentdate);
+        row.contractno = row.zycontract.contractno;
 
-        if(invoice_amount < invoice_limit || amount_received < amount_receivable){
+        if (invoice_amount < invoice_limit || amount_received < amount_receivable) {
             row.isWarn = 1;
-        }   
+        }
 
         newList.push(row);
     })
 
     let total = res.total;
 
-    
-  
+
+
 
     dispatch({
         type: 'GET_TARGETLIST',
-        payload: { page, limit,newList,total }
+        payload: { page, limit, newList, total }
     })
 
 
@@ -351,7 +352,14 @@ function detailInfo(title, content) {
     });
 }
 
+export const onCreateData = async (dispatch, isCreating) => {
 
+
+    dispatch({
+        type: 'CREATE_ONE'
+    })
+
+}
 
 export const onEditDetail = async (dispatch, payload) => {
     let { record } = payload;
@@ -370,11 +378,11 @@ export const onEditDetail = async (dispatch, payload) => {
  * @param {*} dispatch 
  * @param {*} payload record,page,limit
  */
-export const onCommitEdit = async (dispatch, payload) => {
+export function onCommitEdit(dispatch, payload) {
 
     let { record } = payload;
 
-    await modifyOne(sourceUrl, record).then(async function (result) {
+    modifyOne(sourceUrl, record).then(async function (result) {
 
         if (result.code === 0) {
             message.info(result.msg);
@@ -386,6 +394,34 @@ export const onCommitEdit = async (dispatch, payload) => {
 
     })
 }
+
+/**
+ * 提交创建合同
+ * @param {*} dispatch 
+ * @param {*} payload record,page,limit
+ */
+export const onCommitCreate = async (dispatch, payload,props) => {
+
+    let { record, page, limit } = payload;
+
+
+    await createTarget(sourceUrl, record).then(async function (res) {
+
+
+        if (res.code === 0) {
+            message.info(res.msg);
+            props.history.push('/admin/zyRentDetailList');
+        }
+        else {
+            message.warn('失败:' + res.msg);
+            //props.history.push('/admin/zyRentDetailList');
+        }
+
+    })
+
+
+}
+
 
 
 

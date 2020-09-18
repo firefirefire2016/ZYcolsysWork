@@ -15,7 +15,8 @@ export default (state = defaultState, action) => {
                 list: action.payload.rows,
                 page: action.payload.page,
                 total: action.payload.total,
-                limit: action.payload.limit
+                limit: action.payload.limit,
+                newSelects:action.payload.newSelects,
             };
         case 'GET_ONE':
             console.log(action);

@@ -11,20 +11,36 @@ const sourceUrl = 'zyContract';
 //加载列表数据，推送到reducer
 export const onLoadContractData = async (dispatch, payload) => {
 
-    console.log('payload = ' + JSON.stringify(payload));
+    // console.log('payload = ' + JSON.stringify(payload));
 
     let { page, limit, req } = payload;
 
 
-     console.log(JSON.stringify(payload) );
-
-
     const res = await getList(sourceUrl, page, limit, req);
+
+    let list = res.rows;
+
+    let newSelects = [];
+
+    if(list){
+        for (let index = 0; index < list.length; index++) {
+            const element = list[index];
+            newSelects.push(element.contractno);
+        }
+    }
+
+    console.log(newSelects);
+
+    
 
     dispatch({
         type: 'GET_ALL',
-        payload: { ...res, page, limit }
+        payload: { ...res, page, limit,newSelects}
     })
+
+    
+
+    //setSelects(newSelects);
 
 
 }
@@ -69,26 +85,26 @@ export const onCommitEdit = async (dispatch, payload) => {
         //         payload: { ...res, record, result }
         //     })
         //     console.log(res);
-            if (result.code === 0) {
-                message.info(result.msg);
+        if (result.code === 0) {
+            message.info(result.msg);
+        }
+        else {
+            message.warn('修改提交失败');
+        }
+
+        await updateALLStatus('zyCollection', record).then(function (res) {
+            if (res.code === 1) {
+                //后台问题打印
+                message.warn(res.msg);
             }
             else {
-                message.warn('修改提交失败');
-            }
 
-            await updateALLStatus('zyCollection', record).then(function (res) {
-                if (res.code === 1) {
-                    //后台问题打印
-                    message.warn(res.msg);
-                }
-                else {
-    
-                    console.log('修改收款表状态成功');
-                }
+                console.log('修改收款表状态成功');
             }
-    
-    
-            )
+        }
+
+
+        )
 
         // }
 
@@ -122,7 +138,7 @@ export const onCommitCreate = async (dispatch, payload) => {
             console.log(res);
             if (result.code === 0) {
                 message.info(result.msg);
-                
+
             }
             else {
                 message.warn('创建合同失败');
@@ -232,7 +248,7 @@ export const onCommitUpdateStatus = async (dispatch, payload) => {
 
     let { id, status, page, limit } = payload;
 
-    console.log(JSON.stringify(payload) );
+    console.log(JSON.stringify(payload));
 
     await updateOneStatus(sourceUrl, payload).then(async function (result) {
 
@@ -274,11 +290,11 @@ export const onCommitUpdateStatus = async (dispatch, payload) => {
 
 
             })
-            
 
-         }
+
+        }
         )
-        
+
     })
 }
 
