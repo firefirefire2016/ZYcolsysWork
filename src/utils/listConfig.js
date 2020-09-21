@@ -315,9 +315,10 @@ export const sysCols = {
             }
         },
         {
-            title: '合同编号2',
+            title: '合同编号',
             dataIndex: 'contractno',
             isShow: false,
+            isSelect:true
         },
         {
             title: '合同编号',
@@ -325,7 +326,6 @@ export const sysCols = {
             isShow: false,
             isInEdit: true,
             editable: true,
-            isSelect:true,
         },
         {
             title: '账单编号',
@@ -337,8 +337,14 @@ export const sysCols = {
         },
         {
             title: '收款项目',
-            dataIndex: 'itemname',
+            dataIndex: 'create_itemname',
             isInEdit: true,
+            editable: true,
+        },
+        {
+            title: '收款项目',
+            dataIndex: 'itemname',
+            isInEdit: false,
             isShow: true,
             editable: true,
             isSelect:true,
@@ -346,7 +352,7 @@ export const sysCols = {
         {
             title: '物业名称',
             dataIndex: 'property_name',
-            isInEdit: true,
+            isInEdit: false,
             isShow: true,
             editable: false,
             isSelect:true,

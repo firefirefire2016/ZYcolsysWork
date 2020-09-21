@@ -16,6 +16,30 @@ export function timeToStr(time) {
 
 }
 
+export function getTodayDateStr(){
+
+    var today = new Date();
+
+    var year = today.getFullYear();
+
+    var month = today.getMonth() + 1;
+
+    var day = today.getDate();
+
+    if(month < 10){
+        month = '0' + month;
+    }
+
+    if(day < 10){
+        day = '0' + day;
+    }
+
+    console.log(year + '-' + month + '-' + day);
+
+    return year + '-' + month + '-' + day;
+
+}
+
 /**
    * 使用test方法实现模糊查询
    * @param  {Array}  list     原数组

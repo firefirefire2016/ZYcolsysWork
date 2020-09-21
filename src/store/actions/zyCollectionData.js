@@ -309,6 +309,8 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
     })
 
 
+
+
 }
 
 
@@ -328,9 +330,9 @@ const openNotification = (title, description, modaltitle, detail, type, time) =>
     );
 
     const close = () => {
-        console.log(
-            '提醒欠款栏关闭.',
-        );
+        // console.log(
+        //     '提醒欠款栏关闭.',
+        // );
     };
 
     notification[type]({
@@ -361,6 +363,18 @@ export const onCreateData = async (dispatch, isCreating) => {
 
 }
 
+export const onShowDetail = async (dispatch, payload) => {
+    let { record } = payload;
+
+    let id = record.id;
+
+    dispatch({
+        type: 'GET_ONEDETAIL',
+
+        payload: { record, id, mode: 'details' }
+    })
+}
+
 export const onEditDetail = async (dispatch, payload) => {
     let { record } = payload;
 
@@ -369,7 +383,7 @@ export const onEditDetail = async (dispatch, payload) => {
     dispatch({
         type: 'GET_ONEDETAIL',
 
-        payload: { record, id }
+        payload: { record, id, mode: 'editing' }
     })
 }
 
@@ -378,17 +392,55 @@ export const onEditDetail = async (dispatch, payload) => {
  * @param {*} dispatch 
  * @param {*} payload record,page,limit
  */
-export function onCommitEdit(dispatch, payload) {
+export const onCommitEdit = async (dispatch, payload) => {
 
-    let { record } = payload;
+    let { record, edittype } = payload;
 
-    modifyOne(sourceUrl, record).then(async function (result) {
+    console.log(JSON.stringify(record));
 
-        if (result.code === 0) {
-            message.info(result.msg);
+    await modifyOne(sourceUrl, record).then(async function (res) {
+
+        if (res.code === 0) {
+            message.info(res.msg);
+            // props.history.push('/admin/zyRentDetailList');
         }
         else {
-            message.warn('修改提交失败');
+            message.warn('失败:' + res.msg);
+        }
+
+        switch (edittype) {
+            case 'COMMIT_Edit':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
+            case 'COMMIT_GetRent':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
+            case 'COMMIT_GetInvoice':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
+            default:
+                dispatch({
+                    type: 'COMMIT_Edit',
+
+                    payload: { res }
+
+                })
+                break;
         }
 
 
@@ -400,9 +452,9 @@ export function onCommitEdit(dispatch, payload) {
  * @param {*} dispatch 
  * @param {*} payload record,page,limit
  */
-export const onCommitCreate = async (dispatch, payload,props) => {
+export const onCommitCreate = async (dispatch, payload) => {
 
-    let { record, page, limit } = payload;
+    let { record } = payload;
 
 
     await createTarget(sourceUrl, record).then(async function (res) {
@@ -410,12 +462,18 @@ export const onCommitCreate = async (dispatch, payload,props) => {
 
         if (res.code === 0) {
             message.info(res.msg);
-            props.history.push('/admin/zyRentDetailList');
+            //props.history.push('/admin/zyRentDetailList');
         }
         else {
             message.warn('失败:' + res.msg);
             //props.history.push('/admin/zyRentDetailList');
         }
+
+        dispatch({
+            type: 'COMMIT_CREATE',
+
+            payload: { res }
+        })
 
     })
 

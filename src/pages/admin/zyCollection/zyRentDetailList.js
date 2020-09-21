@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Spin, Modal } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onEditDetail, onLoadTargetListByREQ,onCreateData } from '../../../store/actions/zyCollectionData';
+import { onEditDetail, onLoadTargetListByREQ, onCreateData, onShowDetail, onCommitEdit } from '../../../store/actions/zyCollectionData';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
+import { getTodayDateStr } from '../../../utils/common';
+
 
 const selectItems = sysCols.rentCol.filter(item => item.isSelect);
 
@@ -15,12 +17,22 @@ const cols = sysCols.rentCol.filter(item => item.isShow);
 const { Option } = Select;
 
 
+
+
 const ZyRentDetailList = (props) => {
 
   //console.log(props);
   const [form] = Form.useForm();
 
+  const [modelFrom] = Form.useForm();
+
+  const [invoiceFrom] = Form.useForm();
+
   const [isInit, setIsInit] = useState(true);
+
+  const [date, setDate] = useState('');
+
+  //const [isLoading,setIsLoading] = useState(true);
 
   const EditableCell = ({
     labelType,
@@ -46,7 +58,7 @@ const ZyRentDetailList = (props) => {
       if (col.isOper === true) {
         col.render = (text, record, index) => {
           switch (record.itemname) {
-            case 1://合同租金
+            case '1'://合同租金
               return (
                 <span className=''>
                   <Button type="primary"
@@ -75,7 +87,7 @@ const ZyRentDetailList = (props) => {
                   </Button>
                 </span>
               )
-            case 2://押金
+            case '2'://押金
               return (
                 <span className=''>
                   <Button type="primary"
@@ -88,7 +100,7 @@ const ZyRentDetailList = (props) => {
                   </Button>
                 </span>
               )
-            case 3://管理费
+            case '3'://管理费
               return (
                 <span className=''>
                   <Button type="primary"
@@ -99,9 +111,11 @@ const ZyRentDetailList = (props) => {
                   >
                     编辑
                   </Button>
+                  
                 </span>
+
               )
-            case 4://其他
+            case '4'://其他
               return (
                 <span className=''>
                   <Button type="primary"
@@ -117,18 +131,6 @@ const ZyRentDetailList = (props) => {
             default:
               break;
           }
-          // return (
-          //   <span className=''>
-          //     <Button type="primary"
-          //       style={{
-          //         marginRight: 8,
-          //       }}
-          //       onClick={() => edit(record)}
-          //     >
-          //       编辑
-          //       </Button>
-          //   </span>
-          // );
         }
       }
 
@@ -153,12 +155,15 @@ const ZyRentDetailList = (props) => {
     };
   });
 
-  const { page, total, limit, list, contractid, contractno, overstate, onEditOne, SelectByREQ,onCreate } = props;
+  const { page, total, limit, list, contractid, contractno, overstate,
+    onEditOne, SelectByREQ, onCreate, isLoading, onShowOne, onEditClick } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');
+
+    setDate(getTodayDateStr);
 
     setTimeout(() => {
       if (isInit) {
@@ -173,25 +178,130 @@ const ZyRentDetailList = (props) => {
           overstate
         })
         SelectByREQ(1, limit, { contractid, isInit, contractno, overstate });
-        //onLoadData(1, limit, contractid,isInit);
+
       }
     }, 100);
 
   }, [])
 
+
+
   //收款
   const getRent = record => {
+
+    Modal.confirm({
+      title: '收款',
+      visible: true,
+
+      content: (
+        <Form form={modelFrom} layout="vertical" name="userForm"
+          initialValues={{
+            //['amount']: '3',
+            ['collectdate']: date
+          }}
+          onFinish={values => {
+            //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
+
+          }}
+        >
+          <Form.Item
+            name="amount"
+            label="收款金额"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <InputNumber style={{ width: '200px' }} type={'number'} />
+          </Form.Item>
+          <Form.Item
+            name="collectdate"
+            label="收款日期"
+
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input type={'date'} style={{ width: '200px' }} />
+          </Form.Item>
+        </Form>
+      ),
+      onOk() {
+        // console.log(JSON.stringify(modelFrom.getFieldsValue()));
+        // setRentable(false);
+        let values = modelFrom.getFieldsValue();
+        record.amount_received = parseFloat(record.amount_received) + values.amount;
+        record.collectdate = values.collectdate;
+        onEditClick(record, 'COMMIT_GetRent')
+      },
+      onCancel() { },
+
+      okText: '提交',
+      cancelText: '取消'
+    });
 
   }
 
   //开票
   const getInvoice = record => {
+    Modal.confirm({
+      title: '开票',
+      content: (
+        <Form form={invoiceFrom} layout="vertical" name="userForm"
+          initialValues={{
+            //['amount']: '3',
+            ['invoicedate']: date
+          }}
+          onFinish={values => {
+            //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
+            
+          }}
+        >
+          <Form.Item
+            name="amount"
+            label="开票金额"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <InputNumber style={{ width: '200px' }} type={'number'} />
+          </Form.Item>
+          <Form.Item
+            name="invoicedate"
+            label="开票日期"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input type={'date'} />
+          </Form.Item>
+        </Form>
+      ),
+      onOk() {
+        let values = invoiceFrom.getFieldValue();
+        record.invoice_amount = parseFloat(record.invoice_amount) + values.amount;
+        record.invoicedate = values.invoicedate;
+        //console.log(JSON.stringify(list));
+        onEditClick(record, 'COMMIT_GetInvoice')        
+       },
+      onCancel() { },
 
+      okText: '提交',
+      cancelText: '取消'
+    });
   }
 
   //详情
   const loadDetail = record => {
-
+    onShowOne(record);
+    props.history.push('/admin/zyRentDetail/edit');
   }
 
   //编辑
@@ -199,7 +309,7 @@ const ZyRentDetailList = (props) => {
 
     //设置要编辑的id
     onEditOne(record);
-    props.history.push('/admin/zyRentDetailList/edit');
+    props.history.push('/admin/zyRentDetail/edit');
 
   };
 
@@ -219,7 +329,6 @@ const ZyRentDetailList = (props) => {
 
     let reqs = form.getFieldsValue();
 
-    reqs.contractno = contractno;
 
     SelectByREQ(page, limit, reqs);
   }
@@ -239,20 +348,20 @@ const ZyRentDetailList = (props) => {
   return (
     <Card title="账单明细"
       extra={
-<Form.Item >
-        <Button type="primary" size="large" onClick={() => {
-          props.history.push('/admin/zyRentList');
-        }}>
-          本期账单
+        <Form.Item >
+          <Button type="primary" size="large" onClick={() => {
+            props.history.push('/admin/zyRentList');
+          }}>
+            本期账单
          </Button>
-         <Button type="primary" size="large" onClick={() => {
-           //设置要编辑的id
-           onCreate(true);
-          props.history.push('/admin/zyRentDetail/edit');
-        }}>
-          新增
+          <Button type="primary" size="large" onClick={() => {
+            //设置要编辑的id
+            onCreate(true);
+            props.history.push('/admin/zyRentDetail/edit');
+          }}>
+            新增
          </Button>
-         </Form.Item>
+        </Form.Item>
       }
     >
 
@@ -277,7 +386,7 @@ const ZyRentDetailList = (props) => {
                 },
               ]}
             >
-              {parseInputNode(item)}
+              {parseInputNode(item, 'screening')}
             </Form.Item>
           )
         })}
@@ -293,34 +402,37 @@ const ZyRentDetailList = (props) => {
         </Form.Item>
 
       </Form>
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        rowKey="id"
-        bordered
-        columns={mergedColumns(cols)}
-        dataSource={list}
-        size="lager"
-        pagination={{
+      <Spin spinning={isLoading === undefined ? true : isLoading} delay={100}>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
 
-          total,
-          showSizeChanger: true,
-          onChange: (p, size) => {
-            //console.log('contractid = ' + contractid);
+          rowKey="id"
+          bordered
+          columns={mergedColumns(cols)}
+          dataSource={list}
+          size="lager"
+          pagination={{
 
-            onChangeSize(p, size);
-          },
-          onShowSizeChange: (current, size) => {
-            onChangeSize(1, size);
+            total,
+            showSizeChanger: true,
+            onChange: (p, size) => {
+              //console.log('contractid = ' + contractid);
+
+              onChangeSize(p, size);
+            },
+            onShowSizeChange: (current, size) => {
+              onChangeSize(1, size);
+            }
           }
-        }
-        }
-        // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
-        scroll={{ y: 350 }}
-      />
+          }
+          // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
+          scroll={{ y: 350 }}
+        />
+      </Spin>
     </Card>
   )
 }
@@ -331,9 +443,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onCreate:(isCreating) => {onCreateData(dispatch,isCreating)},
+    onCreate: (isCreating) => { onCreateData(dispatch, isCreating) },
+
+    onShowOne: (record) => { onShowDetail(dispatch, { record }) },
     //onLoadData: (page, limit, contractid,isInit) => { onLoadTargetRentList(dispatch, { page, limit, contractid,isInit }) },
     onEditOne: (record) => { onEditDetail(dispatch, { record }) },
+    onEditClick: (record, edittype) => { onCommitEdit(dispatch, { record, edittype }) },
     SelectByREQ: (page, limit, req) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
   }
 }

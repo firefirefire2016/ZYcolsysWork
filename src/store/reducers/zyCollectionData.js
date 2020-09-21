@@ -23,7 +23,8 @@ export default (state = defaultState, action) => {
                 list: action.payload.rows,
                 page: action.payload.page,
                 total: action.payload.total,
-                limit: action.payload.limit
+                limit: action.payload.limit,
+                res: null
             };
         case 'GET_TARGETLIST':
             console.log(action);
@@ -32,7 +33,9 @@ export default (state = defaultState, action) => {
                 list: action.payload.newList,
                 page: action.payload.page,
                 total: action.payload.total,
-                limit: action.payload.limit
+                limit: action.payload.limit,
+                isLoading: false,
+                res: null
             };
 
         case 'MERGE_ALL':
@@ -56,12 +59,7 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
-                record: action.payload.record,
-                list: action.payload.rows,
-                page: action.payload.page,
-                total: action.payload.total,
-                limit: action.payload.limit,
-                res: action.payload.result
+                res: action.payload.res
             };
         case 'CREATE_ONE':
             return {
@@ -75,17 +73,25 @@ export default (state = defaultState, action) => {
                 record: action.payload.record,
                 id: action.payload.id,
                 isCreating: false,
+                mode: action.payload.mode,
             };
         case 'COMMIT_Edit':
             console.log(action);
             return {
                 ...state,
-                record: action.payload.record,
-                list: action.payload.rows,
-                page: action.payload.page,
-                total: action.payload.total,
-                limit: action.payload.limit,
-                res: action.payload.result
+                res: action.payload.res
+            };
+        case 'COMMIT_GetRent':
+            console.log(state);
+            return {
+                ...state,
+                rentRes: action.payload.res
+            };
+        case 'COMMIT_GetInvoice':
+            console.log(state);
+            return {
+                ...state,
+                invoiceRes: action.payload.res
             };
         default:
             return state;

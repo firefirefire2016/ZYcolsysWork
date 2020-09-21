@@ -9,63 +9,55 @@ import { onLoadContractData } from '../../../store/actions/zyContractData';
 
 const items = sysCols.rentCol.filter(item => item.isInEdit);
 
-const select_contracts = ['测试1', '测试2'];
 
 
 function ZyRentDetailEdit(props) {
 
     const [form] = Form.useForm();
 
-    const [selects, setSelects] = useState(select_contracts);
+    //const [code,setCode] = useState(1);
 
     const { onEditClick, onCreateClick, loadContractList } = props;
 
-    const { record, isCreating, page, limit, id } = props.zyCollectionData;
+    const { record, isCreating, page, limit, id, res,mode } = props.zyCollectionData;
 
-    const { list,newSelects } = props.zyContractData;
+    const { list, newSelects } = props.zyContractData;
 
     let obj;
 
     const ResetValue = async () => {
-
-        //  var editables = items.filter(item=>item.editable);
-
-        //  var values = form.getFieldsValue();
-
-        //  editables.forEach(ele => {
-        //     values[ele.dataIndex] = 0;
-        //  });
-
-        //consoleTarget(props.zyContractData);
-
-        form.resetFields();
-
-        //consoleTarget(list);
-
-        
-
-        //  form.setFieldsValue({
-        //     ...values
-        //  })
-
+        console.log('res' + JSON.stringify(res));
+        //form.resetFields();
 
     }
 
     useEffect(() => {
-     //   console.log('list = ' + list);
 
         loadContractList(1, -1);
 
-        setTimeout(() => {
-            
-        }, 1000);
-
-
+        if (res) {
+            if (res.code === 0) {
+                props.history.push('/admin/zyRentDetailList');
+            }
+        }
 
         if (isCreating === false) {
 
             obj = new Object(record);
 
+            if (newSelects) {
+                for (let index = 0; index < newSelects.length; index++) {
+                    const element = newSelects[index];
+
+                    if (element === obj['contractno']) {
+                        obj.select_contractno = index;
+                        break;
+                    }
+
+                }
+            }
+
+            obj.create_itemname = obj.itemname - 2;
 
             form.setFieldsValue({
                 ...obj
@@ -77,55 +69,60 @@ function ZyRentDetailEdit(props) {
         }
 
 
-
-    }, [])
+    }, [res])
 
     const onBackHome = () => {
         props.history.push('/admin/zyRentDetailList');
     }
 
     const onFinish = async values => {
-        // onCommitButtonClick();
         try {
 
             let row = form.getFieldValue();
 
-            console.log('isCreating = ' + isCreating);
-
             if (isCreating) {
-                onCreateClick(row, page, limit, props);
 
+                row['contractno'] = newSelects[row.select_contractno];
+
+                row['itemname'] = parseInt(row.create_itemname) + 2;
+
+                console.log('row=' + JSON.stringify(row));
+
+                onCreateClick(row, page, limit)
 
 
             } else {
 
-                row.id = obj.id;
+                row.id = id;
 
-                let res = await onEditClick(row, page, limit);
+                row['contractno'] = newSelects[row.select_contractno];
 
-                console.log('res = ' + JSON.stringify(res));
+                row['itemname'] = parseInt(row.create_itemname) + 2;
 
-                if (res.code === 0) {
-                    message.info(res.msg);
-                    props.history.push('/admin/zyRentDetailList');
-                }
-                else {
-                    message.warn('修改提交失败');
-                }
+                console.log('row=' + JSON.stringify(row));
 
+                onEditClick(row, page, limit)
             }
 
         } catch (error) {
             message.warn(error.message);
+        } finally {
+
+
+
         }
     }
 
 
     //保存提交
-    const onCommitButtonClick = async () => {
+    function onCommitButtonClick() {
 
-
-
+        // if(res.code === 0){
+        //     props.history.push('/admin/zyRentDetailList');
+        // }
+        // else{
+        //     console.log('一直执行么');
+        // }
     }
 
 
@@ -150,7 +147,7 @@ function ZyRentDetailEdit(props) {
                                 parseRules(item)
                             }
                         >
-                            {parseInputNode(item, newSelects)}
+                            {parseInputNode(item,mode, newSelects)}
                         </Form.Item>
                     )
                 })}
@@ -187,9 +184,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-        loadContractList: (page, limit, req,) => { onLoadContractData(dispatch, { page, limit, req}) },
-        onEditClick: (record, page, limit) => { onCommitEdit(dispatch, { record, page, limit }) },
-        onCreateClick: (record, page, limit, props) => { onCommitCreate(dispatch, { record, page, limit }, props) }
+        loadContractList: (page, limit, req,) => { onLoadContractData(dispatch, { page, limit, req }) },
+        onEditClick: (record) => { onCommitEdit(dispatch, { record }) },
+        onCreateClick: (record) => { onCommitCreate(dispatch, { record }) }
     }
 }
 

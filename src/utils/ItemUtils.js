@@ -4,6 +4,10 @@ import { PlusOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
+//var mode = '';
+
+var canEdit = true;
+
 /**
  * 字典项
  */
@@ -18,6 +22,8 @@ export const selectItems = {
 
   itemnames: ['全部', '合同租金', '押金', '管理费', '其他'],
 
+  create_itemnames: ['押金', '管理费', '其他'],
+
   overstates: ['全部', '即将逾期', '逾期', '正常'],
 
   amountselect: ['全部', '未缴费', '其他'],
@@ -30,12 +36,38 @@ export const selectItems = {
    */
   communitys: ['翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲'],
 
+  _communitys: ['全部','翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲'],
+
+  kinds: ['全部', '办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
+
+  _kinds: ['办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
+
+  owners: ['全部', '财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
+  '建安公司','梅华办','南利公司','南利集团','狮山办','湾仔小学','香华实验学校','香洲区教育局','香洲区景园小学','香洲区科学技术委员会',
+  '香洲区园艺场','新华公司','珠海市第五中学','珠海市前山中学','珠海市香洲区房地产综合开发公司'],
+
+  _owners: ['财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
+  '建安公司','梅华办','南利公司','南利集团','狮山办','湾仔小学','香华实验学校','香洲区教育局','香洲区景园小学','香洲区科学技术委员会',
+  '香洲区园艺场','新华公司','珠海市第五中学','珠海市前山中学','珠海市香洲区房地产综合开发公司'],
+
+  features:['全部','企业物业','行政物业'],
+
+  _features:['企业物业','行政物业'],
+
   /**
    * 合同状态
    */
   //contract_status: ['作废(已终止)', '执行中', '草稿', '退租中', '退租待结算', '已到期'],
 
-  contract_status: ['你好', '执行中', '草稿', '退租中', '退租待结算', '已到期'],
+  property_status: ['全部', '已租','空置', '即将空置'],
+
+  _property_status: ['已租','空置', '即将空置'],
+
+  contract_status: ['全部','未生效', '已生效','即将到期', '已到期', '已失效'],
+
+  _contract_status: ['未生效', '已生效','即将到期', '已到期', '已失效'],
+
+
 
   rentmodes: ['固定租金', '费率', '其他'],
 
@@ -70,6 +102,7 @@ const getSelects = (item, selects, isValue) => {
   if (isValue) {
     return (
       <Select placeholder={item.title} style={{ width: '200px' }}
+        disabled={!canEdit}
         onSelect={() => {
         }}
         optionFilterProp='children'
@@ -86,6 +119,7 @@ const getSelects = (item, selects, isValue) => {
   }
   return (
     <Select placeholder={item.title} style={{ width: '200px' }}
+      disabled={!canEdit}
       onSelect={() => {
       }}
       optionFilterProp='children'
@@ -100,55 +134,72 @@ const getSelects = (item, selects, isValue) => {
   )
 }
 
-export const parseInputNode = (item,selects) => {
-
+export const parseInputNode = (item, mode = 'screening',selects) => {
   let inputType = parseItemtype(item.dataIndex);
+  canEdit = true;
+  switch (mode) {
+    case 'screening'://筛选模式
+      //筛选模式下，所有可筛选的都在form中，且不禁用
+      canEdit = true;
 
-  var editble = item.editable;
+      break;
+    case 'showing'://列表展现模式
 
-  let inputNode = <Input type={inputType} placeholder={item.title} disabled={!editble}
+
+      break;
+    case 'editing'://编辑模式
+      //编辑模式下，iten.editable过滤不能编辑的字段
+      canEdit = item.editable
+      break;
+    case 'details'://详情模式
+      //详情模式下，所有字段不能使用
+      canEdit = false;
+      break;
+
+    default:
+      break;
+  }
+
+  let inputNode = <Input type={inputType} placeholder={item.title} disabled={!canEdit}
     style={{ width: '200px' }
     } />;
-
-  if (item.isSelect) {
-    inputNode = <Input type={inputType} placeholder={item.title}
-      style={{ width: '200px' }
-      } />;
-  }
 
 
   switch (inputType) {
     case 'Contractnoselect':
-      if(selects){
-        inputNode = getSelects(item,selects);
-      }      
+      if (selects) {
+        inputNode = getSelects(item, selects, true);
+      }
       break;
     case 'UnitType':
-      inputNode = getSelects(item,selectItems.unitts);
+      inputNode = getSelects(item, selectItems.unitts, false);
       break;
     case 'RentType':
-      inputNode = getSelects(item,selectItems.renttypes);
+      inputNode = getSelects(item, selectItems.renttypes, false);
       break;
     case 'RentMode':
-      inputNode = getSelects(item,selectItems.rentmodes);
+      inputNode = getSelects(item, selectItems.rentmodes, false);
       break;
     case 'ContractStatus':
-      inputNode = getSelects(item,selectItems.contract_status, true);
+      inputNode = getSelects(item, selectItems.contract_status, true);
       break;
     case 'NeedCopy':
-      inputNode = getSelects(item,selectItems.yesOrNo);
+      inputNode = getSelects(item, selectItems.yesOrNo, false);
       break;
     case 'Amountselect':
-      inputNode = getSelects(item,selectItems.amountselect);
+      inputNode = getSelects(item, selectItems.amountselect, false);
       break;
     case 'Invoiceselect':
-      inputNode = getSelects(item,selectItems.invoiceselect);
+      inputNode = getSelects(item, selectItems.invoiceselect, false);
       break;
     case 'OverState':
-      inputNode = getSelects(item,selectItems.overstates);
+      inputNode = getSelects(item, selectItems.overstates, false);
       break;
     case 'ItemNames':
-      inputNode = getSelects(item,selectItems.itemnames);
+      inputNode = getSelects(item, selectItems.itemnames, false);
+      break;
+    case 'CItemNames':
+      inputNode = getSelects(item, selectItems.create_itemnames, true);
       break;
     default:
       break;
@@ -167,6 +218,10 @@ export const parseTypeToLabel = (record, dataIndex, chil) => {
   switch (dataIndex) {
     case 'renttype':
       return selectItems.renttypes[record.renttype];
+    case 'itemname':
+      return selectItems.itemnames[record.itemname];
+    case 'overstate':
+      return selectItems.overstates[record.overstate];
     case 'amount_received':
       if (parseFloat(record.amount_received) > 0) {
         return chil;
@@ -197,6 +252,9 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'create_itemname':
+      itemType = 'CItemNames';
+      break;
     case 'select_contractno':
       itemType = 'Contractnoselect';
       break;
