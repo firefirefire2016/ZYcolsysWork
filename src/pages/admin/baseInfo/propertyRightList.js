@@ -130,7 +130,7 @@ const PropertyRightList = (props) => {
     }
 
 
-  }, [])
+  }, [res])
 
   const create = () => {
     onCreateClick(true);
@@ -254,7 +254,7 @@ const mapDispatchToProps = (dispatch, ownprops) => {
     onDetailClick: (record, isCreating) => { onShowDetail(dispatch, { record, isCreating }) },
     onEditClick: (record, isCreating) => { onEditDetail(dispatch, { record, isCreating }) },
     onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },
-    onConfirmDel: (id, status, page, limit) => { onCommitUpdateStatus(dispatch, { id, status, page, limit }) }
+    onConfirmDel: (id, property_status, page, limit) => { onCommitUpdateStatus(dispatch, { id, property_status, page, limit }) }
   }
 }
 
