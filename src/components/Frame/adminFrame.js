@@ -44,7 +44,7 @@ function adminFrame(props) {
 
                 <SubMenu key={route.path} icon={<IconFont type={route.icon} style={{ fontSize: '30px' }} />} title={route.title}>
 
-                  {route.children.map(child => {
+                  {route.children.filter(child => child.isShow).map(child => {
                     return (
                       <Menu.Item key={child.path}
                         onClick={p => {

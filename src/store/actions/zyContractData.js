@@ -243,7 +243,7 @@ const createColletions = async (tempsYear, tempeYear, tempsMonth, tempeMonth, re
 }
 
 
-//初始化列表数据，同时获取提醒数据
+
 export const onCommitUpdateStatus = async (dispatch, payload) => {
 
     let { id, status, page, limit } = payload;

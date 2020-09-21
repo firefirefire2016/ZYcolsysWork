@@ -3,11 +3,13 @@ import thunk from 'redux-thunk';
 import zyContractData from './reducers/zyContractData';
 import zyCounter from './reducers/zyCounter'
 import zyCollectionData from './reducers/zyCollectionData'
+import zyPropertyData from './reducers/zyPropertyData'
 
 const rootStore = combineReducers({
     zyContractData,
     zyCounter,
-    zyCollectionData
+    zyCollectionData,
+    zyPropertyData
 })
 
 export default createStore(rootStore,compose(applyMiddleware(...[thunk])));

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import {  RentToMergeData, onLoadTargetRent } from '../../../store/actions/zyCollectionData';
+import {  RentToMergeData, onLoadTargetRent } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget } from '../../../utils/ItemUtils';
 import { rentMergeQuery } from '../../../utils/common';

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Spin, Modal } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onEditDetail, onLoadTargetListByREQ, onCreateData, onShowDetail, onCommitEdit } from '../../../store/actions/zyCollectionData';
+import { onEditDetail, onLoadTargetListByREQ, onCreateData, onShowDetail, onCommitEdit } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
 import { getTodayDateStr } from '../../../utils/common';

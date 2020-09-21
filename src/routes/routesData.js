@@ -5,7 +5,8 @@ import zyContractEdit from "../pages/admin/zyContract/zyContractEdit";
 import editdemo from "../pages/admin/zyContract/editdemo";
 import NoMatch from "../pages/demos/404";
 import zyRentList from "../pages/admin/zyCollection/zyRentList";
-import propertyRight from "../pages/admin/baseInfo/propertyRight";
+import propertyRightList from "../pages/admin/baseInfo/propertyRightList";
+import propertyRightEdit from "../pages/admin/baseInfo/propertyRightEdit";
 import zyUnitList from "../pages/admin/baseInfo/zyUnitList";
 import zyRentDetailList from '../pages/admin/zyCollection/zyRentDetailList';
 import zyRentDetailEdit from '../pages/admin/zyCollection/zyRentDetailEdit';
@@ -33,7 +34,7 @@ export const adminRoutess = [
         icon: 'icon-zhanshi'
     }, {
         path: '/admin/propertyRight',
-        component: propertyRight,
+        component: propertyRightList,
         title: '产权资料',
         isShow: true,
         icon: 'icon-zhanshi'
@@ -75,11 +76,20 @@ export const admins = [
                 icon: 'icon-zhanshi'
             }, {
                 path: '/admin/propertyRight',
-                component: propertyRight,
+                component: propertyRightList,
                 title: '产权资料',
                 isShow: true,
+                exact: true,
                 icon: 'icon-zhanshi'
-            }
+            },{
+                path: '/admin/propertyRight/edit',
+                component: propertyRightEdit,
+                isShow: false,
+            },{
+                path: '/admin/propertyRight/createOne',
+                component: propertyRightEdit,
+                isShow: false,
+            },
             // , {
             //     path: '/admin/zyUnit',
             //     component: zyUnitList,

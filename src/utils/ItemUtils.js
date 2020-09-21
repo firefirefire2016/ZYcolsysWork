@@ -36,36 +36,36 @@ export const selectItems = {
    */
   communitys: ['翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲'],
 
-  _communitys: ['全部','翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲'],
+  //_communitys: ['全部', '翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲'],
 
-  kinds: ['全部', '办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
+  righttype: [ '办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
 
-  _kinds: ['办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
+  //_righttype: ['办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
 
-  owners: ['全部', '财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
-  '建安公司','梅华办','南利公司','南利集团','狮山办','湾仔小学','香华实验学校','香洲区教育局','香洲区景园小学','香洲区科学技术委员会',
-  '香洲区园艺场','新华公司','珠海市第五中学','珠海市前山中学','珠海市香洲区房地产综合开发公司'],
+  owners: [ '财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
+    '建安公司', '梅华办', '南利公司', '南利集团', '狮山办', '湾仔小学', '香华实验学校', '香洲区教育局', '香洲区景园小学', '香洲区科学技术委员会',
+    '香洲区园艺场', '新华公司', '珠海市第五中学', '珠海市前山中学', '珠海市香洲区房地产综合开发公司'],
 
-  _owners: ['财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
-  '建安公司','梅华办','南利公司','南利集团','狮山办','湾仔小学','香华实验学校','香洲区教育局','香洲区景园小学','香洲区科学技术委员会',
-  '香洲区园艺场','新华公司','珠海市第五中学','珠海市前山中学','珠海市香洲区房地产综合开发公司'],
+  //_owners: ['财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
+  //  '建安公司', '梅华办', '南利公司', '南利集团', '狮山办', '湾仔小学', '香华实验学校', '香洲区教育局', '香洲区景园小学', '香洲区科学技术委员会',
+  //  '香洲区园艺场', '新华公司', '珠海市第五中学', '珠海市前山中学', '珠海市香洲区房地产综合开发公司'],
 
-  features:['全部','企业物业','行政物业'],
+  features: [ '企业物业', '行政物业'],
 
-  _features:['企业物业','行政物业'],
+ // _features: ['企业物业', '行政物业'],
 
   /**
    * 合同状态
    */
   //contract_status: ['作废(已终止)', '执行中', '草稿', '退租中', '退租待结算', '已到期'],
 
-  property_status: ['全部', '已租','空置', '即将空置'],
+  property_status: [ '已租', '空置', '即将空置'],
 
-  _property_status: ['已租','空置', '即将空置'],
+ // _property_status: ['已租', '空置', '即将空置'],
 
-  contract_status: ['全部','未生效', '已生效','即将到期', '已到期', '已失效'],
+  contract_status: [ '未生效', '已生效', '即将到期', '已到期', '已失效'],
 
-  _contract_status: ['未生效', '已生效','即将到期', '已到期', '已失效'],
+ // _contract_status: ['未生效', '已生效', '即将到期', '已到期', '已失效'],
 
 
 
@@ -134,7 +134,7 @@ const getSelects = (item, selects, isValue) => {
   )
 }
 
-export const parseInputNode = (item, mode = 'screening',selects) => {
+export const parseInputNode = (item, mode = 'screening', selects) => {
   let inputType = parseItemtype(item.dataIndex);
   canEdit = true;
   switch (mode) {
@@ -201,6 +201,21 @@ export const parseInputNode = (item, mode = 'screening',selects) => {
     case 'CItemNames':
       inputNode = getSelects(item, selectItems.create_itemnames, true);
       break;
+    case 'Owners':
+      inputNode = getSelects(item, selectItems.owners, false);
+      break;
+    case 'Property_status':
+      inputNode = getSelects(item, selectItems.property_status, false);
+      break;
+    case 'Features':
+      inputNode = getSelects(item, selectItems.features, false);
+      break;
+    case 'Communitys':
+      inputNode = getSelects(item, selectItems.communitys, false);
+      break;
+    case 'Righttype':
+      inputNode = getSelects(item, selectItems.righttype, false);
+      break;
     default:
       break;
   }
@@ -216,6 +231,16 @@ export const parseInputNode = (item, mode = 'screening',selects) => {
  */
 export const parseTypeToLabel = (record, dataIndex, chil) => {
   switch (dataIndex) {
+    case 'community':
+      return selectItems.communitys[record.community];
+    case 'feature':
+      return selectItems.features[record.feature];
+    case 'property_status':
+      return selectItems.property_status[record.property_status];
+    case 'owner':
+      return selectItems.owners[record.owner];
+    case 'righttype':
+      return selectItems.righttype[record.righttype];
     case 'renttype':
       return selectItems.renttypes[record.renttype];
     case 'itemname':
@@ -252,6 +277,30 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'limitdate':
+      itemType = 'date';
+      break;
+    case 'insidearea':
+      itemType = 'number';
+      break;
+    case 'area':
+      itemType = 'number';
+      break;
+    case 'righttype':
+      itemType = 'Righttype';
+      break;
+    case 'community':
+      itemType = 'Communitys';
+      break;
+    case 'feature':
+      itemType = 'Features';
+      break;
+    case 'property_status':
+      itemType = 'Property_status';
+      break;
+    case 'owner':
+      itemType = 'Owners';
+      break;
     case 'create_itemname':
       itemType = 'CItemNames';
       break;

@@ -1,92 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 export const sysCols = {
-    propertyRightCol: [
-        {
-            title: '序号',
-            key: 'id',
-            align: "center",
-            editable: false,
-            isShow: true,
-            render: (txt, record, index) => {
-                return index + 1
-            }
-        },
-        {
-            title: '产权证号',
-            isShow: true,
-            dataIndex: 'rightno',
-            editable: true
-        },
-        {
-            title: '权利人',
-            isShow: true,
-            dataIndex: 'owner',
-            editable: true,
-        },
-        {
-            title: '地址',
-            isShow: true,
-            dataIndex: 'address',
-            editable: true
-        },
-        {
-            title: '共有情况',
-            isShow: true,
-            dataIndex: 'common_state',
-            editable: true,
-        },
-        {
-            title: '不动产单元号',
-            isShow: false,
-            dataIndex: 'unitno',
-            editable: true,
-        },
-        {
-            title: '权利性质',
-            isShow: true,
-            dataIndex: 'righttype',
-            editable: true,
-        },
-        {
-            title: '用途',
-            isShow: false,
-            dataIndex: 'useapp',
-            editable: true,
-        },
-        {
-            title: '面积',
-            isShow: false,
-            dataIndex: 'area',
-            editable: true,
-        },
-        {
-            title: '使用期限',
-            isShow: true,
-            dataIndex: 'timelimit',
-            editable: true,
-        },
-        {
-            title: '权利其他状态',
-            isShow: false,
-            dataIndex: 'right_state',
-            editable: true,
-        },
-        {
-            title: '附记',
-            isShow: false,
-            dataIndex: 'remarks',
-            editable: true,
-        },
-        {
-            title: '操作',
-            isShow: true,
-            dataIndex: 'operation',
-            editable: false,
-            isOper: true,
-            width: 250
-        }
-    ],
+    
     // rentcycle: DataTypes.STRING,//付款周期
     // firstdate:DataTypes.STRING,//首期收款日
     // signdate:DataTypes.STRING,//签订日期
@@ -444,6 +359,148 @@ export const sysCols = {
             isInEdit: true,
             isShow: false,
             editable: true
+        },
+        {
+            title: '操作',
+            dataIndex: 'operation',
+            isInEdit: false,
+            isShow: true,
+            editable: false,
+            isOper: true
+        }
+
+    ],
+
+    //产权表
+    propertyCol: [
+        {
+            title: '序号',
+            key: 'id',
+            align: "center",
+            editable: false,
+            isInEdit: false,
+            isShow: true,
+            render: (txt, record, index) => {
+                return index + 1
+            }
+        },
+        {
+            title: '物业名称',
+            dataIndex: 'simpleaddress',
+            isShow: true,
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '产权证号',
+            dataIndex: 'rightno',
+            isShow: true,
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '权属人',
+            dataIndex: 'owner',
+            isShow: true,
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '状态',
+            dataIndex: 'property_status',
+            isShow: true,
+            //isInEdit: true,
+            //editable: true,
+            isSelect:true,
+        },
+        {
+            title: '物业性质',
+            dataIndex: 'feature',
+            isShow: true,
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '社区',
+            dataIndex: 'community',
+            isShow: true,
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '类别',
+            dataIndex: 'righttype',
+            isShow: true,
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '建筑面积(平方)',
+            dataIndex: 'area',
+            isInEdit: true,
+            isShow: true,
+            editable: true,
+        },
+        {
+            title: '套内面积(平方)',
+            dataIndex: 'insidearea',
+            isInEdit: true,
+            isShow: true,
+            editable: true,
+        },
+        {
+            title: '共有情况',
+            dataIndex: 'commonstate',
+            isInEdit: true,
+            editable: true,
+        },
+        {
+            title: '不动产单元号',
+            dataIndex: 'unitno',
+            isInEdit: true,
+            editable: true,
+        },
+        {
+            title: '用途',
+            dataIndex: 'usereason',
+            isInEdit: true,
+            editable: true,
+        },  
+        {
+            title: '权利性质',
+            dataIndex: 'rightfeature',
+            isInEdit: true,
+            editable: true,
+        },      
+        {
+            title: '使用期限',
+            dataIndex: 'limitdate',
+            isInEdit: true,
+            editable: true,
+        },
+        {
+            title: '权利其他状态',
+            dataIndex: 'otherstatus',
+            isInEdit: true,
+            editable: true,
+        },
+        {
+            title: '地址',
+            dataIndex: 'address',
+            isInEdit: true,
+            editable: true,
+        },
+        {
+            title: '附记',
+            dataIndex: 'remarks',
+            isInEdit: true,
+            editable: true,
         },
         {
             title: '操作',
