@@ -35,18 +35,15 @@ const ZyRentDetailList = (props) => {
   //const [isLoading,setIsLoading] = useState(true);
 
   const EditableCell = ({
-    labelType,
     children,
     dataIndex,
     record,
-    isWarn,
-    ...restProps
   }) => {
 
 
     return (
-      // eslint-disable-next-line react/jsx-no-duplicate-props
-      <td {...restProps} type='primary' className='' className={(isWarn) ? 'warn' : ''}>
+
+      <td type='primary' >
 
         {parseTypeToLabel(record, dataIndex, children)}
       </td>
@@ -111,7 +108,7 @@ const ZyRentDetailList = (props) => {
                   >
                     编辑
                   </Button>
-                  
+
                 </span>
 
               )
@@ -197,7 +194,7 @@ const ZyRentDetailList = (props) => {
         <Form form={modelFrom} layout="vertical" name="userForm"
           initialValues={{
             //['amount']: '3',
-            ['collectdate']: date
+            'collectdate': date
           }}
           onFinish={values => {
             //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
@@ -257,7 +254,7 @@ const ZyRentDetailList = (props) => {
           }}
           onFinish={values => {
             //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
-            
+
           }}
         >
           <Form.Item
@@ -289,8 +286,8 @@ const ZyRentDetailList = (props) => {
         record.invoice_amount = parseFloat(record.invoice_amount) + values.amount;
         record.invoicedate = values.invoicedate;
         //console.log(JSON.stringify(list));
-        onEditClick(record, 'COMMIT_GetInvoice')        
-       },
+        onEditClick(record, 'COMMIT_GetInvoice')
+      },
       onCancel() { },
 
       okText: '提交',
@@ -365,44 +362,44 @@ const ZyRentDetailList = (props) => {
       }
     >
 
-
-      <Form
-        form={form}
-        layout="inline"
-        className="components-table-demo-control-bar"
-        style={{ marginBottom: 16 }
-        }
-
-      >
-        {selectItems.map(item => {
-          return (
-            <Form.Item
-              name={item.dataIndex}
-              label={item.title}
-              rules={[
-                {
-                  required: true,
-                  message: item.title,
-                },
-              ]}
-            >
-              {parseInputNode(item, 'screening')}
-            </Form.Item>
-          )
-        })}
-
-        <Form.Item >
-          <Button type="primary" onClick={onSelectByParams} >筛选</Button>
-          <Button type="primary" htmlType="reset"
-            //className="login-form-button"
-            className="btn" onClick={ResetValue}
-          >
-            重置条件
-                    </Button>
-        </Form.Item>
-
-      </Form>
       <Spin spinning={isLoading === undefined ? true : isLoading} delay={100}>
+        <Form
+          form={form}
+          layout="inline"
+          className="components-table-demo-control-bar"
+          style={{ marginBottom: 16 }
+          }
+
+        >
+          {selectItems.map(item => {
+            return (
+              <Form.Item
+                name={item.dataIndex}
+                label={item.title}
+                rules={[
+                  {
+                    required: true,
+                    message: item.title,
+                  },
+                ]}
+                key={item.dataIndex}
+              >
+                {parseInputNode(item, 'screening')}
+              </Form.Item>
+            )
+          })}
+
+          <Form.Item >
+            <Button type="primary" onClick={onSelectByParams} >筛选</Button>
+            <Button type="primary" htmlType="reset"
+              //className="login-form-button"
+              className="btn" onClick={ResetValue}
+            >
+              重置条件
+                    </Button>
+          </Form.Item>
+
+        </Form>
         <Table
           components={{
             body: {

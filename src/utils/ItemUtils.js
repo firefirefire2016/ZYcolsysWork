@@ -264,7 +264,7 @@ export const parseTypeToLabel = (record, dataIndex, chil) => {
       }
       return chil;
     default:
-      return chil;
+       return chil;
   }
 
 }

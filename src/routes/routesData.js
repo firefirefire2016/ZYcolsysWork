@@ -124,7 +124,7 @@ export const admins = [
                 icon: 'icon-shouyetubiao-05',
                 path: '/admin/zyRentDetailList',
                 component: zyRentDetailList,
-                // exact:true,
+                exact:true,
                 title: '详细账单',
                 isShow: true
             },{
