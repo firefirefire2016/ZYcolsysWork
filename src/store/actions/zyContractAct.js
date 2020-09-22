@@ -41,15 +41,29 @@ export const onLoadContractData = async (dispatch, payload) => {
 
 }
 
+export const onShowDetail = async (dispatch, payload) => {
+    let { record } = payload;
+
+    let id = record.id;
+
+    dispatch({
+        type: 'GET_ONE',
+
+        payload: { record, id, mode: 'details' }
+    })
+}
 
 
 export const onGetEditData = async (dispatch, payload) => {
     let { record } = payload;
 
+    let id = record.id;
+
     dispatch({
         type: 'GET_ONE',
-        payload: { record }
+        payload: { record, id, mode: 'editing' }
     })
+
 
 }
 
@@ -59,7 +73,8 @@ export const onCreateData = async (dispatch, isCreating) => {
     console.log(isCreating);
 
     dispatch({
-        type: 'CREATE_ONE'
+        type: 'CREATE_ONE',
+        payload: {  mode: 'editing' }
     })
 
 }

@@ -17,6 +17,7 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit,
                 rightnos:action.payload.rows,
+                selects:action.payload.selects,
                 res: null
             };
         case 'COMMIT_CREATE':

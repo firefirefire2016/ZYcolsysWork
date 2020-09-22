@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
 import { strToTime, timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyCollectionAct';
-import { onLoadContractData } from '../../../store/actions/zyContractData';
+import { onLoadContractData } from '../../../store/actions/zyContractAct';
 
 const items = sysCols.rentCol.filter(item => item.isInEdit);
 

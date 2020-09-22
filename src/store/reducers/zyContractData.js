@@ -23,11 +23,13 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 record: action.payload.record,
+                mode: action.payload.mode,
                 isCreating: false,
             };
         case 'CREATE_ONE':
             return {
                 ...state,
+                mode: action.payload.mode,
                 isCreating: true,
             };
         case 'COMMIT_CREATE':

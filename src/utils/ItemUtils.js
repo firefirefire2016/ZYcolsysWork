@@ -85,25 +85,25 @@ export const selectItems = {
 }
 
 export const parseRules = (item) => {
-  switch (item.dataIndex) {
-    case 'quitdate':
-      return (
-        [
-          {
-            required: false,
-            message: '请输入' + item.title,
-          }
-        ]
-      )
-    default:
-      return (
-        [
-          {
-            required: true,
-            message: '请输入' + item.title,
-          }
-        ]
-      )
+  if(item.isMust === true){
+    return (
+      [
+        {
+          required: true,
+          message: '请输入' + item.title,
+        }
+      ]
+    )
+  }
+  else{
+    return (
+      [
+        {
+          required: false,
+          message: '请输入' + item.title,
+        }
+      ]
+    )
   }
 
 
@@ -171,6 +171,7 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
       break;
   }
 
+  
   let inputNode = <Input type={inputType} placeholder={item.title} disabled={!canEdit}
     style={{ width: '200px' }
     } />;
@@ -232,6 +233,11 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
       break;
     case 'Copytype':
       inputNode = getSelects(item, selectItems.copytype, false);
+      break;
+    case 'Rightno':
+      if (selects) {
+        inputNode = getSelects(item, selects, false);
+      }
       break;
     default:
       break;
@@ -298,6 +304,9 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'rightno':
+      itemType = 'Rightno';
+      break;
     case 'freestartdate':
       itemType = 'date';
       break;

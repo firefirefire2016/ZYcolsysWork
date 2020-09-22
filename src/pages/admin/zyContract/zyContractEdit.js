@@ -4,7 +4,7 @@ import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
 import { strToTime, timeToStr } from '../../../utils/common';
-import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractData';
+import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractAct';
 import { onLoadTargetListByREQ } from '../../../store/actions/zyPropertyAct';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -14,17 +14,21 @@ const cols = sysCols.rentlistCol.filter(item => item.isInEdit);
 
 const { Header, Content, Sider } = Layout;
 
+const { Option } = Select;
+
 function ZyContractEdit(props) {
 
     const [form] = Form.useForm();
 
-    const { rightnos } = props.zyPropertyData;
+    const { rightnos, selects } = props.zyPropertyData;
 
-    const { record, isCreating, page, limit } = props.zyContractData;
+    const { record, isCreating, page, limit, mode } = props.zyContractData;
 
     const { onEditClick, onCreateClick, loadPropertyList } = props;
 
-    const { list } = props.zyRentlistData;
+    const { rentList } = props.zyRentlistData;
+
+    const [sels,setSels] = useState(['']);
 
 
 
@@ -37,90 +41,98 @@ function ZyContractEdit(props) {
         record,
         isWarn,
         ...restProps
-      }) => {
-    
+    }) => {
+
         return (
-          <td {...restProps} type='primary' className=''>
-    
-            {parseTypeToLabel(record, dataIndex, children)}
-          </td>
+            <td {...restProps} type='primary' className=''>
+
+                {parseTypeToLabel(record, dataIndex, children)}
+            </td>
         );
-      };
+    };
 
     const mergedColumns = cols => cols.map(col => {
         if (!col.editable) {
-          if (col.isOper === true) {
-            col.render = (text, record, index) => {
-              return (
-                <span className=''>
-                  <Button type="primary"
-                    style={{
-                      marginRight: 8,
-                    }}
-                  //  onClick={() => edit(record)}
-                  >
-                    编辑
-                    </Button>   
-    
-    
-    
-                  <Popconfirm
-                    title='确定删除?'
-                    onConfirm={() => {
-                     // onConfirmDel(record.id, -1, page, limit)
-                    }}
-                  >
-                    <Button type="primary"
-    
-                      style={{
-                        marginRight: 8,
-                      }}>
-                      删 除
+            if (col.isOper === true) {
+                col.render = (text, record, index) => {
+                    return (
+                        <span className=''>
+                            <Button type="primary"
+                                style={{
+                                    marginRight: 8,
+                                }}
+                            //  onClick={() => edit(record)}
+                            >
+                                编辑
                     </Button>
-                  </Popconfirm>
-    
-                </span>
-              );
+
+
+
+                            <Popconfirm
+                                title='确定删除?'
+                                onConfirm={() => {
+                                    // onConfirmDel(record.id, -1, page, limit)
+                                }}
+                            >
+                                <Button type="primary"
+
+                                    style={{
+                                        marginRight: 8,
+                                    }}>
+                                    删 除
+                    </Button>
+                            </Popconfirm>
+
+                        </span>
+                    );
+                }
             }
-          }
-    
-    
-          return col;
+
+
+            return col;
         }
-    
+
         return {
-          ...col,
-          onCell: (record, rowIndex) => (
-    
-            {
-              //record,
-              labelType: parseItemtype(col.dataIndex),
-              rowIndex,
-              isWarn: record.isWarn ? true : false,
-              dataIndex: col.dataIndex,
-              title: col.title,
-              record
-            }
-          )
+            ...col,
+            onCell: (record, rowIndex) => (
+
+                {
+                    //record,
+                    labelType: parseItemtype(col.dataIndex),
+                    rowIndex,
+                    isWarn: record.isWarn ? true : false,
+                    dataIndex: col.dataIndex,
+                    title: col.title,
+                    record
+                }
+            )
         };
-      });
+    });
 
     const ResetValue = async () => {
-        form.resetFields();
+        //form.resetFields();
 
-        // let testdate = new Date('2020-02-28');
+        let row = form.getFieldsValue();
 
-        // testdate.setDate(testdate.getDate() + 1);
+        let index = row.rightno;
 
-         console.log(props) ;
+        row.area = rightnos[index].area;
+        row.insidearea = rightnos[index].insidearea;
+        row.address = rightnos[index].address;
+        row.simpleaddress = rightnos[index].simpleaddress;
 
-        // testdate.getDate()
+        form.setFieldsValue({
+            ...row,
+        });
+
 
     }
 
     useEffect(() => {
 
-        loadPropertyList(1,-1);
+        loadPropertyList(1, -1);
+
+
 
         if (isCreating === false) {
 
@@ -146,6 +158,8 @@ function ZyContractEdit(props) {
             message.info('准备创建');
             form.resetFields();
         }
+
+        setSels(selects);
 
         console.log(props);
 
@@ -230,10 +244,19 @@ function ZyContractEdit(props) {
                 onFinish={onFinish}
                 className='wrap'
             >
+                <Select style={{ width: '200px' }}
+                    onSelect={() => {
+                    }}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    showSearch={true}
+                >
+                        <Option key={1}>1</Option>
+                </Select>
 
-
-
-                {items.filter(item => item.editable).map(item => {
+                {items.filter(item => item.isInEdit).map(item => {
                     return (
                         <Form.Item
                             name={item.dataIndex}
@@ -243,7 +266,7 @@ function ZyContractEdit(props) {
                                 parseRules(item)
                             }
                         >
-                            {parseInputNode(item)}
+                            {parseInputNode(item, mode)}
                         </Form.Item>
                     )
                 })}
@@ -257,7 +280,7 @@ function ZyContractEdit(props) {
                     rowKey="id"
                     bordered
                     columns={mergedColumns(cols)}
-                    dataSource={list}
+                    dataSource={rentList}
                     size="lager"
                     pagination={{
 

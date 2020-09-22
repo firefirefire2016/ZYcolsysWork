@@ -24,10 +24,17 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let rightnos = res.rows;
 
+    let selects = [];
+
+    for (let index = 0; index < rightnos.length; index++) {
+        const element = rightnos[index];
+        selects.push(element.rightno);
+    }
+
 
     dispatch({
         type: 'GET_ALL',
-        payload: { page, limit, rows, total,rightnos }
+        payload: { page, limit, rows, total,rightnos,selects }
     })
 
 

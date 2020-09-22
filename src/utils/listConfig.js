@@ -28,6 +28,7 @@ export const sysCols = {
             editable: true,
             isSelect:true,
             isInEdit:true,
+            isMust:true,
         },        
         {
             title: '合同编号',
@@ -35,6 +36,7 @@ export const sysCols = {
             dataIndex: 'contractno',
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         
         {
@@ -42,6 +44,35 @@ export const sysCols = {
             dataIndex: 'rightno',
             isShow: false,
             editable: true,
+            isInEdit:true,
+            isMust:true,
+        },
+        {
+            title: '物业名称',
+            isShow: true,
+            dataIndex: 'simpleaddress',
+            editable: false,
+            isInEdit:true,
+            isSelect:true,
+        },
+        {
+            title: '建筑面积',
+            isShow: true,
+            editable: false,
+            dataIndex: 'area',
+            isInEdit:true,
+        },
+        {
+            title: '套内面积',
+            isShow: true,
+            editable: false,
+            dataIndex: 'insidearea',
+            isInEdit:true,
+        },
+        {
+            title: '地址',
+            dataIndex: 'address',
+            editable: false,
             isInEdit:true,
         },
         {
@@ -51,6 +82,7 @@ export const sysCols = {
             editable: true,
             isInEdit:true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '联系电话',            
@@ -80,6 +112,7 @@ export const sysCols = {
             editable: true,
             isSelect:true,
             isInEdit:true,
+            isMust:true,
         },
         {
             title: '结束日期',
@@ -88,6 +121,7 @@ export const sysCols = {
             editable: true,
             isSelect:true,
             isInEdit:true,
+            isMust:true,
         },
         {
             title: '每期收款日',            
@@ -95,6 +129,7 @@ export const sysCols = {
             //isShow: true,
             editable: true,
             isInEdit:true,
+            isMust:true,
         },
         {
             title: '招租方式',
@@ -103,20 +138,6 @@ export const sysCols = {
             isInEdit:true,
             editable: true,
         },
-        {
-            title: '地址',
-            dataIndex: 'address',
-            //isShow: true,            
-            editable: false,
-            isInEdit:true,
-        },
-        // {
-        //     title: '每期租金',
-        //     dataIndex: 'once_rent',
-        //     isShow: true,
-        //     editable: true,
-        //     isInEdit:true,
-        // },
         {
             title: '当期租金',
             dataIndex: 'once_rent',
@@ -137,6 +158,7 @@ export const sysCols = {
             dataIndex: 'deposit',
             editable: true,
             isInEdit:true,
+            isMust:true,
         },
         {
             title: '滞纳金比例',
@@ -151,6 +173,7 @@ export const sysCols = {
             dataIndex: 'rentcycle',
             editable: true,
             isInEdit:true,
+            isMust:true,
         },
         {
             title: '首期收款日',
@@ -163,6 +186,7 @@ export const sysCols = {
             isShow: true,
             dataIndex: 'signdate',
             editable: true,
+            isMust:true,
         },
         {
             title: '签订人',
@@ -170,6 +194,7 @@ export const sysCols = {
             dataIndex: 'agentman',
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '租金模式',
@@ -177,21 +202,14 @@ export const sysCols = {
             dataIndex: 'rentmode',
             editable: true,
             isInEdit:true,
+            isMust:true,
         },
         {
             title: '退租日期',
             isShow: true,
             dataIndex: 'quitdate',
             editable: true,
-        },
-        {
-            title: '物业名称',
-            isShow: true,
-            dataIndex: 'simpleaddress',
-            editable: false,
-            isInEdit:true,
-            isSelect:true,
-        },
+        },        
         {
             title: '状态',
             isShow: true,
@@ -215,18 +233,7 @@ export const sysCols = {
             //isSelect:true,
             isInEdit:true,
         },
-        {
-            title: '建筑面积',
-            isShow: true,
-            dataIndex: 'area',
-            isInEdit:true,
-        },
-        {
-            title: '套内面积',
-            isShow: true,
-            dataIndex: 'insidearea',
-            isInEdit:true,
-        },
+        
         {
             title: '启用日期',
             isShow: false,
