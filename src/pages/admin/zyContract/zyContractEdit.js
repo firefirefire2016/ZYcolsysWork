@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Layout } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Layout, Modal, InputNumber } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
@@ -12,13 +12,22 @@ const items = sysCols.contractCol;
 
 const cols = sysCols.rentlistCol.filter(item => item.isInEdit);
 
+const edititems = sysCols.rentlistCol.filter(item => item.editable);
+
 const { Header, Content, Sider } = Layout;
 
 const { Option } = Select;
 
+
 function ZyContractEdit(props) {
 
     const [form] = Form.useForm();
+
+    const [modalForm] = Form.useForm();
+
+    const [addForm] = Form.useForm();
+
+    const [count, setCount] = useState(1);
 
     const { rightnos, selects } = props.zyPropertyData;
 
@@ -28,8 +37,7 @@ function ZyContractEdit(props) {
 
     const { rentList } = props.zyRentlistData;
 
-    const [sels,setSels] = useState(['']);
-
+    const [tabledata, setTableData] = useState([]);
 
 
     let obj;
@@ -61,7 +69,7 @@ function ZyContractEdit(props) {
                                 style={{
                                     marginRight: 8,
                                 }}
-                            //  onClick={() => edit(record)}
+                                onClick={() => edit(record, index)}
                             >
                                 编辑
                     </Button>
@@ -71,7 +79,7 @@ function ZyContractEdit(props) {
                             <Popconfirm
                                 title='确定删除?'
                                 onConfirm={() => {
-                                    // onConfirmDel(record.id, -1, page, limit)
+                                    handleDelete(record)
                                 }}
                             >
                                 <Button type="primary"
@@ -109,22 +117,85 @@ function ZyContractEdit(props) {
         };
     });
 
+    //编辑
+    const edit = (record, index) => {
+
+        Modal.confirm({
+            title: '租金标准',
+            visible: true,
+
+            content: (
+                <Form form={modalForm} layout="vertical" name="userForm"
+                    initialValues={{
+                        ...record
+                    }}
+                    onFinish={values => {
+                        //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
+
+                    }}
+                >
+                    {edititems.filter(item => item.isInEdit).map(item => {
+                        return (
+                            <Form.Item
+                                name={item.dataIndex}
+                                label={item.title}
+                                style={{ margin: 'auto' }}
+                                rules={
+                                    parseRules(item)
+                                }
+                            >
+                                {parseInputNode(item, mode)}
+                            </Form.Item>
+                        )
+                    })}
+
+                </Form>
+            ),
+            onOk() {
+                let values = modalForm.getFieldsValue();
+
+                let newData = new Object(tabledata);
+
+                newData[index] = { id: newData[index].id, ...values };
+
+                setTableData([...newData]);
+
+                console.log(tabledata);
+            },
+            onCancel() { },
+
+            okText: '提交',
+            cancelText: '取消'
+        });
+
+    }
+
+    const handleDelete = (record) => {
+        // const dataSource = [...this.state.dataSource];
+        // this.setState({
+        //   dataSource: dataSource.filter((item) => item.key !== key),
+        // });
+
+        setTableData(tabledata.filter(item => item.id !== record.id));
+    };
+
     const ResetValue = async () => {
         //form.resetFields();
 
-        let row = form.getFieldsValue();
+        // let row = form.getFieldsValue();
 
-        let index = row.rightno;
+        // let index = row.rightno;
 
-        row.area = rightnos[index].area;
-        row.insidearea = rightnos[index].insidearea;
-        row.address = rightnos[index].address;
-        row.simpleaddress = rightnos[index].simpleaddress;
+        // row.area = rightnos[index].area;
+        // row.insidearea = rightnos[index].insidearea;
+        // row.address = rightnos[index].address;
+        // row.simpleaddress = rightnos[index].simpleaddress;
 
-        form.setFieldsValue({
-            ...row,
-        });
+        // form.setFieldsValue({
+        //     ...row,
+        // });
 
+        console.log(tabledata);
 
     }
 
@@ -132,7 +203,9 @@ function ZyContractEdit(props) {
 
         loadPropertyList(1, -1);
 
-
+        if (rentList) {
+            setTableData(rentList);
+        }
 
         if (isCreating === false) {
 
@@ -158,8 +231,6 @@ function ZyContractEdit(props) {
             message.info('准备创建');
             form.resetFields();
         }
-
-        setSels(selects);
 
         console.log(props);
 
@@ -192,8 +263,11 @@ function ZyContractEdit(props) {
 
             if (isCreating) {
 
+                //创建合同同时，创建租金标准
+                await onCreateClick(row, page, limit, tabledata);
 
-                await onCreateClick(row, page, limit);
+
+
 
                 props.history.push('/admin/zyContract');
 
@@ -229,6 +303,63 @@ function ZyContractEdit(props) {
 
     }
 
+    const handleAdd = () => {
+        addForm.resetFields();
+        Modal.confirm({
+            title: '新增租金标准',
+            visible: true,
+
+            content: (
+                <Form form={addForm} layout="vertical" name="userForm"
+                    initialValues={{
+                    }}
+                    
+                    onFinish={values => {
+                    }}
+                >
+                    {edititems.filter(item => item.isInEdit).map(item => {
+                        return (
+                            <Form.Item
+                                key={item.dataIndex}
+                                name={item.dataIndex}
+                                label={item.title}
+                                style={{ margin: 'auto' }}
+                                rules={
+                                    parseRules(item)
+                                }
+                            >
+                                {parseInputNode(item, mode)}
+                            </Form.Item>
+                        )
+                    })}
+
+                </Form>
+            ),
+            onOk() {
+                let values = addForm.getFieldsValue();
+
+                let newData = { rowIndex:count, id: count, ...values };
+
+                if (tabledata.length <= 0) {
+                    setTableData([newData]);
+                }
+                else {
+                    setTableData([...tabledata, newData]);
+                }
+
+                setCount(count + 1);
+
+            },
+            onCancel() { },
+
+            okText: '提交',
+            cancelText: '取消'
+        });
+
+
+
+    };
+
 
     return (
         <Card>
@@ -253,7 +384,7 @@ function ZyContractEdit(props) {
                     }
                     showSearch={true}
                 >
-                        <Option key={1}>1</Option>
+                    <Option key={1}>1</Option>
                 </Select>
 
                 {items.filter(item => item.isInEdit).map(item => {
@@ -270,33 +401,43 @@ function ZyContractEdit(props) {
                         </Form.Item>
                     )
                 })}
+                <div>
+                    <Button
+                        onClick={handleAdd}
+                        type="primary"
+                        style={{
+                            marginBottom: 16,
+                        }}
+                    >
+                        新增租金标准
+        </Button>
+                    <Table
+                        components={{
+                            body: {
+                                cell: EditableCell,
+                            },
+                        }}
+                        rowKey="id"
+                        bordered
+                        columns={mergedColumns(cols)}
+                        dataSource={tabledata}
+                        size="lager"
+                        pagination={{
 
-                <Table
-                    components={{
-                        body: {
-                            cell: EditableCell,
-                        },
-                    }}
-                    rowKey="id"
-                    bordered
-                    columns={mergedColumns(cols)}
-                    dataSource={rentList}
-                    size="lager"
-                    pagination={{
-
-                        //   total,
-                        showSizeChanger: true,
-                        onChange: (p) => {
-                            //       onLoadData(p, limit);
-                        },
-                        onShowSizeChange: (current, size) => {
-                            //       onLoadData(1, size);
+                            //   total,
+                            showSizeChanger: true,
+                            onChange: (p) => {
+                                //       onLoadData(p, limit);
+                            },
+                            onShowSizeChange: (current, size) => {
+                                //       onLoadData(1, size);
+                            }
                         }
-                    }
-                    }
-                    // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
-                    scroll={{ y: 350 }}
-                />
+                        }
+                        // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
+                        scroll={{ y: 350 }}
+                    />
+                </div>
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit"
@@ -333,7 +474,7 @@ const mapDispatchToProps = (dispatch, ownprops) => {
     return {
         loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
         onEditClick: (record, page, limit) => { onCommitEdit(dispatch, { record, page, limit }) },
-        onCreateClick: (record, page, limit) => { onCommitCreate(dispatch, { record, page, limit }) },
+        onCreateClick: (record, page, limit, tabledata) => { onCommitCreate(dispatch, { record, page, limit, tabledata }) },
     }
 }
 

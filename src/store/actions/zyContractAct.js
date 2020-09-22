@@ -133,7 +133,7 @@ export const onCommitEdit = async (dispatch, payload) => {
  */
 export const onCommitCreate = async (dispatch, payload) => {
 
-    let { record, page, limit } = payload;
+    let { record, page, limit,tabledata } = payload;
 
     let reData;
 
@@ -158,6 +158,8 @@ export const onCommitCreate = async (dispatch, payload) => {
 
         ).then(async function (res) {
             //创建1到12月的收款
+
+            //创建收款标准
 
             //let tempYear =  values.startdate;
 
