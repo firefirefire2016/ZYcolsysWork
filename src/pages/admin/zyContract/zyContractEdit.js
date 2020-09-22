@@ -1,23 +1,109 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Layout } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode,parseRules, consoleTarget } from '../../../utils/ItemUtils';
-import { strToTime,timeToStr } from '../../../utils/common';
+import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
+import { strToTime, timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractData';
-import {  PlusOutlined } from '@ant-design/icons';
+import { onLoadTargetListByREQ } from '../../../store/actions/zyPropertyAct';
+import { PlusOutlined } from '@ant-design/icons';
 
 const items = sysCols.contractCol;
 
+const cols = sysCols.rentlistCol.filter(item => item.isInEdit);
 
+const { Header, Content, Sider } = Layout;
 
 function ZyContractEdit(props) {
 
     const [form] = Form.useForm();
 
-    const { record, isCreating, onEditClick, onCreateClick, page, limit } = props;
+    const { rightnos } = props.zyPropertyData;
+
+    const { record, isCreating, page, limit } = props.zyContractData;
+
+    const { onEditClick, onCreateClick, loadPropertyList } = props;
+
+    const { list } = props.zyRentlistData;
+
+
 
     let obj;
+
+    const EditableCell = ({
+        labelType,
+        dataIndex,
+        children,
+        record,
+        isWarn,
+        ...restProps
+      }) => {
+    
+        return (
+          <td {...restProps} type='primary' className=''>
+    
+            {parseTypeToLabel(record, dataIndex, children)}
+          </td>
+        );
+      };
+
+    const mergedColumns = cols => cols.map(col => {
+        if (!col.editable) {
+          if (col.isOper === true) {
+            col.render = (text, record, index) => {
+              return (
+                <span className=''>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                  //  onClick={() => edit(record)}
+                  >
+                    编辑
+                    </Button>   
+    
+    
+    
+                  <Popconfirm
+                    title='确定删除?'
+                    onConfirm={() => {
+                     // onConfirmDel(record.id, -1, page, limit)
+                    }}
+                  >
+                    <Button type="primary"
+    
+                      style={{
+                        marginRight: 8,
+                      }}>
+                      删 除
+                    </Button>
+                  </Popconfirm>
+    
+                </span>
+              );
+            }
+          }
+    
+    
+          return col;
+        }
+    
+        return {
+          ...col,
+          onCell: (record, rowIndex) => (
+    
+            {
+              //record,
+              labelType: parseItemtype(col.dataIndex),
+              rowIndex,
+              isWarn: record.isWarn ? true : false,
+              dataIndex: col.dataIndex,
+              title: col.title,
+              record
+            }
+          )
+        };
+      });
 
     const ResetValue = async () => {
         form.resetFields();
@@ -26,28 +112,32 @@ function ZyContractEdit(props) {
 
         // testdate.setDate(testdate.getDate() + 1);
 
-        // console.log(testdate.toLocaleString()) ;
+         console.log(props) ;
 
-       // testdate.getDate()
+        // testdate.getDate()
 
     }
 
     useEffect(() => {
+
+        loadPropertyList(1,-1);
+
         if (isCreating === false) {
 
             obj = new Object(record);
 
-            let nItems = items.filter(item=>{
-                return (parseItemtype(item.dataIndex) === 'date')})
-             
-             nItems.forEach((item, index, items) => {
-                 if(obj[item.dataIndex]){
-                    obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
-                 }           
- 
-             })
+            let nItems = items.filter(item => {
+                return (parseItemtype(item.dataIndex) === 'date')
+            })
 
-            
+            nItems.forEach((item, index, items) => {
+                if (obj[item.dataIndex]) {
+                    obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
+                }
+
+            })
+
+
             form.setFieldsValue({
                 ...obj
             });
@@ -75,10 +165,11 @@ function ZyContractEdit(props) {
             console.log(row);
 
 
-            let nItems = items.filter(item=>{
-               return (parseItemtype(item.dataIndex) === 'date')})
+            let nItems = items.filter(item => {
+                return (parseItemtype(item.dataIndex) === 'date')
+            })
 
-            
+
             nItems.forEach((item, index, items) => {
                 row[item.dataIndex] = timeToStr(row[item.dataIndex]);
 
@@ -120,20 +211,8 @@ function ZyContractEdit(props) {
 
     }
 
-    const getPlus = (item) =>{
-        if(item.dataIndex === 'rightno'){
-            return(
-                <PlusOutlined
-                    
-                    className="dynamic-delete-button"
-                    style={{ margin: '0 8px' }}
-                    onClick={() => {
-                    }}
-                  />
-                  
-                  )
-        }       
-            
+    const getPlus = (item) => {
+
     }
 
 
@@ -147,7 +226,7 @@ function ZyContractEdit(props) {
                 // initialValues={{
                 //     remember: true,
                 // }}
-                
+
                 onFinish={onFinish}
                 className='wrap'
             >
@@ -159,7 +238,7 @@ function ZyContractEdit(props) {
                         <Form.Item
                             name={item.dataIndex}
                             label={item.title}
-                            style={{margin:'auto'}}
+                            style={{ margin: 'auto' }}
                             rules={
                                 parseRules(item)
                             }
@@ -168,6 +247,33 @@ function ZyContractEdit(props) {
                         </Form.Item>
                     )
                 })}
+
+                <Table
+                    components={{
+                        body: {
+                            cell: EditableCell,
+                        },
+                    }}
+                    rowKey="id"
+                    bordered
+                    columns={mergedColumns(cols)}
+                    dataSource={list}
+                    size="lager"
+                    pagination={{
+
+                        //   total,
+                        showSizeChanger: true,
+                        onChange: (p) => {
+                            //       onLoadData(p, limit);
+                        },
+                        onShowSizeChange: (current, size) => {
+                            //       onLoadData(1, size);
+                        }
+                    }
+                    }
+                    // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
+                    scroll={{ y: 350 }}
+                />
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit"
@@ -190,17 +296,19 @@ function ZyContractEdit(props) {
                         返回
                     </Button >
                 </Form.Item>
+
             </Form>
         </Card>
     )
 }
 
 const mapStateToProps = (state) => {
-    return state.zyContractData;
+    return state;
 }
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
+        loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
         onEditClick: (record, page, limit) => { onCommitEdit(dispatch, { record, page, limit }) },
         onCreateClick: (record, page, limit) => { onCommitCreate(dispatch, { record, page, limit }) },
     }

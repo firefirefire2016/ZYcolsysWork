@@ -12,9 +12,9 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let { page, limit, req } = payload;
 
-    let { isInit } = req;
+    // let { isInit } = req;
 
-    let _isInit = isInit;
+    // let _isInit = isInit;
 
     const res = await getList(sourceUrl, page, limit, req);
 
@@ -22,12 +22,12 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let total = res.total;
 
-
+    let rightnos = res.rows;
 
 
     dispatch({
         type: 'GET_ALL',
-        payload: { page, limit, rows, total }
+        payload: { page, limit, rows, total,rightnos }
     })
 
 

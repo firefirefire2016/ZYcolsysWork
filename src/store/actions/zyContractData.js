@@ -37,11 +37,7 @@ export const onLoadContractData = async (dispatch, payload) => {
         type: 'GET_ALL',
         payload: { ...res, page, limit,newSelects}
     })
-
-    
-
     //setSelects(newSelects);
-
 
 }
 

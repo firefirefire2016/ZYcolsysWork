@@ -17,6 +17,7 @@ export const selectItems = {
    */
   renttypes: ['公开招租', '梅华办带合同移交', '苗圃场职工安置房', '狮山办带合同移交', '续租'],
 
+  accountingunits: ['园艺场', '金都', '南利', '区房产', '三业'],//核算单位
 
   unitts: ['国有单位', '合资单位', '私有单位'],
 
@@ -38,11 +39,11 @@ export const selectItems = {
 
   //_communitys: ['全部', '翠香', '高新区', '拱北', '横琴高新区', '吉大', '梅华', '南屏', '前山', '狮山', '湾仔', '香洲'],
 
-  righttype: [ '办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
+  righttype: ['办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
 
   //_righttype: ['办公楼', '厂房', '车库', '商铺', '铁皮棚', '学校', '幼儿园', '住宅'],
 
-  owners: [ '财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
+  owners: ['财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
     '建安公司', '梅华办', '南利公司', '南利集团', '狮山办', '湾仔小学', '香华实验学校', '香洲区教育局', '香洲区景园小学', '香洲区科学技术委员会',
     '香洲区园艺场', '新华公司', '珠海市第五中学', '珠海市前山中学', '珠海市香洲区房地产综合开发公司'],
 
@@ -50,32 +51,34 @@ export const selectItems = {
   //  '建安公司', '梅华办', '南利公司', '南利集团', '狮山办', '湾仔小学', '香华实验学校', '香洲区教育局', '香洲区景园小学', '香洲区科学技术委员会',
   //  '香洲区园艺场', '新华公司', '珠海市第五中学', '珠海市前山中学', '珠海市香洲区房地产综合开发公司'],
 
-  features: [ '企业物业', '行政物业'],
+  features: ['企业物业', '行政物业'],
 
- // _features: ['企业物业', '行政物业'],
+  // _features: ['企业物业', '行政物业'],
 
   /**
    * 合同状态
    */
   //contract_status: ['作废(已终止)', '执行中', '草稿', '退租中', '退租待结算', '已到期'],
 
-  property_status: [ '已租', '空置', '即将空置'],
+  property_status: ['已租', '空置', '即将空置'],
 
- // _property_status: ['已租', '空置', '即将空置'],
+  // _property_status: ['已租', '空置', '即将空置'],
 
-  contract_status: [ '未生效', '已生效', '即将到期', '已到期', '已失效'],
+  contract_status: ['未生效', '已生效', '即将到期', '已到期', '已失效'],
 
- // _contract_status: ['未生效', '已生效', '即将到期', '已到期', '已失效'],
+  // _contract_status: ['未生效', '已生效', '即将到期', '已到期', '已失效'],
 
 
 
   rentmodes: ['固定租金', '费率', '其他'],
 
-  copytype: ['无需', '单月', '双月','每月'],
+  copytype: ['无需', '单月', '双月', '每月'],
 
-  tenanttype: ['企业', '个人', ],
+  tenanttype: ['企业', '个人',],
 
-  rentmode:['固定租金','费率','其他'],
+  rentmode: ['固定租金', '费率', '其他'],
+
+
 
 
 
@@ -224,6 +227,12 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
     case 'Righttype':
       inputNode = getSelects(item, selectItems.righttype, false);
       break;
+    case 'Accountingunit':
+      inputNode = getSelects(item, selectItems.accountingunits, false);
+      break;
+    case 'Copytype':
+      inputNode = getSelects(item, selectItems.copytype, false);
+      break;
     default:
       break;
   }
@@ -239,6 +248,10 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
  */
 export const parseTypeToLabel = (record, dataIndex, chil) => {
   switch (dataIndex) {
+    case 'contract_status':
+      return selectItems.contract_status[record.contract_status];
+    case 'accountingunit':
+      return selectItems.accountingunits[record.accountingunit];
     case 'community':
       return selectItems.communitys[record.community];
     case 'feature':
@@ -272,7 +285,7 @@ export const parseTypeToLabel = (record, dataIndex, chil) => {
       }
       return chil;
     default:
-       return chil;
+      return chil;
   }
 
 }
@@ -285,6 +298,30 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'freestartdate':
+      itemType = 'date';
+      break;
+    case 'freeenddate':
+      itemType = 'date';
+      break;
+    case 'tel_tenant':
+      itemType = 'number';
+      break;
+    case 'tenant_idno':
+      itemType = 'number';
+      break;
+    case 'latefeesrate':
+      itemType = 'number';
+      break;
+    case 'rentcycle':
+      itemType = 'number';
+      break;
+    case 'copytype':
+      itemType = 'Copytype';
+      break;
+    case 'accountingunit':
+      itemType = 'Accountingunit';
+      break;
     case 'limitdate':
       itemType = 'date';
       break;

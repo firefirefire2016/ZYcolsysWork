@@ -9,6 +9,7 @@ import { parseItemtype, parseTypeToLabel, parseInputNode, consoleTarget } from '
 import { strToTime, timeToStr } from '../../../utils/common'
 import Modal from 'antd/lib/modal/Modal';
 
+
 const cols = sysCols.contractCol.filter(item => item.isShow);
 
 const selectItems = sysCols.contractCol.filter(item => item.isSelect);
@@ -23,6 +24,7 @@ const ZyContractList = (props) => {
 
   const EditableCell = ({
     labelType,
+    dataIndex,
     children,
     record,
     isWarn,
@@ -32,7 +34,7 @@ const ZyContractList = (props) => {
     return (
       <td {...restProps} type='primary' className=''>
 
-        {parseTypeToLabel(record, labelType, children)}
+        {parseTypeToLabel(record, dataIndex, children)}
       </td>
     );
   };

@@ -16,7 +16,6 @@ export default (state = defaultState, action) => {
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                rightnos:action.payload.rows,
                 res: null
             };
         case 'COMMIT_CREATE':

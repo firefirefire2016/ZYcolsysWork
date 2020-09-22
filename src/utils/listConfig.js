@@ -46,7 +46,7 @@ export const sysCols = {
         },
         {
             title: '客户名称',
-            isShow: false,
+            isShow: true,
             dataIndex: 'tenant',
             editable: true,
             isInEdit:true,
@@ -133,7 +133,7 @@ export const sysCols = {
         },
         {
             title: '押金',
-            isShow: false,
+            isShow: true,
             dataIndex: 'deposit',
             editable: true,
             isInEdit:true,
@@ -146,7 +146,7 @@ export const sysCols = {
             isInEdit:true,
         },        
         {
-            title: '付款周期',
+            title: '付款周期(月数)',
             isShow: false,
             dataIndex: 'rentcycle',
             editable: true,
@@ -186,7 +186,7 @@ export const sysCols = {
         },
         {
             title: '物业名称',
-            isShow: false,
+            isShow: true,
             dataIndex: 'simpleaddress',
             editable: false,
             isInEdit:true,
@@ -194,16 +194,17 @@ export const sysCols = {
         },
         {
             title: '状态',
-            isShow: false,
+            isShow: true,
             dataIndex: 'contract_status',
             editable: true,
+            isSelect:true,
         },
         {
             title: '免租开始日期',
             dataIndex: 'freestartdate',
            // isShow: true,
             editable: true,
-            isSelect:true,
+           // isSelect:true,
             isInEdit:true,
         },
         {
@@ -211,7 +212,7 @@ export const sysCols = {
             dataIndex: 'freeenddate',
            // isShow: true,
             editable: true,
-            isSelect:true,
+            //isSelect:true,
             isInEdit:true,
         },
         {
@@ -224,6 +225,27 @@ export const sysCols = {
             title: '套内面积',
             isShow: true,
             dataIndex: 'insidearea',
+            isInEdit:true,
+        },
+        {
+            title: '启用日期',
+            isShow: false,
+            dataIndex: 'effectdate',
+            editable: false,
+            isInEdit:true,
+        },
+        {
+            title: '停用日期',
+            isShow: false,
+            dataIndex: 'stopdate',
+            editable: false,
+            isInEdit:true,
+        },
+        {
+            title: '停用原因',
+            isShow: false,
+            dataIndex: 'stopreason',
+            editable: false,
             isInEdit:true,
         },
         {
@@ -602,7 +624,79 @@ export const sysCols = {
             isOper: true
         }
 
+    ],
+
+     //租金标准表
+     rentlistCol: [
+        {
+            title: '序号',
+            key: 'id',
+            align: "center",
+            editable: false,
+            isInEdit: false,
+            isShow: true,
+            render: (txt, record, index) => {
+                return index + 1
+            }
+        },
+        {
+            title: '开始日期',
+            dataIndex: 'startdate',
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },  
+        {
+            title: '结束日期',
+            dataIndex: 'enddate',
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },      
+        {
+            title: '递增率',
+            dataIndex: 'oncerate',
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '递增金额',
+            dataIndex: 'onceamount',
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '每期金额',
+            dataIndex: 'endamount',
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '合同id',
+            dataIndex: 'contractid',
+        },
+        {
+            title: '备注',
+            dataIndex: 'remarks',
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '操作',
+            dataIndex: 'operation',
+            isInEdit: true,
+          //  editable: true,
+          //  isSelect:true,
+            isOper:true,
+        }
+
     ]
+
+    
 
 }
 
