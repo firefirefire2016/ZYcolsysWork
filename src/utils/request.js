@@ -6,6 +6,7 @@ import axios from 'axios'
 
 const instance = axios.create({
   baseURL: 'http://192.168.0.222:4000/',
+  //baseURL: 'http://106.52.145.96:4000/',
   timeout: 0,
   // transformRequest:[function(data){
   //   return data

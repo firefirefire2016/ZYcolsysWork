@@ -71,6 +71,14 @@ export const selectItems = {
 
   rentmodes: ['固定租金', '费率', '其他'],
 
+  copytype: ['无需', '单月', '双月','每月'],
+
+  tenanttype: ['企业', '个人', ],
+
+  rentmode:['固定租金','费率','其他'],
+
+
+
 }
 
 export const parseRules = (item) => {

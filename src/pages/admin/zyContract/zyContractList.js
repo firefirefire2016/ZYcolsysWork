@@ -5,13 +5,13 @@ import '../../demos/home.scss'
 import { onLoadContractData, onGetEditData, onCreateData, onCommitUpdateStatus } from '../../../store/actions/zyContractData';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, consoleTarget } from '../../../utils/ItemUtils';
+import { parseItemtype, parseTypeToLabel, parseInputNode, consoleTarget } from '../../../utils/ItemUtils';
 import { strToTime, timeToStr } from '../../../utils/common'
 import Modal from 'antd/lib/modal/Modal';
 
 const cols = sysCols.contractCol.filter(item => item.isShow);
 
-const renttypes = selectItems.renttypes;
+const selectItems = sysCols.contractCol.filter(item => item.isSelect);
 
 const { Option } = Select;
 
@@ -206,90 +206,23 @@ const ZyContractList = (props) => {
         className="components-table-demo-control-bar"
         style={{ marginBottom: 16 }}
       >
-        <Form.Item
-          name="contractno"
-          label='合同编号'
-          rules={[
-            {
-              message: '请输入合同编号',
-            },
-          ]}
-        >
-          <Input placeholder="合同编号" type="text"
-
-          />
-        </Form.Item>
-
-        <Form.Item
-          label='地址'
-          name="address"
-        >
-          <Input placeholder="地址" type="text"
-
-          />
-        </Form.Item>
-
-        <Form.Item
-          label='对接人'
-          name="agentman"
-        >
-          <Input placeholder="对接人" type="text"
-
-          />
-        </Form.Item>
-
-        <Form.Item
-          label='承租方'
-          name="tenant"
-        >
-          <Input placeholder="承租方" type="text"
-
-          />
-        </Form.Item>
-
-        <Form.Item
-          label='起始日期'
-          name="startdate"
-          marginRight='20px'
-          rules={[
-            {
-              message: '请输入起始日期',
-            },
-          ]}
-        >
-          <Input
-            className="site-form-item-icon"
-            type="date"
-            placeholder="起始日期"
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="enddate"
-          label='终止日期'
-          rules={[
-            {
-              message: '请输入终止日期',
-            },
-          ]}
-        >
-          <Input
-            type="date"
-            placeholder="终止日期"
-          />
-        </Form.Item>
-
-        <Form.Item
-          label='合同状态'
-          name="contract_status"
-        >
-          <Select style={{ width: 150 }}
-          >
-            {selectItems.contract_status.map((type, index) => (
-              <Option key={index} value={index}>{type}</Option>
-            ))}
-          </Select>
-        </Form.Item>
+        {selectItems.map(item => {
+            return (
+              <Form.Item
+                name={item.dataIndex}
+                label={item.title}
+                rules={[
+                  {
+                    //required: true,
+                    message: item.title,
+                  },
+                ]}
+                key={item.dataIndex}
+              >
+                {parseInputNode(item, 'screening')}
+              </Form.Item>
+            )
+          })}
 
         <Form.Item >
           <Button type="primary" onClick={onSelectByParams} >筛选</Button>
