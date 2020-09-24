@@ -35,6 +35,7 @@ export const sysCols = {
             isShow: true,
             dataIndex: 'contractno',
             editable: true,
+            isInEdit:true,
             isSelect:true,
             isMust:true,
         },
@@ -180,6 +181,7 @@ export const sysCols = {
             isShow: false,
             dataIndex: 'firstdate',
             editable: true,
+            isInEdit:true,
         },
         {
             title: '签订日期',
@@ -677,6 +679,13 @@ export const sysCols = {
         {
             title: '每期金额',
             dataIndex: 'endamount',
+            isInEdit: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '付款周期',
+            dataIndex: 'rentcycle',
             isInEdit: true,
             editable: true,
             isSelect:true,

@@ -16,7 +16,8 @@ export default (state = defaultState, action) => {
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                newSelects:action.payload.newSelects,
+                newSelects: action.payload.newSelects,
+                res: null,
             };
         case 'GET_ONE':
             console.log(action);
@@ -25,6 +26,7 @@ export default (state = defaultState, action) => {
                 record: action.payload.record,
                 mode: action.payload.mode,
                 isCreating: false,
+                rentlist: action.payload.rentlist,
             };
         case 'CREATE_ONE':
             return {
@@ -32,27 +34,61 @@ export default (state = defaultState, action) => {
                 mode: action.payload.mode,
                 isCreating: true,
             };
+        case 'BACK_HOME':
+            return {
+                ...state,
+                mode: action.payload.mode,
+                isCreating: false,
+            };
         case 'COMMIT_CREATE':
             console.log(action);
             return {
                 ...state,
-                record:action.payload.record,
+                record: action.payload.record,
                 list: action.payload.rows,
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                res:action.payload.result
+                res: action.payload.res
             };
         case 'COMMIT_Edit':
             console.log(action);
             return {
                 ...state,
-                record:action.payload.record,
+                record: action.payload.record,
                 list: action.payload.rows,
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                res:action.payload.result
+                res: action.payload.result
+            };
+        case 'COMMIT_START'://启用
+            console.log(state);
+            return {
+                ...state,
+                res: action.payload.res,
+                mode:'started'
+            };
+        case 'COMMIT_REFUND'://退租
+            console.log(state);
+            return {
+                ...state,
+                res: action.payload.res,
+                mode:'refunded'
+            };
+        case 'COMMIT_STOP'://停用
+            console.log(state);
+            return {
+                ...state,
+                res: action.payload.res,
+                mode:'stoped'
+            };
+        case 'COMMIT_DEL'://删除
+            console.log(state);
+            return {
+                ...state,
+                res: action.payload.res,
+                mode:'deled'
             };
         default:
             return state;

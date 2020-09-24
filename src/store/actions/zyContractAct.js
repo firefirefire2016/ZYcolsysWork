@@ -11,9 +11,9 @@ const sourceUrl = 'zyContract';
 //加载列表数据，推送到reducer
 export const onLoadContractData = async (dispatch, payload) => {
 
-    // console.log('payload = ' + JSON.stringify(payload));
-
     let { page, limit, req } = payload;
+
+    console.log(payload);
 
 
     const res = await getList(sourceUrl, page, limit, req);
@@ -22,47 +22,119 @@ export const onLoadContractData = async (dispatch, payload) => {
 
     let newSelects = [];
 
-    if(list){
+    console.log(newSelects);
+
+    console.log(res);
+
+    if (list) {
         for (let index = 0; index < list.length; index++) {
             const element = list[index];
             newSelects.push(element.contractno);
         }
     }
 
-    console.log(newSelects);
 
-    
 
     dispatch({
         type: 'GET_ALL',
-        payload: { ...res, page, limit,newSelects}
+        payload: { ...res, page, limit, newSelects, res }
     })
     //setSelects(newSelects);
 
 }
 
+export const onBackHome = async (dispatch, payload) => {
+
+    dispatch({
+        type: 'BACK_HOME',
+        payload: { mode: 'home' }
+    })
+
+}
+
 export const onShowDetail = async (dispatch, payload) => {
+
     let { record } = payload;
 
     let id = record.id;
 
-    dispatch({
-        type: 'GET_ONE',
+    const _sourceUrl = 'zyRentlist';
 
-        payload: { record, id, mode: 'details' }
-    })
+    let rentlist;
+
+    await getList(_sourceUrl, 1, -1, { contractid: id }).then(function (res) {
+        if (res.code === 1) {
+            //后台问题打印
+            message.warn(res.msg);
+        }
+        else {
+            rentlist = res.rows;
+        }
+        console.log(JSON.stringify(rentlist));
+        dispatch({
+            type: 'GET_ONE',
+            payload: { record, id, mode: 'details', rentlist }
+        })
+    });
 }
 
 
-export const onGetEditData = async (dispatch, payload) => {
+export const onContinueContract = async (dispatch, payload) => {
+
     let { record } = payload;
 
     let id = record.id;
 
-    dispatch({
-        type: 'GET_ONE',
-        payload: { record, id, mode: 'editing' }
-    })
+    const _sourceUrl = 'zyRentlist';
+
+    let rentlist;
+
+    await getList(_sourceUrl, 1, -1, { contractid: id }).then(function (res) {
+        if (res.code === 1) {
+            //后台问题打印
+            message.warn(res.msg);
+        }
+        else {
+            rentlist = res.rows;
+        }
+        console.log(JSON.stringify(rentlist));
+        dispatch({
+            type: 'GET_ONE',
+            payload: { record, id, mode: 'keepon', rentlist }
+        })
+    });
+
+
+
+
+}
+
+export const onGetEditData = async (dispatch, payload) => {
+
+    let { record } = payload;
+
+    let id = record.id;
+
+    const _sourceUrl = 'zyRentlist';
+
+    let rentlist;
+
+    await getList(_sourceUrl, 1, -1, { contractid: id }).then(function (res) {
+        if (res.code === 1) {
+            //后台问题打印
+            message.warn(res.msg);
+        }
+        else {
+            rentlist = res.rows;
+        }
+        console.log(JSON.stringify(rentlist));
+        dispatch({
+            type: 'GET_ONE',
+            payload: { record, id, mode: 'editing', rentlist }
+        })
+    });
+
+
 
 
 }
@@ -74,9 +146,70 @@ export const onCreateData = async (dispatch, isCreating) => {
 
     dispatch({
         type: 'CREATE_ONE',
-        payload: {  mode: 'editing' }
+        payload: { mode: 'editing' }
     })
 
+}
+
+/**
+ * 提交变化
+ * @param {*} dispatch 
+ * @param {*} payload record,page,limit
+ */
+export const onCommitStatus = async (dispatch, payload) => {
+
+    let { record, edittype } = payload;
+
+    console.log(JSON.stringify(record));
+
+    await modifyOne(sourceUrl, record).then(async function (res) {
+
+        if (res.code === 0) {
+            message.info(res.msg);
+        }
+        else {
+            message.warn('失败:' + res.msg);
+        }
+
+        switch (edittype) {
+            case 'COMMIT_START':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
+            case 'COMMIT_REFUND':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
+            case 'COMMIT_STOP':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
+            case 'COMMIT_DEL':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
+            default:
+                break;
+        }
+
+
+    })
 }
 
 /**
@@ -86,16 +219,16 @@ export const onCreateData = async (dispatch, isCreating) => {
  */
 export const onCommitEdit = async (dispatch, payload) => {
 
-    let { record, page, limit } = payload;
+    let { record, page, limit, newtable } = payload;
+
+    let rightid = record.rightid;
+
+    let contractid = record.id;
+
+
 
     await modifyOne(sourceUrl, record).then(async function (result) {
 
-        // await getList(sourceUrl, page, limit).then(function (res) {
-        //     dispatch({
-        //         type: "COMMIT_Edit",
-        //         payload: { ...res, record, result }
-        //     })
-        //     console.log(res);
         if (result.code === 0) {
             message.info(result.msg);
         }
@@ -103,7 +236,57 @@ export const onCommitEdit = async (dispatch, payload) => {
             message.warn('修改提交失败');
         }
 
-        await updateALLStatus('zyCollection', record).then(function (res) {
+        dispatch({
+            type: "COMMIT_Edit",
+            payload: { ...result, record, result }
+        })
+
+        let targetdata = { id: rightid, contractid };
+
+        //更新对应产权
+        await modifyOne('zyProperty', targetdata).then(function (res2) {
+            if (res2.code === 0) {
+                message.info(res2.msg);
+            }
+            else {
+                message.warn('绑定产权失败:' + res2.msg);
+            }
+        })
+
+        //创建收款标准
+        const _sourceUrl = 'zyRentlist';
+
+        let tagetdata = record;
+
+        tagetdata.status = -1;
+
+        await updateALLStatus(_sourceUrl, tagetdata).then(function (res) {
+            if (res.code === 1) {
+                //后台问题打印
+                message.warn(res.msg);
+            }
+            else {
+
+                console.log('修改状态成功');
+            }
+        })
+
+        console.log(JSON.stringify(newtable));
+
+        for (let index = 0; index < newtable.length; index++) {
+            let element = newtable[index];
+            element.contractid = contractid;
+            await createTarget(_sourceUrl, element).then(function (res) {
+                if (res.code === 0) {
+                    message.info(res.msg);
+                }
+                else {
+                    message.warn('创建失败:' + res.msg);
+                }
+            });
+        }
+
+        await updateALLStatus('zyCollection', tagetdata).then(function (res) {
             if (res.code === 1) {
                 //后台问题打印
                 message.warn(res.msg);
@@ -117,9 +300,70 @@ export const onCommitEdit = async (dispatch, payload) => {
 
         )
 
+        // let includetargets = [];
+
+        // let delids = [];
+
+        // let createtargets = [];
+
+        // let isInclude = false;
+
+        // for (let index = 0; index < oldtable.length; index++) {
+        //     const element = oldtable[index];
+        //     isInclude = false;
+        //     for (let i = 0; i < newtable.length; i++) {
+        //         const ele = newtable[i];
+        //         if(ele.id === element.id){
+        //             includetargets.push(ele);
+        //             isInclude = true;
+        //             break;
+        //         }
+        //     }
+        //     if(isInclude === false){
+        //         delids.push(element.id);
+        //     }
         // }
 
-        // )
+        // let needCreate = true;
+
+        // for (let index = 0; index < newtable.length; index++) {
+        //     const element = newtable[index];
+        //     needCreate = true;
+        //     for (let i = 0; i < includetargets.length; i++) {
+        //         const ele = includetargets[i];
+        //         if(ele.id === element.id){
+        //             needCreate = false;
+        //         }                
+        //     }
+        //     if(needCreate === true){
+        //         createtargets.push(element);
+        //     }
+        // }
+
+        // for (let index = 0; index < includetargets.length; index++) {
+        //     let element = includetargets[index];
+        //     await modifyOne(_sourceUrl, element).then(function(res3){
+        //         if (res3.code === 0) {
+        //             message.info(res3.msg);
+        //         }
+        //         else {
+        //             message.warn('修改失败:' + res3.msg);
+        //         }
+        //     });            
+        // }  
+
+        // for (let index = 0; index < createtargets.length; index++) {
+        //     let element = createtargets[index];
+        //     element.contractid = contractid;
+        //     await createTarget(_sourceUrl, element).then(function(res4){
+        //         if (res4.code === 0) {
+        //             message.info(res4.msg);
+        //         }
+        //         else {
+        //             message.warn('创建失败:' + res4.msg);
+        //         }
+        //     });            
+        // }   
 
 
 
@@ -133,7 +377,82 @@ export const onCommitEdit = async (dispatch, payload) => {
  */
 export const onCommitCreate = async (dispatch, payload) => {
 
-    let { record, page, limit,tabledata } = payload;
+    let { record, page, limit, tabledata } = payload;
+
+    let reData;
+
+    let contractid;
+
+    let rightid = record.rightid;
+
+    //先创建合同
+    await createTarget(sourceUrl, record).then(async function (res) {
+
+        reData = res.data;
+
+        contractid = reData.id;
+
+        dispatch({
+            type: "COMMIT_CREATE",
+            payload: { ...res, record, res }
+        })
+        if (res.code === 0) {
+            message.info(res.msg);
+        }
+        else {
+            message.warn('创建失败:' + res.msg);
+        }
+    }
+
+    ).then(async function (res) {
+
+        let targetdata = { id: rightid, contractid };
+
+        //更新对应产权
+        await modifyOne('zyProperty', targetdata).then(function (res2) {
+            if (res2.code === 0) {
+                message.info(res2.msg);
+            }
+            else {
+                message.warn('绑定产权失败:' + res2.msg);
+            }
+        })
+
+
+        //创建收款标准
+        const _sourceUrl = 'zyRentlist';
+
+        for (let index = 0; index < tabledata.length; index++) {
+            let element = tabledata[index];
+            element.contractid = contractid;
+            await createTarget(_sourceUrl, element).then(function (res3) {
+                if (res3.code === 0) {
+                    message.info(res3.msg);
+                }
+                else {
+                    message.warn('创建失败:' + res3.msg);
+                }
+            });
+        }
+
+    })
+
+
+
+}
+
+
+
+
+
+/**
+ * 提交创建合同
+ * @param {*} dispatch 
+ * @param {*} payload record,page,limit
+ */
+export const onCommitCreate2 = async (dispatch, payload) => {
+
+    let { record, page, limit, tabledata } = payload;
 
     let reData;
 

@@ -122,7 +122,7 @@ const PropertyRightList = (props) => {
     if (isInit) {
 
       // console.log(' Init = ' + isInit);
-      onLoadData(1, -1, { isInit  });
+      onLoadData(1, -1, { isInit });
       setIsInit(false);
     }
     else {

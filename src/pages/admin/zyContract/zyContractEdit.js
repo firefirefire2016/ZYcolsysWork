@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Layout, Modal, InputNumber } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Layout, Modal, InputNumber, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
+import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget, getSelectNode } from '../../../utils/ItemUtils';
 import { strToTime, timeToStr } from '../../../utils/common';
-import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyContractAct';
+import { onCommitCreate, onCommitEdit,onBackHome } from '../../../store/actions/zyContractAct';
 import { onLoadTargetListByREQ } from '../../../store/actions/zyPropertyAct';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -31,16 +31,13 @@ function ZyContractEdit(props) {
 
     const { rightnos, selects } = props.zyPropertyData;
 
-    const { record, isCreating, page, limit, mode } = props.zyContractData;
+    const { record, isCreating, page, limit, mode, res, rentlist } = props.zyContractData;
 
-    const { onEditClick, onCreateClick, loadPropertyList } = props;
+    const { onEditClick, onCreateClick, loadPropertyList,onBackClick} = props;
 
-    const { rentList } = props.zyRentlistData;
+    //const { rentList } = props.zyRentlistData;
 
     const [tabledata, setTableData] = useState([]);
-
-
-    let obj;
 
     const EditableCell = ({
         labelType,
@@ -70,6 +67,7 @@ function ZyContractEdit(props) {
                                     marginRight: 8,
                                 }}
                                 onClick={() => edit(record, index)}
+                                hidden={mode === 'details'}
                             >
                                 编辑
                     </Button>
@@ -81,9 +79,10 @@ function ZyContractEdit(props) {
                                 onConfirm={() => {
                                     handleDelete(record)
                                 }}
+                                hidden={mode === 'details'}
                             >
                                 <Button type="primary"
-
+                                    hidden={mode === 'details'}
                                     style={{
                                         marginRight: 8,
                                     }}>
@@ -130,8 +129,6 @@ function ZyContractEdit(props) {
                         ...record
                     }}
                     onFinish={values => {
-                        //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
-
                     }}
                 >
                     {edititems.filter(item => item.isInEdit).map(item => {
@@ -160,7 +157,7 @@ function ZyContractEdit(props) {
 
                 setTableData([...newData]);
 
-                console.log(tabledata);
+                // console.log(tabledata);
             },
             onCancel() { },
 
@@ -180,106 +177,116 @@ function ZyContractEdit(props) {
     };
 
     const ResetValue = async () => {
-        //form.resetFields();
 
-        // let row = form.getFieldsValue();
+        // console.log(JSON.stringify(record));
+    }
 
-        // let index = row.rightno;
+    const loadValue = () => {
 
-        // row.area = rightnos[index].area;
-        // row.insidearea = rightnos[index].insidearea;
-        // row.address = rightnos[index].address;
-        // row.simpleaddress = rightnos[index].simpleaddress;
+        console.log(rightnos);
 
-        // form.setFieldsValue({
-        //     ...row,
-        // });
+        let index = form.getFieldValue('rightno');
 
-        console.log(tabledata);
+        //console.log(index);
+        form.setFieldsValue({
+            ...rightnos[index]
+        })
+
 
     }
 
     useEffect(() => {
+        console.log(' mode = ' + mode);
+        console.log(res);
 
-        loadPropertyList(1, -1);
-
-        if (rentList) {
-            setTableData(rentList);
+        if(mode === 'home'){
+            props.history.push('/admin/zyContract');
         }
 
-        if (isCreating === false) {
-
-            obj = new Object(record);
-
-            let nItems = items.filter(item => {
-                return (parseItemtype(item.dataIndex) === 'date')
-            })
-
-            nItems.forEach((item, index, items) => {
-                if (obj[item.dataIndex]) {
-                    obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
-                }
-
-            })
-
-
-            form.setFieldsValue({
-                ...obj
-            });
+        if (res !== null) {
+            props.history.push('/admin/zyContract');
         }
         else {
-            message.info('准备创建');
-            form.resetFields();
+            loadPropertyList(1, -1);
+
+            if (rentlist) {
+                setTableData(rentlist);
+            }
+
+            //getSelectNode();
+
+            if (isCreating === false) {
+
+                let obj = new Object(record);
+
+                let nItems = edititems.filter(item => {
+                    return (parseItemtype(item.dataIndex) === 'date')
+                })
+
+                nItems.forEach((item, index, items) => {
+                    if (obj[item.dataIndex]) {
+                        obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
+                    }
+
+                })
+
+                //console.log(obj);
+
+
+                form.setFieldsValue({
+                    ...obj
+                });
+            }
+            else {
+                message.info('准备创建');
+                form.resetFields();
+            }
+
         }
 
-        console.log(props);
 
-    }, [])
+
+    }, [res,mode])
 
     const onBackHome = () => {
-        props.history.push('/admin/zyContract');
+
+        onBackClick();
+        //props.history.push('/admin/zyContract');
     }
 
-    const onFinish = async values => {
+    const onFinish = values => {
         try {
 
             let row = form.getFieldValue();
 
-            var res = 0;
 
-            console.log(row);
-
-
-            let nItems = items.filter(item => {
+            let nItems = edititems.filter(item => {
                 return (parseItemtype(item.dataIndex) === 'date')
             })
-
 
             nItems.forEach((item, index, items) => {
                 row[item.dataIndex] = timeToStr(row[item.dataIndex]);
 
             })
 
-
             if (isCreating) {
 
+                row['rightid'] = rightnos[row.rightno].id;
+
+                row['rightno'] = selects[row.rightno];
+
                 //创建合同同时，创建租金标准
-                await onCreateClick(row, page, limit, tabledata);
-
-
-
-
-                props.history.push('/admin/zyContract');
+                onCreateClick(row, page, limit, tabledata);
 
             } else {
-                row.id = obj.id;
 
-                //console.log(row);
+                let _record = new Object(record);
 
-                await onEditClick(row, page, limit);
+                row['id'] = _record.id;
 
-                props.history.push('/admin/zyContract');
-                // 示例：等待5秒后，如果判断成功，则提示
+                console.log(row);
+
+                onEditClick(row, page, limit, tabledata);
 
             }
 
@@ -288,20 +295,11 @@ function ZyContractEdit(props) {
         }
     }
 
-    const editContract = async () => {
-
-    }
 
     //保存提交
     const onCommitButtonClick = async () => {
-
-
-
     }
 
-    const getPlus = (item) => {
-
-    }
 
     const handleAdd = () => {
         addForm.resetFields();
@@ -313,7 +311,7 @@ function ZyContractEdit(props) {
                 <Form form={addForm} layout="vertical" name="userForm"
                     initialValues={{
                     }}
-                    
+
                     onFinish={values => {
                     }}
                 >
@@ -338,14 +336,14 @@ function ZyContractEdit(props) {
             onOk() {
                 let values = addForm.getFieldsValue();
 
-                let newData = { rowIndex:count, id: count, ...values };
+                let newData = { rowIndex: count, id: count, ...values };
 
-                if (tabledata.length <= 0) {
-                    setTableData([newData]);
-                }
-                else {
-                    setTableData([...tabledata, newData]);
-                }
+                // if (tabledata.length <= 0) {
+                //     setTableData([newData]);
+                // }
+                // else {
+                setTableData([...tabledata, newData]);
+                //}
 
                 setCount(count + 1);
 
@@ -375,17 +373,7 @@ function ZyContractEdit(props) {
                 onFinish={onFinish}
                 className='wrap'
             >
-                <Select style={{ width: '200px' }}
-                    onSelect={() => {
-                    }}
-                    optionFilterProp='children'
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    showSearch={true}
-                >
-                    <Option key={1}>1</Option>
-                </Select>
+
 
                 {items.filter(item => item.isInEdit).map(item => {
                     return (
@@ -397,14 +385,17 @@ function ZyContractEdit(props) {
                                 parseRules(item)
                             }
                         >
-                            {parseInputNode(item, mode)}
+                            {parseInputNode(item, mode, selects)}
                         </Form.Item>
                     )
                 })}
+
+
                 <div>
                     <Button
                         onClick={handleAdd}
                         type="primary"
+                        hidden={mode === "details"}
                         style={{
                             marginBottom: 16,
                         }}
@@ -442,15 +433,24 @@ function ZyContractEdit(props) {
                 <Form.Item>
                     <Button type="primary" htmlType="submit"
                         //className="login-form-button"
-                        className="btn" onClick={editContract}
+                        className="btn" onClick={onCommitButtonClick}
+                        hidden={mode === 'details'}
                     >
                         提交
                     </Button>
                     <Button type="primary" htmlType="reset"
                         //className="login-form-button"
                         className="btn" onClick={ResetValue}
+                        hidden={mode === 'details'}
                     >
                         重置
+                    </Button>
+                    <Button type="primary" htmlType="reset"
+                        //className="login-form-button"
+                        className="btn" onClick={loadValue}
+                        hidden={mode === 'details'}
+                    >
+                        加载产权资料
                     </Button>
                     <Button type="primary" htmlType="button"
                         //className="login-form-button"
@@ -472,8 +472,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
+        onBackClick: (page, limit) => { onBackHome(dispatch, { page, limit}) },
         loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
-        onEditClick: (record, page, limit) => { onCommitEdit(dispatch, { record, page, limit }) },
+        onEditClick: (record, page, limit, newtable) => { onCommitEdit(dispatch, { record, page, limit, newtable }) },
         onCreateClick: (record, page, limit, tabledata) => { onCommitCreate(dispatch, { record, page, limit, tabledata }) },
     }
 }

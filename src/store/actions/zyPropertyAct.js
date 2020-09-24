@@ -52,7 +52,8 @@ export const onCreateData = async (dispatch, isCreating) => {
 
 
     dispatch({
-        type: 'CREATE_ONE'
+        type: 'CREATE_ONE',
+        payload: { mode: 'editing' }
     })
 
 }
