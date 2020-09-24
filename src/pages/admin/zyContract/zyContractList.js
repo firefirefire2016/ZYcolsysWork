@@ -169,6 +169,8 @@ const ZyContractList = (props) => {
 
     console.log(' mode = ' + mode);
 
+    console.log(' props = ' + JSON.stringify(props) );
+
     if(mode === 'details'){
       props.history.push('/admin/zyContract/edit');
     }

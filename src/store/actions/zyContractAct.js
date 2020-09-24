@@ -33,11 +33,17 @@ export const onLoadContractData = async (dispatch, payload) => {
         }
     }
 
+    list.forEach(row => {
+        row['area'] = row.zypropertyrights[0].area; 
+        row['insidearea'] = row.zypropertyrights[0].insidearea;
+        row['simpleaddress'] = row.zypropertyrights[0].simpleaddress;
+    });
+
 
 
     dispatch({
         type: 'GET_ALL',
-        payload: { ...res, page, limit, newSelects, res }
+        payload: { ...res, page, limit, newSelects, res,rows: list }
     })
     //setSelects(newSelects);
 
