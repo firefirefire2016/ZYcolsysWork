@@ -4,7 +4,7 @@ import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget, getSelectNode } from '../../../utils/ItemUtils';
 import { strToTime, timeToStr } from '../../../utils/common';
-import { onCommitCreate, onCommitEdit,onBackHome } from '../../../store/actions/zyContractAct';
+import { onCommitCreate, onCommitEdit, onBackHome, keepFormdata } from '../../../store/actions/zyContractAct';
 import { onLoadTargetListByREQ } from '../../../store/actions/zyPropertyAct';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -31,9 +31,9 @@ function ZyContractEdit(props) {
 
     const { rightnos, selects } = props.zyPropertyData;
 
-    const { record, isCreating, page, limit, mode, res, rentlist } = props.zyContractData;
+    const { record, isCreating, page, limit, mode, res, rentlist, formdata, _tabledata } = props.zyContractData;
 
-    const { onEditClick, onCreateClick, loadPropertyList,onBackClick} = props;
+    const { onEditClick, onCreateClick, loadPropertyList, onBackClick, onToSelectRight } = props;
 
     //const { rentList } = props.zyRentlistData;
 
@@ -183,23 +183,31 @@ function ZyContractEdit(props) {
 
     const loadValue = () => {
 
-        console.log(rightnos);
+        // console.log(rightnos);
 
-        let index = form.getFieldValue('rightno');
+        // let index = form.getFieldValue('rightno');
 
-        //console.log(index);
-        form.setFieldsValue({
-            ...rightnos[index]
-        })
+        // //console.log(index);
+        // form.setFieldsValue({
+        //     ...rightnos[index]
+        // })
 
+        let formdata = form.getFieldsValue();
+
+        onToSelectRight(formdata, tabledata);
+
+        props.history.push('/admin/propertyRight/select');
 
     }
 
     useEffect(() => {
         console.log(' mode = ' + mode);
-        console.log(res);
+        // console.log(res);
 
-        if(mode === 'home'){
+
+
+
+        if (mode === 'home') {
             props.history.push('/admin/zyContract');
         }
 
@@ -215,43 +223,161 @@ function ZyContractEdit(props) {
 
             //getSelectNode();
 
-            if (isCreating === false) {
+            let obj;
 
-                let obj = new Object(record);
+            let nItems;
 
-                let nItems = edititems.filter(item => {
-                    return (parseItemtype(item.dataIndex) === 'date')
-                })
+            switch (mode) {
+                case 'details':
+                    obj = new Object(record);
 
-                nItems.forEach((item, index, items) => {
-                    if (obj[item.dataIndex]) {
-                        obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
+                    nItems = edititems.filter(item => {
+                        return (parseItemtype(item.dataIndex) === 'date')
+                    })
+
+                    nItems.forEach((item, index, items) => {
+                        if (obj[item.dataIndex]) {
+                            obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
+                        }
+
+                    })
+
+                    form.setFieldsValue({
+                        ...obj
+                    });
+                    break;
+                case 'editing':
+                    obj = new Object(record);
+
+                    nItems = edititems.filter(item => {
+                        return (parseItemtype(item.dataIndex) === 'date')
+                    })
+
+                    nItems.forEach((item, index, items) => {
+                        if (obj[item.dataIndex]) {
+                            obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
+                        }
+
+                    })
+
+                    form.setFieldsValue({
+                        ...obj,
+                        ...rightnos,
+                    });
+
+                    console.log(JSON.stringify(_tabledata));
+                    if (_tabledata != null) {
+                        setTableData(_tabledata);
                     }
 
-                })
 
-                //console.log(obj);
+                    break;
+                case 'keepon':
+                    obj = new Object(record);
 
+                    nItems = edititems.filter(item => {
+                        return (parseItemtype(item.dataIndex) === 'date')
+                    })
 
-                form.setFieldsValue({
-                    ...obj
-                });
-            }
-            else {
-                message.info('准备创建');
-                form.resetFields();
+                    nItems.forEach((item, index, items) => {
+                        delete obj[item.dataIndex];
+                    })
+
+                    delete obj.contractno;
+
+                    delete obj.id;
+
+                    form.setFieldsValue({
+                        ...obj,
+                        ...rightnos,
+                    });
+
+                    console.log(JSON.stringify(_tabledata));
+                    if (_tabledata != null) {
+                        setTableData(_tabledata);
+                    }
+                    break;
+                case 'creating':
+                    //message.info('准备创建');
+                    form.resetFields();
+
+                    form.setFieldsValue({
+                        ...record,
+                        ...rightnos,
+                    })
+                    console.log(JSON.stringify(_tabledata));
+                    if (_tabledata != null) {
+                        setTableData(_tabledata);
+                    }
+                    break;
+                default:
+                    break;
             }
 
         }
 
 
 
-    }, [res,mode])
+    }, [res, mode])
 
     const onBackHome = () => {
 
         onBackClick();
         //props.history.push('/admin/zyContract');
+    }
+
+    //弹出产权表，进行绑定
+    const rightModal = record => {
+
+        // Modal.confirm({
+        //   title: '产权表',
+        //   visible: true,
+
+        //   content: (
+        //     <Form form={rightForm} layout="vertical" name="userForm"
+        //       initialValues={{
+        //       }}
+        //       onFinish={values => {
+        //       }}
+        //     >
+        //       <Form.Item
+        //         name="quitdate"
+        //         label="退租日期"
+        //         rules={[
+        //           {
+        //             required: true,
+        //           },
+        //         ]}
+        //       >
+        //         <Input type={'date'} style={{ width: '200px' }} />
+        //       </Form.Item>
+        //     </Form>
+        //   ),
+        //   onOk() {
+        //     let values = refundForm.getFieldsValue();
+        //     record.quitdate = timeToStr(values.quitdate);
+        //     let date = new Date();
+        //     let year = date.getFullYear();
+        //     let month = date.getMonth();
+        //     let day = date.getDate();
+        //     if(month < 10){
+        //       month = '0' + month;
+        //     }
+        //     if(day < 10){
+        //       day = '0' + day;
+        //     }
+        //     let stopdate = year + month + day;
+        //     record.stopdate = stopdate;
+        //     record.stopreason = '退租';
+        //     record.contract_status = 4;
+        //     onStatusClick(record,'COMMIT_REFUND');
+        //   },
+        //   onCancel() { },
+
+        //   okText: '提交',
+        //   cancelText: '取消'
+        // });
+
     }
 
     const onFinish = values => {
@@ -269,25 +395,35 @@ function ZyContractEdit(props) {
 
             })
 
-            if (isCreating) {
+            switch (mode) {
+                case 'creating':
+                    row['rightid'] = rightnos[row.rightno].id;
 
-                row['rightid'] = rightnos[row.rightno].id;
+                    row['rightno'] = selects[row.rightno];
 
-                row['rightno'] = selects[row.rightno];
+                    //创建合同同时，创建租金标准
+                    onCreateClick(row, page, limit, tabledata);
+                    break;
+                case 'keepon':
+                    row['rightid'] = rightnos[row.rightno].id;
 
-                //创建合同同时，创建租金标准
-                onCreateClick(row, page, limit, tabledata);
+                    row['rightno'] = selects[row.rightno];
 
-            } else {
+                    //续租创建合同同时，创建租金标准
+                    onCreateClick(row, page, limit, tabledata);
+                    break;
+                case 'editing':
+                    let _record = new Object(record);
 
-                let _record = new Object(record);
+                    row['id'] = _record.id;
 
-                row['id'] = _record.id;
+                    console.log(row);
 
-                console.log(row);
+                    onEditClick(row, page, limit, tabledata);
+                    break;
 
-                onEditClick(row, page, limit, tabledata);
-
+                default:
+                    break;
             }
 
         } catch (error) {
@@ -416,7 +552,7 @@ function ZyContractEdit(props) {
                         pagination={{
 
                             //   total,
-                            showSizeChanger: true,
+                            showSizeChanger: false,
                             onChange: (p) => {
                                 //       onLoadData(p, limit);
                             },
@@ -450,7 +586,7 @@ function ZyContractEdit(props) {
                         className="btn" onClick={loadValue}
                         hidden={mode === 'details'}
                     >
-                        加载产权资料
+                        选择产权资料
                     </Button>
                     <Button type="primary" htmlType="button"
                         //className="login-form-button"
@@ -472,7 +608,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-        onBackClick: (page, limit) => { onBackHome(dispatch, { page, limit}) },
+        onToSelectRight: (formdata, tabledata) => { keepFormdata(dispatch, { formdata, tabledata }) },
+        onBackClick: (page, limit) => { onBackHome(dispatch, { page, limit }) },
         loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
         onEditClick: (record, page, limit, newtable) => { onCommitEdit(dispatch, { record, page, limit, newtable }) },
         onCreateClick: (record, page, limit, tabledata) => { onCommitCreate(dispatch, { record, page, limit, tabledata }) },

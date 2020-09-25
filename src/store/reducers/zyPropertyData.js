@@ -16,8 +16,8 @@ export default (state = defaultState, action) => {
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                rightnos:action.payload.rows,
-                selects:action.payload.selects,
+                rightnos: action.payload.rows,
+                selects: action.payload.selects,
                 res: null
             };
         case 'COMMIT_CREATE':
@@ -45,6 +45,13 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 res: action.payload.res
+            };
+        case 'TO_Contract':
+            console.log(action);
+            return {
+                ...state,
+                mode:action.payload.mode,
+                rightnos:action.payload.rightnos,
             };
         default:
             return state;

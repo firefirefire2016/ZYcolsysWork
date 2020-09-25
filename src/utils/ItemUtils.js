@@ -17,7 +17,7 @@ export const selectItems = {
    */
   renttypes: ['公开招租', '梅华办带合同移交', '苗圃场职工安置房', '狮山办带合同移交', '续租'],
 
-  rentcycles:['一次性收款',1,2,3,4,5,6,7,8,9,10,11,12],
+  rentcycles: ['免租期', '首期收款', 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
 
   accountingunits: ['园艺场', '金都', '南利', '区房产', '三业'],//核算单位
 
@@ -34,6 +34,12 @@ export const selectItems = {
   invoiceselect: ['全部', '未开票', '其他'],
 
   yesOrNo: ['否', '是'],
+
+  isOwes: ['全部', '无欠费', '其他'],
+
+  needInvoices: ['全部', '无欠票', '其他'],
+
+
   /**
    * 社区
    */
@@ -87,7 +93,7 @@ export const selectItems = {
 }
 
 export const parseRules = (item) => {
-  if(item.isMust === true){
+  if (item.isMust === true) {
     return (
       [
         {
@@ -97,7 +103,7 @@ export const parseRules = (item) => {
       ]
     )
   }
-  else{
+  else {
     return (
       [
         {
@@ -165,16 +171,24 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
       //编辑模式下，iten.editable过滤不能编辑的字段
       canEdit = item.editable
       break;
+    case 'creating'://创建模式
+      //编辑模式下，iten.editable过滤不能编辑的字段
+      canEdit = item.editable
+      break;
     case 'details'://详情模式
       //详情模式下，所有字段不能使用
       canEdit = false;
+      break;
+    case 'keepon':
+      //续租模式下，iten.editable过滤不能编辑的字段
+      canEdit = item.editable
       break;
 
     default:
       break;
   }
 
-  
+
   let inputNode = <Input type={inputType} placeholder={item.title} disabled={!canEdit}
     style={{ width: '200px' }
     } />;
@@ -236,12 +250,15 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
       break;
     case 'Copytype':
       inputNode = getSelects(item, selectItems.copytype, false);
+      break; 
+    case 'Rentcycle':
+      inputNode = getSelects(item, selectItems.rentcycles, false);
       break;
-    case 'Rightno':
-      if (selects) {
-        inputNode = getSelects(item, selects, false);
-      }
-      break;
+    // case 'Rightno':
+    //   if (selects) {
+    //     inputNode = getSelects(item, selects, false);
+    //   }
+    //   break;
     default:
       break;
   }
@@ -307,8 +324,14 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'effectdate':
+      itemType = 'date';
+      break;
+    case 'stopdate':
+      itemType = 'date';
+      break;
     case 'rightno':
-      itemType = 'Rightno';
+      itemType = 'text';
       break;
     case 'freestartdate':
       itemType = 'date';
@@ -326,7 +349,7 @@ export const parseItemtype = (dataIndex) => {
       itemType = 'number';
       break;
     case 'rentcycle':
-      itemType = 'number';
+      itemType = 'Rentcycle';
       break;
     case 'copytype':
       itemType = 'Copytype';

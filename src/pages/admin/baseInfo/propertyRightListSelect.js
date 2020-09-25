@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, AutoComplete } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadTargetListByREQ, onShowDetail, onEditDetail, onCreateData, onCommitUpdateStatus } from '../../../store/actions/zyPropertyAct';
+import { onLoadTargetListByREQ, onShowDetail, onEditDetail, onCreateData, onCommitUpdateStatus,onSelectToContract } from '../../../store/actions/zyPropertyAct';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
@@ -17,12 +17,16 @@ const selectItems = sysCols.propertyCol.filter(item => item.isSelect);
 const { Option } = Select;
 
 
+
+
 const PropertyRightList = (props) => {
 
   //console.log(props);
   const [form] = Form.useForm();
 
   const [isInit, setIsInit] = useState(true);
+
+  const [target,setTarget] = useState({});
 
   const EditableCell = ({
     labelType,
@@ -42,51 +46,67 @@ const PropertyRightList = (props) => {
   };
 
 
-
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      // let obj = new Object(selectedRows[0]);
+      // setTarget(obj);
+      console.log(JSON.stringify(selectedRows[0]) );
+     // let obj = new Object(selectedRows[0]);
+      //onChangeRow(selectedRows[0]);
+      setTarget(selectedRows[0]);
+      
+    },
+    getCheckboxProps: (record) => ({
+      //console.log('record' + record);
+      disabled: record.name === 'Disabled User',
+      name: record.name,
+    }),
+  };
 
 
   const mergedColumns = cols => cols.map(col => {
     if (!col.editable) {
       if (col.isOper === true) {
-        col.render = (text, record, index) => {
-          return (
-            <span className=''>
-              <Button type="primary"
-                style={{
-                  marginRight: 8,
-                }}
-                onClick={() => edit(record)}
-              >
-                编辑
-                </Button>
+        // col.render = (text, record, index) => {
+        //   return (
+        //     <span className=''>
+        //       <Button type="primary"
+        //         style={{
+        //           marginRight: 8,
+        //         }}
+        //         onClick={() => edit(record)}
+        //       >
+        //         编辑
+        //         </Button>
 
-              <Button type="primary"
-                style={{
-                  marginRight: 8,
-                }}
-                onClick={()=>loadDetail(record)}
-                >
-                详情
-                </Button>
+        //       <Button type="primary"
+        //         style={{
+        //           marginRight: 8,
+        //         }}
+        //         onClick={() => loadDetail(record)}
+        //       >
+        //         详情
+        //         </Button>
 
-              <Popconfirm
-                title='确定删除该产权么?'
-                onConfirm={() => {
-                  onConfirmDel(record.id, -1, page, limit)
-                }}
-              >
-                <Button type="primary"
+        //       <Popconfirm
+        //         title='确定删除该产权么?'
+        //         onConfirm={() => {
+        //           onConfirmDel(record.id, -1, page, limit)
+        //         }}
+        //       >
+        //         <Button type="primary"
 
-                  style={{
-                    marginRight: 8,
-                  }}>
-                  删 除
-                </Button>
-              </Popconfirm>
+        //           style={{
+        //             marginRight: 8,
+        //           }}>
+        //           删 除
+        //         </Button>
+        //       </Popconfirm>
 
-            </span>
-          );
-        }
+        //     </span>
+        //   );
+        // }
       }
     }
 
@@ -108,7 +128,7 @@ const PropertyRightList = (props) => {
   });
 
   const { list, page, total, limit, onLoadData, onCreateClick, onDetailClick,
-    onEditClick, res, onConfirmDel } = props;
+    onEditClick, res, onConfirmDel,onChangeRow } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -116,7 +136,7 @@ const PropertyRightList = (props) => {
     message.info('加载中...');
 
     setTimeout(() => {
-      
+
     }, 1000);
 
     if (isInit) {
@@ -159,7 +179,7 @@ const PropertyRightList = (props) => {
 
   const onSelectByParams = () => {
     let row = form.getFieldValue();
-   // let { contractno, renttype, startdate, enddate } = row;
+    // let { contractno, renttype, startdate, enddate } = row;
 
     console.log('row=' + JSON.stringify(row));
 
@@ -169,13 +189,14 @@ const PropertyRightList = (props) => {
 
   return (
     <Card title="产权列表"
-      extra={
+    // extra={
 
-        <Button type="primary" size="large" onClick={create}>
-          新增产权
-           </Button>
+    //   <Button type="primary" size="large" onClick={create}>
+    //     新增产权
+    //      </Button>
 
-      }>
+    // }
+    >
 
 
       <Form
@@ -214,6 +235,10 @@ const PropertyRightList = (props) => {
 
       </Form>
       <Table
+        rowSelection={{
+          type: "radio",
+          ...rowSelection,
+        }}
         components={{
           body: {
             cell: EditableCell,
@@ -228,8 +253,8 @@ const PropertyRightList = (props) => {
 
           total,
           showSizeChanger: true,
-          onChange: (p,size) => {
-            onLoadData(p, size);
+          onChange: (p) => {
+            onLoadData(p, limit);
           },
           onShowSizeChange: (current, size) => {
             onLoadData(1, size);
@@ -239,6 +264,21 @@ const PropertyRightList = (props) => {
         // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
         scroll={{ y: 350 }}
       />
+      <Button size='large' type="primary" style={{
+        marginLeft: '40%'
+      }}
+      onClick={()=>{
+        onChangeRow(target);
+        props.history.push('/admin/zyContract/createOne');}}
+      >保存</Button>
+      <Button size='large' type="primary" style={{
+        marginLeft: '5%'
+      }}
+      onClick={()=>{
+        //onChangeRow({isCanCel:true});
+        props.history.push('/admin/zyContract/createOne');
+      }}
+      >取消</Button>
     </Card>
   )
 }
@@ -249,8 +289,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
+   // onSaveClick: (record) => { onGetEditData(dispatch, { record}) },
     onLoadData: (page, limit, req) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
-
+    onChangeRow:(record) => { onSelectToContract(dispatch, { record}) },
     onDetailClick: (record, isCreating) => { onShowDetail(dispatch, { record, isCreating }) },
     onEditClick: (record, isCreating) => { onEditDetail(dispatch, { record, isCreating }) },
     onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },

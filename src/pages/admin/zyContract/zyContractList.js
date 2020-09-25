@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message,Modal } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadContractData, onGetEditData, onCreateData, onCommitUpdateStatus,onShowDetail,onCommitStatus,onContinueContract } from '../../../store/actions/zyContractAct';
+import { onLoadContractData, onGetEditData, onCreateData, onCommitUpdateStatus,onShowDetail,
+  onCommitStatus,onContinueContract,onStartEffect,keepFormdata } from '../../../store/actions/zyContractAct';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, parseInputNode, consoleTarget } from '../../../utils/ItemUtils';
@@ -57,7 +58,7 @@ const ZyContractList = (props) => {
               return (
                 <span className=''>
                   <Popconfirm title='确定启用该合同么?' onConfirm={() => {
-                    //onConfirmDel(record.id, -1, page, limit)
+                     startUse(record);
                   }}
                   >
                   <Button type="primary" style={{ marginRight: 8 }}>
@@ -161,7 +162,7 @@ const ZyContractList = (props) => {
     };
   });
 
-  const { list, page, total, limit, onLoadData, onCreateClick, 
+  const { list, page, total, limit, onLoadData, onCreateClick, onUseClick,
     onEditClick, res, onConfirmDel,onDetailClick,mode,onStatusClick,onContinueClick } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -169,12 +170,15 @@ const ZyContractList = (props) => {
 
     console.log(' mode = ' + mode);
 
-    console.log(' props = ' + JSON.stringify(props) );
+    //console.log(' props = ' + JSON.stringify(props) );
 
     if(mode === 'details'){
       props.history.push('/admin/zyContract/edit');
     }
     else if(mode === 'editing'){
+      props.history.push('/admin/zyContract/edit');
+    }
+    else if(mode === 'keepon'){
       props.history.push('/admin/zyContract/edit');
     }
 
@@ -195,9 +199,16 @@ const ZyContractList = (props) => {
 
   }, [mode])
 
+  //创建
   const create = () => {
     onCreateClick();
     props.history.push('/admin/zyContract/createOne');
+  }
+
+  //启用
+  const startUse = record =>{
+    record.contract_status = 1;
+    onUseClick(record);
   }
 
   //退租
@@ -229,7 +240,7 @@ const ZyContractList = (props) => {
       ),
       onOk() {
         let values = refundForm.getFieldsValue();
-        values.quitdate = timeToStr(values.quitdate);
+        record.quitdate = timeToStr(values.quitdate);
         let date = new Date();
         let year = date.getFullYear();
         let month = date.getMonth();
@@ -241,10 +252,10 @@ const ZyContractList = (props) => {
           day = '0' + day;
         }
         let stopdate = year + month + day;
-        values.stopdate = stopdate;
-        values.stopreason = '退租';
-        values.contract_status = 4;
-        onStatusClick(values,'COMMIT_REFUND');
+        record.stopdate = stopdate;
+        record.stopreason = '退租';
+        record.contract_status = 4;
+        onStatusClick(record,'COMMIT_REFUND');
       },
       onCancel() { },
 
@@ -283,6 +294,7 @@ const ZyContractList = (props) => {
       ),
       onOk() {
         let values = refundForm.getFieldsValue();
+        record.stopreason = values.stopreason;
         let date = new Date();
         let year = date.getFullYear();
         let month = date.getMonth();
@@ -294,9 +306,9 @@ const ZyContractList = (props) => {
           day = '0' + day;
         }
         let stopdate = year + month + day;
-        values.stopdate = stopdate;
-        values.contract_status = 4;
-        onStatusClick(values,'COMMIT_STOP');
+        record.stopdate = stopdate;
+        record.contract_status = 4;
+        onStatusClick(record,'COMMIT_STOP');
       },
       onCancel() { },
 
@@ -306,6 +318,7 @@ const ZyContractList = (props) => {
 
   }
 
+  //详情
   const detail = record => {
 
     //设置要编辑的id
@@ -315,6 +328,7 @@ const ZyContractList = (props) => {
 
   };
 
+  //删除
   const del = record => {
 
     record.contract_status = -1;
@@ -322,18 +336,21 @@ const ZyContractList = (props) => {
 
   };
 
+  //编辑
   const edit = record => {
 
     onEditClick(record); 
 
   };
 
+  //续租
   const keepOn = record =>{
 
     onContinueClick(record);
 
   }
 
+  //重置
   const ResetValue = () => {
     form.resetFields();
   }
@@ -459,6 +476,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
+    
+    onUseClick:(record) =>{onStartEffect(dispatch,{record})},
     onContinueClick: (record) => { onContinueContract(dispatch, { record}) },
     onStatusClick: (record,edittype) => { onCommitStatus(dispatch, { record,edittype}) },
     onLoadData: (page, limit, req) => { onLoadContractData(dispatch, { page, limit, req }) },

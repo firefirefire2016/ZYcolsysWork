@@ -7,6 +7,7 @@ import NoMatch from "../pages/demos/404";
 import zyRentList from "../pages/admin/zyCollection/zyRentList";
 import propertyRightList from "../pages/admin/baseInfo/propertyRightList";
 import propertyRightEdit from "../pages/admin/baseInfo/propertyRightEdit";
+import propertyRightListSelect from "../pages/admin/baseInfo/propertyRightListSelect";
 import zyUnitList from "../pages/admin/baseInfo/zyUnitList";
 import zyRentDetailList from '../pages/admin/zyCollection/zyRentDetailList';
 import zyRentDetailEdit from '../pages/admin/zyCollection/zyRentDetailEdit';
@@ -88,6 +89,10 @@ export const admins = [
             },{
                 path: '/admin/propertyRight/createOne',
                 component: propertyRightEdit,
+                isShow: false,
+            },{
+                path: '/admin/propertyRight/select',
+                component: propertyRightListSelect,
                 isShow: false,
             },
             // , {

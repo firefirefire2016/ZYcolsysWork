@@ -6,6 +6,18 @@ import { consoleTarget } from '../../utils/ItemUtils';
 
 const sourceUrl = 'zyProperty';
 
+export const onSelectToContract = async(dispatch,payload) =>{
+
+    let { record} = payload;
+
+    dispatch({
+        type: 'TO_Contract',
+        payload: { mode:'toContract',rightnos:record }
+    })
+
+
+}
+
 
 //加载产权列表
 export const onLoadTargetListByREQ = async (dispatch, payload) => {
@@ -30,6 +42,8 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
         const element = rightnos[index];
         selects.push(element.rightno);
     }
+
+    //console.log('limit = ' + limit);
 
 
     dispatch({

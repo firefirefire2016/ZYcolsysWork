@@ -41,10 +41,10 @@ export const sysCols = {
         },
         
         {
-            title: '产权证编号',
+            title: '产权编号',
             dataIndex: 'rightno',
             isShow: false,
-            editable: true,
+            editable: false,
             isInEdit:true,
             isMust:true,
         },
@@ -168,14 +168,14 @@ export const sysCols = {
             editable: true,
             isInEdit:true,
         },        
-        {
-            title: '付款周期(月数)',
-            isShow: false,
-            dataIndex: 'rentcycle',
-            editable: true,
-            isInEdit:true,
-            isMust:true,
-        },
+        // {
+        //     title: '付款周期(月数)',
+        //     isShow: false,
+        //     dataIndex: 'rentcycle',
+        //     editable: true,
+        //     isInEdit:true,
+        //     isMust:true,
+        // },
         {
             title: '首期收款日',
             isShow: false,
@@ -198,14 +198,14 @@ export const sysCols = {
             isSelect:true,
             isMust:true,
         },
-        {
-            title: '租金模式',
-            isShow: false,
-            dataIndex: 'rentmode',
-            editable: true,
-            isInEdit:true,
-            isMust:true,
-        },
+        // {
+        //     title: '租金模式',
+        //     isShow: false,
+        //     dataIndex: 'rentmode',
+        //     editable: true,
+        //     isInEdit:true,
+        //     isMust:true,
+        // },
         {
             title: '退租日期',
             isShow: true,
@@ -219,22 +219,22 @@ export const sysCols = {
             editable: true,
             isSelect:true,
         },
-        {
-            title: '免租开始日期',
-            dataIndex: 'freestartdate',
-           // isShow: true,
-            editable: true,
-           // isSelect:true,
-            isInEdit:true,
-        },
-        {
-            title: '免租结束日期',
-            dataIndex: 'freeenddate',
-           // isShow: true,
-            editable: true,
-            //isSelect:true,
-            isInEdit:true,
-        },
+        // {
+        //     title: '免租开始日期',
+        //     dataIndex: 'freestartdate',
+        //    // isShow: true,
+        //     editable: true,
+        //    // isSelect:true,
+        //     isInEdit:true,
+        // },
+        // {
+        //     title: '免租结束日期',
+        //     dataIndex: 'freeenddate',
+        //    // isShow: true,
+        //     editable: true,
+        //     //isSelect:true,
+        //     isInEdit:true,
+        // },
         
         {
             title: '启用日期',
@@ -278,7 +278,7 @@ export const sysCols = {
             render: (txt, record, index) => {
                 return index + 1
             }
-        },
+        },        
         {
             title: '合同ID',
             dataIndex: 'contractid',
@@ -288,45 +288,107 @@ export const sysCols = {
         {
             title: '合同编号',
             dataIndex: 'contractno',
-            isShow: true,
+            isShow: false,
             editable: false
         },
         {
-            title: '承租方',
-            dataIndex: 'tenant',
+            title: '物业名称',
+            dataIndex: 'simpleaddress',
             isShow: true,
-            editable: false
+            editable: true,
+            isSelect:true,
         },
         {
-            title: '收租日',
+            title: '收款日',
             dataIndex: 'rentdate',
             isShow: true,
-            editable: false
+            editable: true,
+            isSelect:true,
         },
         {
-            title: '累计收款总额',
-            dataIndex: 'totalAmount',
+            title: '开始日期',
+            dataIndex: 'startdate',
             isShow: true,
             editable: false,
-            //render: text => <a>{text}</a>
+            isSelect:true,
         },
         {
-            title: '是否有欠租',
+            title: '结束日期',
+            dataIndex: 'enddate',
+            isShow: true,
+            editable: false,
+            isSelect:true,
+        },
+        {
+            title: '本期应收',
+            dataIndex: 'nowneedrent',
+            isShow: true,
+            editable: false,
+        },
+        {
+            title: '本期实收',
+            dataIndex: 'nowrealrent',
+            isShow: true,
+            editable: true,
+            isSelect:true,
+        },
+        {
+            title: '本期应开票',
+            dataIndex: 'nowneedinvoice',
+            isShow: true,
+            editable: false,
+        },
+        {
+            title: '本期实开票',
+            dataIndex: 'nowrealinvoice',
+            isShow: true,
+            editable: false,
+            isSelect:true,
+        },        
+        {
+            title: '累计应收',
+            dataIndex: 'totalneedAmount',
+            isShow: true,
+            editable: false,
+        },
+        {
+            title: '累计实收',
+            dataIndex: 'totalrealAmount',
+            isShow: true,
+            editable: false,
+        },
+        {
+            title: '累计应开票',
+            dataIndex: 'totalneedInvoice',
+            isShow: true,
+            editable: false,
+        },
+        {
+            title: '累计实开票',
+            dataIndex: 'totalrealInvoice',
+            isShow: true,
+            editable: false,
+        },
+        {
+            title: '累计未收',
             dataIndex: 'isOwe',
             isShow: true,
-            editable: false
+            editable: false,
+            isSelect:true,
         },
         {
-            title: '有发票未完成',
+            title: '累计未开',
             dataIndex: 'needInvoice',
             isShow: true,
-            editable: false
+            editable: false,
+            isSelect:true,
         },
         {
-            title: '月租金额',
-            dataIndex: 'month_rent',
+            title: '逾期情况',
+            dataIndex: 'overstate',
             isShow: true,
-            editable: false
+            editable: true,
+            isSelect:true,
         },
         {
             title: '操作',
@@ -513,6 +575,7 @@ export const sysCols = {
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '产权证号',
@@ -529,6 +592,7 @@ export const sysCols = {
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '状态',
@@ -545,6 +609,7 @@ export const sysCols = {
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '社区',
@@ -561,6 +626,7 @@ export const sysCols = {
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '建筑面积(平方)',
@@ -568,6 +634,7 @@ export const sysCols = {
             isInEdit: true,
             isShow: true,
             editable: true,
+            isMust:true,
         },
         {
             title: '套内面积(平方)',
@@ -617,6 +684,7 @@ export const sysCols = {
             dataIndex: 'address',
             isInEdit: true,
             editable: true,
+            isMust:true,
         },
         {
             title: '附记',

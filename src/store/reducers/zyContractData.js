@@ -8,6 +8,12 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'KEEP_DATA':
+            return{
+                ...state,
+                record:action.payload.record,
+                _tabledata:action.payload._tabledata,
+            }
         case 'GET_ALL':
             console.log(action);
             return {
@@ -60,7 +66,8 @@ export default (state = defaultState, action) => {
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                res: action.payload.result
+                //res: action.payload.result
+                mode:'home',
             };
         case 'COMMIT_START'://启用
             console.log(state);

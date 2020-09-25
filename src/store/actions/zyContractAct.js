@@ -1,6 +1,7 @@
 import { getList, createTarget, modifyOne, updateOneStatus, updateALLStatus } from '../../services/zyService'
 import store from '../store';
 import { message } from 'antd';
+import { getTodayStr } from '../../utils/common'
 //import { sourceUrl } from '../../utils/request';
 
 //const zyContractData = store.getState().zyContractData;
@@ -34,7 +35,7 @@ export const onLoadContractData = async (dispatch, payload) => {
     }
 
     list.forEach(row => {
-        row['area'] = row.zypropertyrights[0].area; 
+        row['area'] = row.zypropertyrights[0].area;
         row['insidearea'] = row.zypropertyrights[0].insidearea;
         row['simpleaddress'] = row.zypropertyrights[0].simpleaddress;
     });
@@ -43,7 +44,7 @@ export const onLoadContractData = async (dispatch, payload) => {
 
     dispatch({
         type: 'GET_ALL',
-        payload: { ...res, page, limit, newSelects, res,rows: list }
+        payload: { ...res, page, limit, newSelects, res, rows: list }
     })
     //setSelects(newSelects);
 
@@ -56,6 +57,18 @@ export const onBackHome = async (dispatch, payload) => {
         payload: { mode: 'home' }
     })
 
+}
+
+export const keepFormdata = async(dispatch,payload) =>{
+
+    let { formdata,tabledata } = payload;
+
+    //console.log(JSON.stringify(tabledata));
+
+    dispatch({
+        type: 'KEEP_DATA',
+        payload: { record:formdata,_tabledata:tabledata }
+    })
 }
 
 export const onShowDetail = async (dispatch, payload) => {
@@ -152,7 +165,7 @@ export const onCreateData = async (dispatch, isCreating) => {
 
     dispatch({
         type: 'CREATE_ONE',
-        payload: { mode: 'editing' }
+        payload: { mode: 'creating' }
     })
 
 }
@@ -448,7 +461,174 @@ export const onCommitCreate = async (dispatch, payload) => {
 }
 
 
+/**
+ * 启用合同
+ * @param {*} dispatch 
+ * @param {*} payload 
+ */
+export const onStartEffect = async (dispatch, payload) => {
+    //获取合同的id
+    let { record } = payload;
 
+    let id = record.id;
+
+    var _sourceUrl = 'zyRentlist';
+
+    //通过id获取租金标准，如果为空，则做提醒失败
+    await getList(_sourceUrl, 1, -1, { contractid: id }).then(async function (res) {
+        if (res.code === 0) {
+            //message.info(res.msg);
+        }
+        else {
+            message.warn('获取租金标准失败:' + res.msg);
+            return;
+        }
+        if (res.total <= 0) {
+            message.warn('租金标准不能为空，请编辑好再启用');
+            return
+        }
+        //假如存在租金标准，则自动生成2020年1月开始的账单
+        if (res.total >= 1) {
+            var rentUrl = 'zyCollection';
+
+            var rows = res.rows;
+
+            for (let index = 0; index < rows.length; index++) {
+                const row = rows[index];
+                //如果是首期收款
+                if (row.rentcycle === '0') {
+
+                    let dateNo = getTodayStr();
+                    if (parseFloat(row.enddate) > 20200101) {
+                        let newCollection = {
+                            contractid: id,
+                            contract_status: 1,
+                            startdate: row.startdate,
+                            enddate: row.enddate,
+                            amount_receivable: row.endamount,
+                            invoice_limit: row.endamount,
+                            billno: dateNo + '001',
+                            itemname: '0',
+                            amount_received: 0,
+                            invoice_amount: 0,
+                        }
+                        await createTarget(rentUrl, newCollection).then(function (res) {
+                            if (res.code === 1) {
+                                message.warn('自动生成账单失败:' + res.msg);
+                            }
+                        })
+                    }
+                }
+                else {
+                    //如果是后面的周期性收款，则根据周期生成账单
+                    let cycle = parseInt(row.rentcycle);//这是周期，1到12
+
+                    var startYear = parseInt(row.startdate.substring(0, 4));
+
+                    var startMonth = parseInt(row.startdate.substring(4, 6));
+
+                    var startDay = parseInt(row.startdate.substring(6, 8));
+
+                    var endYear = parseInt(row.enddate.substring(0, 4));
+
+                    var endMonth = parseInt(row.enddate.substring(4, 6));
+
+                    var endDay = parseInt(row.enddate.substring(6, 8));
+
+                    let realMonth = 0;
+
+                    let dataMonth = startMonth;
+
+                    for (let year = startYear; year < endYear; year++) {
+                        if (year < 2020) {
+                            let leftyear = 2020 - year;
+                            let leftmonth = 12 - startMonth;
+                            let leftmonths = leftyear * 12 + leftmonth + 1;
+                            realMonth = ((leftmonths - startMonth) % cycle);//取得余数
+                            if (realMonth > 0) {
+                                //1月份减去余数得跨年前的月份，再加上周期，再减去12月，可得2020年账单开始的月份
+                                dataMonth = 13 - realMonth + cycle - 12;
+                            }
+                            else {
+                                dataMonth = 1;
+                            }
+                            year = 2019;
+                            continue;
+                        }
+                        if (dataMonth > 12) {
+                            dataMonth = dataMonth - 12;
+                        }
+                        //通过周期性生成账单
+                        for (; dataMonth <= 12; dataMonth = dataMonth + cycle) {
+                            let startdate, enddate;
+                            if (dataMonth < 10) {
+                                startdate = year + '0' + dataMonth + '01';
+                            }
+                            else {
+                                startdate = year + dataMonth + '01';
+                            }
+                            if (dataMonth + 1 < 10) {
+                                enddate = year + '0' + (dataMonth + 1) + '01';
+                            }
+                            else {
+                                enddate = year + (dataMonth + 1) + '01';
+                            }
+
+                            let newCollection = {
+                                contractid: id,
+                                contract_status: 1,
+                                startdate,
+                                enddate,
+                                amount_receivable: row.endamount,
+                                invoice_limit: row.endamount,
+                                billno: startdate + '001',
+                                itemname: '0',
+                                amount_received: 0,
+                                invoice_amount: 0,
+                            }
+                            await createTarget(rentUrl, newCollection).then(function (res) {
+                                if (res.code === 1) {
+                                    message.warn('自动生成账单失败:' + res.msg);
+                                }
+                            })
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+
+
+
+        }
+
+
+        //生成账单同时，合同状态改为1，已生效
+        await updateOneStatus(sourceUrl,{contract_status:1,id}).then(function(res){
+
+            if (res.code === 0) {
+                message.info(res.msg);
+            }
+            else {
+                message.warn('启用状态失败:' + res.msg);
+            }
+
+            dispatch({
+                type: "COMMIT_START",
+                payload: { ...res,  res }
+            })
+
+        });
+
+
+    });
+
+
+}
 
 
 /**

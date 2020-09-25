@@ -3,6 +3,10 @@ export function strToTime(str) {
 
     str = str.toString();
 
+    if(str.includes('-')){
+        return str;
+    }
+
     var year = str.substring(0, 4);
 
     var month = str.substring(4, 6);
@@ -12,10 +16,33 @@ export function strToTime(str) {
     return year + '-' + month + '-' + day;
 }
 
+
+
 export function timeToStr(time) {
     console.log(time);
     return parseInt(time.replace(/-/g, ""));
 
+}
+
+export function getTodayStr(){
+    var today = new Date();
+
+    var year = today.getFullYear();
+
+    var month = today.getMonth() + 1;
+
+    var day = today.getDate();
+
+    if(month < 10){
+        month = '0' + month;
+    }
+
+    if(day < 10){
+        day = '0' + day;
+    }
+
+
+    return year  + month +  day;
 }
 
 export function getTodayDateStr(){
