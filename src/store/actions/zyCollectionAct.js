@@ -1,5 +1,5 @@
 import React from 'react'
-import { getList, modifyOne, createTarget } from '../../services/zyService'
+import { getList, modifyOne, createTarget,getMergeList } from '../../services/zyService'
 import { message, Button, notification, Modal } from 'antd';
 import { rentMergeQuery } from '../../utils/common'
 import { consoleTarget } from '../../utils/ItemUtils';
@@ -16,114 +16,101 @@ export const RentToMergeData = async (dispatch, payload) => {
 
     let { page, limit, req } = payload;
 
-    //console.log('req:' + req);
-
-    let { isInit, isOwe, needInvoice } = payload.req;
+    let { isInit } = payload.req;
 
     console.log('req:' + JSON.stringify(req));
 
     let _isInit = isInit;
 
-    const res = await getList(sourceUrl, page, limit, req);
+    const res = await getMergeList(sourceUrl, page, limit, req);
 
-    let newList = [];
+    
 
     //加载数据需要合并分析
-    let rows = res.rows;
+    let newList = res.newList;
     //遍历每月账单，合并一起
 
-    //console.log("payload:" + JSON.stringify(payload) );
-
-    //let obj = new Object(payload);
+    console.log("newList:" + JSON.stringify(newList) );
 
 
-
-    NoticeStart(rows, _isInit);
-
-
-
-
-
-    let contracts = [];
+    //NoticeStart(rows, _isInit);
 
     //console.log(' res.rows = ' + rows)
 
 
 
-    rows.forEach((row, index, rows) => {
-        let invoice_amount = parseFloat(row.invoice_amount);
-        let amount_received = parseFloat(row.amount_received);
-        let amount_receivable = parseFloat(row.amount_receivable);
-        if (!contracts.includes(row.contractid)) {
-            console.log(' id = ' + row.contractid)
-            contracts.push(row.contractid);
+    // rows.forEach((row, index, rows) => {
+    //     let invoice_amount = parseFloat(row.invoice_amount);
+    //     let amount_received = parseFloat(row.amount_received);
+    //     let amount_receivable = parseFloat(row.amount_receivable);
+    //     if (!contracts.includes(row.contractid)) {
+    //         console.log(' id = ' + row.contractid)
+    //         contracts.push(row.contractid);
 
 
 
-            let item = {
-                contractid: row.contractid,
-                contractno: row.zycontract.contractno,
-                tenant: row.zycontract.tenant,
-                rentdate: row.zycontract.rentdate,
-                totalAmount: amount_received,
-                isOwe: 0,//是否有欠租
-                needInvoice: 0,//有发票未完成
-                month_rent: row.zycontract.month_rent,
-                //totalAmount_receivable:row.amount_receivable,//总应收款
-                //totalAmount_invoice:row.invoice_amount//总开票
-                isWarn: 0
-            }
+    //         let item = {
+    //             contractid: row.contractid,
+    //             contractno: row.zycontract.contractno,
+    //             tenant: row.zycontract.tenant,
+    //             rentdate: row.zycontract.rentdate,
+    //             totalAmount: amount_received,
+    //             isOwe: 0,//是否有欠租
+    //             needInvoice: 0,//有发票未完成
+    //             month_rent: row.zycontract.month_rent,
+    //             //totalAmount_receivable:row.amount_receivable,//总应收款
+    //             //totalAmount_invoice:row.invoice_amount//总开票
+    //             isWarn: 0
+    //         }
 
-            if (amount_received < amount_receivable) {
-                item.isOwe = 1;
-                item.isWarn = 1;
-            }
+    //         if (amount_received < amount_receivable) {
+    //             item.isOwe = 1;
+    //             item.isWarn = 1;
+    //         }
 
-            if (invoice_amount < amount_receivable) {
-                item.needInvoice = 1;
-                item.isWarn = 1;
-            }
+    //         if (invoice_amount < amount_receivable) {
+    //             item.needInvoice = 1;
+    //             item.isWarn = 1;
+    //         }
 
-            newList.push(item);
-        }
-        else {
-            for (let index = 0; index < newList.length; index++) {
-                const item = newList[index];
-                if (item.contractid === row.contractid) {
-                    item.totalAmount += amount_received;
-                    if (amount_received < amount_receivable && item.isOwe === 0) {
-                        item.isOwe = 1;
-                        item.isWarn = 1;
-                    }
+    //         newList.push(item);
+    //     }
+    //     else {
+    //         for (let index = 0; index < newList.length; index++) {
+    //             const item = newList[index];
+    //             if (item.contractid === row.contractid) {
+    //                 item.totalAmount += amount_received;
+    //                 if (amount_received < amount_receivable && item.isOwe === 0) {
+    //                     item.isOwe = 1;
+    //                     item.isWarn = 1;
+    //                 }
 
-                    if (invoice_amount < amount_receivable && item.needInvoice === 0) {
-                        item.needInvoice = 1;
-                        item.isWarn = 1;
-                    }
-                }
-            }
-        }
-
-
-    })
+    //                 if (invoice_amount < amount_receivable && item.needInvoice === 0) {
+    //                     item.needInvoice = 1;
+    //                     item.isWarn = 1;
+    //                 }
+    //             }
+    //         }
+    //     }
 
 
+    // })
 
-    if (isOwe === 1) {
-        newList = newList.filter(list => list.isOwe === 1);
-    }
-    else if (isOwe === 0) {
-        newList = newList.filter(list => list.isOwe === 0);
-    }
 
-    if (needInvoice === 1) {
-        newList = newList.filter(list => list.needInvoice === 1);
-    }
-    else if (needInvoice === 0) {
-        newList = newList.filter(list => list.needInvoice === 0);
-    }
 
-    console.log('newList = ' + JSON.stringify(newList));
+    // if (isOwe === 1) {
+    //     newList = newList.filter(list => list.isOwe === 1);
+    // }
+    // else if (isOwe === 0) {
+    //     newList = newList.filter(list => list.isOwe === 0);
+    // }
+
+    // if (needInvoice === 1) {
+    //     newList = newList.filter(list => list.needInvoice === 1);
+    // }
+    // else if (needInvoice === 0) {
+    //     newList = newList.filter(list => list.needInvoice === 0);
+    // }
 
     dispatch({
         type: 'MERGE_ALL',
@@ -267,7 +254,7 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let { page, limit, req } = payload;
 
-    let { isInit, contractno, property_name, rentdate } = req;
+    let { isInit } = req;
 
     let _isInit = isInit;
 
@@ -287,7 +274,7 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
         let amount_receivable = parseFloat(row.amount_receivable);
         let invoice_limit = parseFloat(row.invoice_limit);
 
-        row.property_name = row.zycontract.property_name;
+        row.simpleaddress = row.zycontract.simpleaddress;
         row.rentdate = parseInt(row.zycontract.rentdate);
         row.contractno = row.zycontract.contractno;
 

@@ -211,8 +211,9 @@ function ZyContractEdit(props) {
             props.history.push('/admin/zyContract');
         }
 
-        if (res !== null) {
-            props.history.push('/admin/zyContract');
+        if (res) {
+            console.log('res = ' + res);
+         //   props.history.push('/admin/zyContract');
         }
         else {
             loadPropertyList(1, -1);

@@ -4,12 +4,12 @@ import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
 import {  RentToMergeData, onLoadTargetRent } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget } from '../../../utils/ItemUtils';
+import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget,parseInputNode } from '../../../utils/ItemUtils';
 import { rentMergeQuery } from '../../../utils/common';
 
 const cols = sysCols.MergeRentCol.filter(item => item.isShow);
 
-const ysorno = selectItems.yesOrNo;
+const selectReqs = sysCols.MergeRentCol.filter(item => item.isSelect);
 
 //const renttypes = selectItems.renttypes;
 
@@ -73,15 +73,6 @@ const ZyRentList = (props) => {
           );
         }
     }
-    // if (!col.editable) {
-    //   if (col.isOper === true) {
-
-    //   }
-
-
-
-
-    // }
 
     return {
       ...col,
@@ -125,9 +116,6 @@ const ZyRentList = (props) => {
     }
 
 
-    //console.log(list);
-
-
 
   }, [])
 
@@ -135,10 +123,6 @@ const ZyRentList = (props) => {
 
 
   const edit = record => {
-    //console.log(list);
-    //console.log('record=' + JSON.stringify(record) );
-
-    //let contractid = record.contractid
     //设置要编辑的id
     onLoadTartgetData(page, limit, record);
 
@@ -158,21 +142,11 @@ const ZyRentList = (props) => {
    * 筛选
    */
   const onSelectByParams = () => {
+
     let reqs = form.getFieldsValue();
 
-    let tenant = reqs['tenant'];
-
-    let month_rent = reqs['month_rent'];
-
-    let isOwe = reqs['isOwe'];
-
-    let needInvoice = reqs['needInvoice'];
-
-    //console.log( reqs);
-    //page, limit,req
-
     //SelectByREQ(tenant,month_rent,isOwe,needInvoice,page,limit);
-    SelectByREQ(page, limit, { tenant, month_rent, isOwe, needInvoice });
+    SelectByREQ(page, limit, reqs);
   }
 
   /**
@@ -181,24 +155,12 @@ const ZyRentList = (props) => {
   const onChangePageOrSize = (p, size) => {
     let reqs = form.getFieldsValue();
 
-    let tenant = reqs['tenant'];
-
-    let month_rent = reqs['month_rent'];
-
-    let isOwe = reqs['isOwe'];
-
-    let needInvoice = reqs['needInvoice'];
-
-    //console.log( reqs);
-    //page, limit,req
-
-    //SelectByREQ(tenant,month_rent,isOwe,needInvoice,page,limit);
-    SelectByREQ(p, size, { tenant, month_rent, isOwe, needInvoice });
+    SelectByREQ(p, size,reqs);
   }
 
 
   return (
-    <Card title="租赁概况列表">
+    <Card title="本期概况列表">
 
 
       <Form
@@ -207,51 +169,23 @@ const ZyRentList = (props) => {
         className="components-table-demo-control-bar"
         style={{ marginBottom: 16 }}
       >
-        <Form.Item
-          name="tenant"
-          label='承租方'
-        >
-          <Input placeholder="承租方" type="text"
-
-          />
-        </Form.Item>
-
-
-        <Form.Item
-          label='月租>='
-          name="month_rent"
-        >
-          <Input placeholder="月租" type="text" />
-          {/* {renttypes.map((type, index) => (
-              <Option key={index} value={index}>{type}</Option>
-            ))} */}
-        </Form.Item>
-
-        <Form.Item
-          label='是否欠租'
-          name="isOwe"
-          marginRight='20px'
-        >
-          <Select style={{ width: '100px' }}
-          >
-            {ysorno.map((type, index) => (
-              <Option key={index} value={index}>{type}</Option>
-            ))}
-          </Select>
-
-        </Form.Item>
-
-        <Form.Item
-          name="needInvoice"
-          label='有发票未完成'
-        >
-          <Select style={{ width: '100px' }}
-          >
-            {ysorno.map((type, index) => (
-              <Option key={index} value={index}>{type}</Option>
-            ))}
-          </Select>
-        </Form.Item>
+        {selectReqs.map(item => {
+            return (
+              <Form.Item
+                name={item.dataIndex}
+                label={item.title}
+                rules={[
+                  {
+                    required: true,
+                    message: item.title,
+                  },
+                ]}
+                key={item.dataIndex}
+              >
+                {parseInputNode(item, 'screening')}
+              </Form.Item>
+            )
+          })}
 
         <Form.Item >
           <Button type="primary" onClick={onSelectByParams} >筛选</Button>
@@ -279,15 +213,14 @@ const ZyRentList = (props) => {
 
           total,
           showSizeChanger: true,
-          onChange: (p) => {
-            onChangePageOrSize(p, limit);
+          onChange: (p,size) => {
+            onChangePageOrSize(p, size);
           },
           onShowSizeChange: (current, size) => {
             onChangePageOrSize(1, size);
           }
         }
         }
-        // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
         scroll={{ y: 350 }}
       />
     </Card>

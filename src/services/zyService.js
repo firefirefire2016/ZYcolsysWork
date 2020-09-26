@@ -12,6 +12,17 @@ export function getList(url,page,limit,req){
 }
 
 /**
+ * 获取汇总列表
+ * @param {*} page 首页页码
+ * @param {*} limit 记录数量
+ */
+export function getMergeList(url,page,limit,req){
+    //return get(`/list/0/${page}/${limit}`);
+    //http://192.168.0.222:4000/zyCollection/list/:page/:limit
+    return get(url + '/mergelist/' + page +'/' + limit,{page,limit},req);
+}
+
+/**
  * 创建目标
  * @param {*} data 数据
  */

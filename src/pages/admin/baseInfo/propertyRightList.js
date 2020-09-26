@@ -115,14 +115,9 @@ const PropertyRightList = (props) => {
 
     message.info('加载中...');
 
-    setTimeout(() => {
-      
-    }, 1000);
-
     if (isInit) {
 
-      // console.log(' Init = ' + isInit);
-      onLoadData(1, -1, { isInit });
+      onLoadData(1, limit, { isInit });
       setIsInit(false);
     }
     else {

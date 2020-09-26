@@ -267,7 +267,7 @@ export const sysCols = {
         }
     ],
 
-    //收租汇总表
+    //本期汇总表
     MergeRentCol: [
         {
             title: '序号',
@@ -310,14 +310,12 @@ export const sysCols = {
             dataIndex: 'startdate',
             isShow: true,
             editable: false,
-            isSelect:true,
         },
         {
             title: '结束日期',
             dataIndex: 'enddate',
             isShow: true,
             editable: false,
-            isSelect:true,
         },
         {
             title: '本期应收',
@@ -450,7 +448,7 @@ export const sysCols = {
         },
         {
             title: '物业名称',
-            dataIndex: 'property_name',
+            dataIndex: 'simpleaddress',
             isInEdit: false,
             isShow: true,
             editable: false,
