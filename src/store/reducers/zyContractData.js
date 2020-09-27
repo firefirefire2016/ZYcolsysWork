@@ -37,8 +37,8 @@ export default (state = defaultState, action) => {
         case 'CREATE_ONE':
             return {
                 ...state,
-                mode: action.payload.mode,
                 isCreating: true,
+                mode:'creating',
             };
         case 'BACK_HOME':
             return {

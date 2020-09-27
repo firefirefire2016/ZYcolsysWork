@@ -274,7 +274,7 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
         let amount_receivable = parseFloat(row.amount_receivable);
         let invoice_limit = parseFloat(row.invoice_limit);
 
-        row.simpleaddress = row.zycontract.simpleaddress;
+       // row.simpleaddress = row.zycontract.zypropertyright.simpleaddress;
         row.rentdate = parseInt(row.zycontract.rentdate);
         row.contractno = row.zycontract.contractno;
 
@@ -345,7 +345,8 @@ export const onCreateData = async (dispatch, isCreating) => {
 
 
     dispatch({
-        type: 'CREATE_ONE'
+        type: 'CREATE_ONE',
+      //  payload: { res }
     })
 
 }

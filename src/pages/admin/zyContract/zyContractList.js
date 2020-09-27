@@ -168,7 +168,7 @@ const ZyContractList = (props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    console.log(' mode = ' + mode);
+    //console.log(' mode = ' + mode);
 
     //console.log(' props = ' + JSON.stringify(props) );
 

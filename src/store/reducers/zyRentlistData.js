@@ -28,6 +28,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 isCreating: true,
+                mode:'creating',
             };
         case 'GET_ONEDETAIL':
             console.log(action);

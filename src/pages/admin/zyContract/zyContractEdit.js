@@ -522,7 +522,7 @@ function ZyContractEdit(props) {
                                 parseRules(item)
                             }
                         >
-                            {parseInputNode(item, mode, selects)}
+                            {parseInputNode(item, mode)}
                         </Form.Item>
                     )
                 })}

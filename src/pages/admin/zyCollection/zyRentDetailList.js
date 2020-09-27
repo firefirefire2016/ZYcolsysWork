@@ -95,6 +95,22 @@ const ZyRentDetailList = (props) => {
                   >
                     编辑
                   </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => del(record)}
+                  >
+                    删除
+                  </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => loadDetail(record)}
+                  >
+                    详情
+                  </Button>
                 </span>
               )
             case '3'://管理费
@@ -108,7 +124,22 @@ const ZyRentDetailList = (props) => {
                   >
                     编辑
                   </Button>
-
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => del(record)}
+                  >
+                    删除
+                  </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => loadDetail(record)}
+                  >
+                    详情
+                  </Button>
                 </span>
 
               )
@@ -122,6 +153,22 @@ const ZyRentDetailList = (props) => {
                     onClick={() => edit(record)}
                   >
                     编辑
+                  </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => del(record)}
+                  >
+                    删除
+                  </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => loadDetail(record)}
+                  >
+                    详情
                   </Button>
                 </span>
               )
@@ -230,6 +277,9 @@ const ZyRentDetailList = (props) => {
         // console.log(JSON.stringify(modelFrom.getFieldsValue()));
         // setRentable(false);
         let values = modelFrom.getFieldsValue();
+        if(values.amount === undefined){
+          values.amount = 0;
+        }
         record.amount_received = parseFloat(record.amount_received) + values.amount;
         record.collectdate = values.collectdate;
         onEditClick(record, 'COMMIT_GetRent')
@@ -283,6 +333,9 @@ const ZyRentDetailList = (props) => {
       ),
       onOk() {
         let values = invoiceFrom.getFieldValue();
+        if(values.amount === undefined){
+          values.amount = 0;
+        }
         record.invoice_amount = parseFloat(record.invoice_amount) + values.amount;
         record.invoicedate = values.invoicedate;
         //console.log(JSON.stringify(list));

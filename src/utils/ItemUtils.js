@@ -250,15 +250,16 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
       break;
     case 'Copytype':
       inputNode = getSelects(item, selectItems.copytype, false);
-      break; 
+      break;
     case 'Rentcycle':
       inputNode = getSelects(item, selectItems.rentcycles, false);
       break;
-    // case 'Rightno':
-    //   if (selects) {
-    //     inputNode = getSelects(item, selects, false);
-    //   }
-    //   break;
+    case 'IsOwe':
+      inputNode = getSelects(item, selectItems.isOwes, false);
+      break;
+    case 'NeedInvoice':
+      inputNode = getSelects(item, selectItems.needInvoices, false);
+      break;
     default:
       break;
   }
@@ -274,6 +275,8 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
  */
 export const parseTypeToLabel = (record, dataIndex, chil) => {
   switch (dataIndex) {
+    case 'overstate':
+      return selectItems.overstates[record.overstate];
     case 'contract_status':
       return selectItems.contract_status[record.contract_status];
     case 'accountingunit':
@@ -292,8 +295,6 @@ export const parseTypeToLabel = (record, dataIndex, chil) => {
       return selectItems.renttypes[record.renttype];
     case 'itemname':
       return selectItems.itemnames[record.itemname];
-    case 'overstate':
-      return selectItems.overstates[record.overstate];
     case 'amount_received':
       if (parseFloat(record.amount_received) > 0) {
         return chil;
@@ -324,6 +325,18 @@ export const consoleTarget = (target) => {
 export const parseItemtype = (dataIndex) => {
   let itemType = 'text';
   switch (dataIndex) {
+    case 'isOwe':
+      itemType = 'IsOwe';
+      break;
+    case 'needInvoice':
+      itemType = 'NeedInvoice';
+      break;
+    case 'nowrealinvoice':
+      itemType = 'Invoiceselect';
+      break;
+    case 'nowrealrent':
+      itemType = 'Amountselect';
+      break;
     case 'effectdate':
       itemType = 'date';
       break;

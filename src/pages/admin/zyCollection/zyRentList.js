@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Modal } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import {  RentToMergeData, onLoadTargetRent } from '../../../store/actions/zyCollectionAct';
+import {  RentToMergeData, onLoadTargetRent,onShowDetail,onCommitEdit } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget,parseInputNode } from '../../../utils/ItemUtils';
 import { rentMergeQuery } from '../../../utils/common';
+import { getTodayDateStr } from '../../../utils/common';
 
 const cols = sysCols.MergeRentCol.filter(item => item.isShow);
 
@@ -21,11 +22,18 @@ const ZyRentList = (props) => {
   //console.log(props);
   const [form] = Form.useForm();
 
+  const [rentForm] = Form.useForm();
+
+  const [invoiceForm] = Form.useForm();
+
   const [isInit, setIsInit] = useState(true);
+
+  const [date, setDate] = useState('');
 
   const EditableCell = ({
     labelType,
     children,
+    dataIndex,
     record,
     isWarn,
     ...restProps
@@ -34,7 +42,7 @@ const ZyRentList = (props) => {
     return (
       <td {...restProps} type='primary' className='' className={(isWarn) ? 'warn' : ''}>
 
-        {parseTypeToLabel(record, labelType, children)}
+        {parseTypeToLabel(record, dataIndex, children)}
       </td>
     );
   };
@@ -51,12 +59,28 @@ const ZyRentList = (props) => {
           return (
             <span className=''>
               <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => getRent(record)}
+                  >
+                    收款
+                  </Button>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => getInvoice(record)}
+                  >
+                    开票
+                  </Button>
+                <Button type="primary"
                 style={{
                   marginRight: 8,
                 }}
-                onClick={() => edit(record)}
+                onClick={() => loadDetail(record)}
               >
-                查看账单
+                详情
                 </Button>
 
             </span>
@@ -82,7 +106,7 @@ const ZyRentList = (props) => {
           //record,
           labelType: parseItemtype(col.dataIndex),
           rowIndex,
-          isWarn: record.isWarn === 1 ? true : false,
+         // isWarn: record.isWarn === 1 ? true : false,
           //isWarn:consoleTarget(record),
           dataIndex: col.dataIndex,
           title: col.title,
@@ -93,13 +117,15 @@ const ZyRentList = (props) => {
   });
 
 
-  const { list, page, total, limit, onLoadData, onLoadTartgetData, SelectByREQ } = props;
+  const { list, page, total, limit, onLoadData, 
+    onLoadTartgetData, SelectByREQ,onShowOne,onEditClick } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');
 
+    setDate(getTodayDateStr);
 
 
     setTimeout(() => {
@@ -120,9 +146,129 @@ const ZyRentList = (props) => {
   }, [])
 
 
+  //收款
+  const getRent = record => {
+
+    Modal.confirm({
+      title: '收款',
+      visible: true,
+
+      content: (
+        <Form form={rentForm} layout="vertical"
+          initialValues={{
+            'collectdate': date
+          }}
+          onFinish={values => {
+            //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
+
+          }}
+        >
+          <Form.Item
+            name="amount"
+            label="收款金额"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <InputNumber style={{ width: '200px' }} type={'number'} />
+          </Form.Item>
+          <Form.Item
+            name="collectdate"
+            label="收款日期"
+
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input type={'date'} style={{ width: '200px' }} />
+          </Form.Item>
+        </Form>
+      ),
+      onOk() {
+        // console.log(JSON.stringify(modelFrom.getFieldsValue()));
+        // setRentable(false);
+        let values = rentForm.getFieldsValue();
+        record.totalrealAmount =  record.totalrealAmount - record.amount_received  + values.amount;
+        record.amount_received = values.amount;        
+        record.collectdate = values.collectdate;
+        record.isOwe = record.totalneedAmount - record.totalrealAmount;
+        if(record.isOwe <= 0){
+          record.isOwe = '无欠费';
+        }
+        onEditClick(record, 'COMMIT_GetRent')
+      },
+      onCancel() { },
+
+      okText: '提交',
+      cancelText: '取消'
+    });
+
+  }
 
 
-  const edit = record => {
+  //开票
+  const getInvoice = record => {
+    Modal.confirm({
+      title: '开票',
+      content: (
+        <Form form={invoiceForm} layout="vertical" name="userForm"
+          initialValues={{
+            //['amount']: '3',
+             'invoicedate': date
+          }}
+          onFinish={values => {
+            //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
+
+          }}
+        >
+          <Form.Item
+            name="amount"
+            label="开票金额"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <InputNumber style={{ width: '200px' }} type={'number'} />
+          </Form.Item>
+          <Form.Item
+            name="invoicedate"
+            label="开票日期"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input type={'date'} />
+          </Form.Item>
+        </Form>
+      ),
+      onOk() {
+        let values = invoiceForm.getFieldValue();
+        record.totalrealInvoice = record.totalrealInvoice - record.invoice_amount + values.amount;
+        record.invoice_amount = values.amount;        
+        record.invoicedate = values.invoicedate;
+        record.needInvoice = record.totalneedInvoice - record.totalrealInvoice;
+        if(record.needInvoice <= 0){
+          record.needInvoice = '无欠票';
+        }
+        onEditClick(record, 'COMMIT_GetInvoice')
+      },
+      onCancel() { },
+
+      okText: '提交',
+      cancelText: '取消'
+    });
+  }
+
+
+  const getOwe = record => {
     //设置要编辑的id
     onLoadTartgetData(page, limit, record);
 
@@ -131,6 +277,22 @@ const ZyRentList = (props) => {
 
 
   };
+
+  const getNeedInvoice = record => {
+    //设置要编辑的id
+    onLoadTartgetData(page, limit, record);
+
+    props.history.push('/admin/zyRentDetailList');
+
+
+
+  };
+
+  //详情
+  const loadDetail = record => {
+    onShowOne(record);
+    props.history.push('/admin/zyRentDetail/edit');
+  }
 
 
 
@@ -233,6 +395,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
+    onShowOne: (record) => { onShowDetail(dispatch, { record }) },
+    onEditClick: (record, edittype) => { onCommitEdit(dispatch, { record, edittype }) },
     onLoadData: (page, limit, req) => { RentToMergeData(dispatch, { page, limit, req }) },
     onLoadTartgetData: (page, limit, record) => { onLoadTargetRent(dispatch, { page, limit, record }) },
     SelectByREQ: (page, limit, req) => { RentToMergeData(dispatch, { page, limit, req }) },
