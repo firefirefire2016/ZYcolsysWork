@@ -189,6 +189,7 @@ export const sysCols = {
             dataIndex: 'signdate',
             editable: true,
             isMust:true,
+            isInEdit:true,
         },
         {
             title: '签订人',
@@ -197,6 +198,7 @@ export const sysCols = {
             editable: true,
             isSelect:true,
             isMust:true,
+            isInEdit:true,
         },
         // {
         //     title: '租金模式',
@@ -537,6 +539,7 @@ export const sysCols = {
             isShow: true,
             editable: true,
             isSelect:true,
+            isMust:true
         },
         {
             title: '收款日期',

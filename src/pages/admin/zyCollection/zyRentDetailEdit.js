@@ -15,8 +15,6 @@ function ZyRentDetailEdit(props) {
 
     const [form] = Form.useForm();
 
-    //const [code,setCode] = useState(1);
-
     const { onEditClick, onCreateClick, loadContractList } = props;
 
     const { record, isCreating, page, limit, id, res,mode } = props.zyCollectionData;

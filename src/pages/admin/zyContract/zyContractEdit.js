@@ -213,7 +213,7 @@ function ZyContractEdit(props) {
 
         if (res) {
             console.log('res = ' + res);
-         //   props.history.push('/admin/zyContract');
+            props.history.push('/admin/zyContract');
         }
         else {
             loadPropertyList(1, -1);
@@ -398,17 +398,18 @@ function ZyContractEdit(props) {
 
             switch (mode) {
                 case 'creating':
-                    row['rightid'] = rightnos[row.rightno].id;
+                    console.log(rightnos);
 
-                    row['rightno'] = selects[row.rightno];
+                    console.log(row);
+
+                    row['rightid'] = row.id;
 
                     //创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
                     break;
                 case 'keepon':
-                    row['rightid'] = rightnos[row.rightno].id;
 
-                    row['rightno'] = selects[row.rightno];
+                    row['rightid'] = row.id;
 
                     //续租创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
@@ -428,6 +429,7 @@ function ZyContractEdit(props) {
             }
 
         } catch (error) {
+            console.log(error.message);
             message.warn(error.message);
         }
     }

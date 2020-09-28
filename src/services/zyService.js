@@ -38,6 +38,14 @@ export function modifyOne(url,data){
     return put(url + '/update',data);
 }
 
+/**
+ * 启用目标合同
+ * @param {*} data 目标数据
+ */
+export function startContract(url,data){
+    return put(url + '/startUse',data);
+}
+
 
 /**
  * 删除目标，修改目标状态为已删除

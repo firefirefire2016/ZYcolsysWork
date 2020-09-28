@@ -275,6 +275,8 @@ export const parseInputNode = (item, mode = 'screening', selects) => {
  */
 export const parseTypeToLabel = (record, dataIndex, chil) => {
   switch (dataIndex) {
+    case 'rentcycle':
+      return selectItems.rentcycles[record.rentcycle];
     case 'overstate':
       return selectItems.overstates[record.overstate];
     case 'contract_status':
