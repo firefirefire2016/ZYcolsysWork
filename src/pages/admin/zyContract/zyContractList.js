@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message,Modal } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message,Modal, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
 import { onLoadContractData, onGetEditData, onCreateData, onCommitUpdateStatus,onShowDetail,
@@ -161,7 +161,7 @@ const ZyContractList = (props) => {
   });
 
   const { list, page, total, limit, onLoadData, onCreateClick, onUseClick,contract_status,record,
-    onEditClick, res, onConfirmDel,onDetailClick,mode,onStatusClick,onContinueClick } = props;
+    onEditClick, res, onConfirmDel,onDetailClick,mode,onStatusClick,onContinueClick,isLoading } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -414,7 +414,7 @@ const ZyContractList = (props) => {
 
       }>
 
-
+<Spin spinning={isLoading? true : false} >
       <Form
         form={form}
         layout="inline"
@@ -477,6 +477,7 @@ const ZyContractList = (props) => {
         // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
         scroll={{ y: 350 }}
       />
+      </Spin>
     </Card>
   )
 }

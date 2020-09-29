@@ -435,13 +435,14 @@ export const sysCols = {
             isShow: false,
             isInEdit: true,
             editable: true,
+            isMust:true,
         },
         {
             title: '账单编号',
             dataIndex: 'billno',
             isShow: true,
             isInEdit: true,
-            editable: true,
+            editable: false,
             isSelect:true,
         },
         {
@@ -537,23 +538,23 @@ export const sysCols = {
             dataIndex: 'overstate',
             isInEdit: true,
             isShow: true,
-            editable: true,
+            editable: false,
             isSelect:true,
-            isMust:true
+            //isMust:true
         },
         {
             title: '收款日期',
             dataIndex: 'collectdate',
             isInEdit: true,
             isShow: false,
-            editable: true
+            editable: false
         },
         {
             title: '开票日期',
             dataIndex: 'invoicedate',
             isInEdit: true,
             isShow: false,
-            editable: true
+            editable: false
         },
         {
             title: '操作',

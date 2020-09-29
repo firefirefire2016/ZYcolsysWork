@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
 import { onLoadTargetListByREQ, onShowDetail, onEditDetail, onCreateData, onCommitUpdateStatus } from '../../../store/actions/zyPropertyAct';
@@ -107,7 +107,7 @@ const PropertyRightList = (props) => {
     };
   });
 
-  const { list, page, total, limit, onLoadData, onCreateClick, onDetailClick,
+  const { list, page, total, limit, onLoadData, onCreateClick, onDetailClick,isLoading,
     onEditClick, res, onConfirmDel } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -117,7 +117,7 @@ const PropertyRightList = (props) => {
 
     if (isInit) {
 
-      onLoadData(1, limit, { isInit });
+      onLoadData(1, -1, { isInit });
       setIsInit(false);
     }
     else {
@@ -125,7 +125,7 @@ const PropertyRightList = (props) => {
     }
 
 
-  }, [res])
+  }, [])
 
   const create = () => {
     onCreateClick(true);
@@ -172,7 +172,7 @@ const PropertyRightList = (props) => {
 
       }>
 
-
+<Spin spinning={isLoading? true : false} >
       <Form
         form={form}
         layout="inline"
@@ -228,6 +228,7 @@ const PropertyRightList = (props) => {
         // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
         scroll={{ y: 350 }}
       />
+      </Spin>
     </Card>
   )
 }

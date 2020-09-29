@@ -13,6 +13,9 @@ const sourceUrl = 'zyCollection';
 
 export const RentToMergeData = async (dispatch, payload) => {
 
+    dispatch({
+        type: 'LOADING',
+    })
 
     let { page, limit, req } = payload;
 
@@ -33,84 +36,8 @@ export const RentToMergeData = async (dispatch, payload) => {
     console.log("newList:" + JSON.stringify(newList) );
 
 
-    //NoticeStart(rows, _isInit);
 
-    //console.log(' res.rows = ' + rows)
-
-
-
-    // rows.forEach((row, index, rows) => {
-    //     let invoice_amount = parseFloat(row.invoice_amount);
-    //     let amount_received = parseFloat(row.amount_received);
-    //     let amount_receivable = parseFloat(row.amount_receivable);
-    //     if (!contracts.includes(row.contractid)) {
-    //         console.log(' id = ' + row.contractid)
-    //         contracts.push(row.contractid);
-
-
-
-    //         let item = {
-    //             contractid: row.contractid,
-    //             contractno: row.zycontract.contractno,
-    //             tenant: row.zycontract.tenant,
-    //             rentdate: row.zycontract.rentdate,
-    //             totalAmount: amount_received,
-    //             isOwe: 0,//是否有欠租
-    //             needInvoice: 0,//有发票未完成
-    //             month_rent: row.zycontract.month_rent,
-    //             //totalAmount_receivable:row.amount_receivable,//总应收款
-    //             //totalAmount_invoice:row.invoice_amount//总开票
-    //             isWarn: 0
-    //         }
-
-    //         if (amount_received < amount_receivable) {
-    //             item.isOwe = 1;
-    //             item.isWarn = 1;
-    //         }
-
-    //         if (invoice_amount < amount_receivable) {
-    //             item.needInvoice = 1;
-    //             item.isWarn = 1;
-    //         }
-
-    //         newList.push(item);
-    //     }
-    //     else {
-    //         for (let index = 0; index < newList.length; index++) {
-    //             const item = newList[index];
-    //             if (item.contractid === row.contractid) {
-    //                 item.totalAmount += amount_received;
-    //                 if (amount_received < amount_receivable && item.isOwe === 0) {
-    //                     item.isOwe = 1;
-    //                     item.isWarn = 1;
-    //                 }
-
-    //                 if (invoice_amount < amount_receivable && item.needInvoice === 0) {
-    //                     item.needInvoice = 1;
-    //                     item.isWarn = 1;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-
-    // })
-
-
-
-    // if (isOwe === 1) {
-    //     newList = newList.filter(list => list.isOwe === 1);
-    // }
-    // else if (isOwe === 0) {
-    //     newList = newList.filter(list => list.isOwe === 0);
-    // }
-
-    // if (needInvoice === 1) {
-    //     newList = newList.filter(list => list.needInvoice === 1);
-    // }
-    // else if (needInvoice === 0) {
-    //     newList = newList.filter(list => list.needInvoice === 0);
-    // }
+    
 
     dispatch({
         type: 'MERGE_ALL',
@@ -252,13 +179,17 @@ const NoticeStart = (rows, isInit) => {
 //加载账单详情列表
 export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
+    dispatch({
+        type: 'LOADING',
+    })
+
     let { page, limit, req } = payload;
 
     let { isInit } = req;
 
     let _isInit = isInit;
 
-    consoleTarget(req);
+    console.log(req);
 
     const res = await getList(sourceUrl, page, limit, req);
 
@@ -287,16 +218,10 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let total = res.total;
 
-
-
-
     dispatch({
         type: 'GET_TARGETLIST',
         payload: { page, limit, newList, total }
     })
-
-
-
 
 }
 

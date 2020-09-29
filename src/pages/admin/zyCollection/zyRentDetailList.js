@@ -207,24 +207,29 @@ const ZyRentDetailList = (props) => {
 
     message.info('加载中...');
 
+
+    
+
     setDate(getTodayDateStr);
 
-    setTimeout(() => {
-      if (isInit) {
-        //onLoadData(1, -1, contractid,isInit);
-        SelectByREQ(1, -1, { contractid, isInit });
-        setIsInit(false);
-      }
-      else {
-        //从本期账单过来的话
-        form.setFieldsValue({
-          contractno,
-          overstate
-        })
-        SelectByREQ(1, limit, { contractid, isInit, contractno, overstate });
+    if (isInit) {
+      //onLoadData(1, -1, contractid,isInit);
+      SelectByREQ(1, -1, { contractid, isInit });
+      setIsInit(false);
+    }
+    else {
+      //从本期账单过来的话
+      form.setFieldsValue({
+        contractno,
+        overstate
+      })
+      SelectByREQ(1, limit, { contractid, isInit, contractno, overstate });
 
-      }
-    }, 100);
+    }
+
+    // setTimeout(() => {
+      
+    // }, 100);
 
   }, [])
 
@@ -415,7 +420,7 @@ const ZyRentDetailList = (props) => {
       }
     >
 
-      <Spin spinning={isLoading === undefined ? true : isLoading} delay={100}>
+      <Spin spinning={isLoading? true : false} >
         <Form
           form={form}
           layout="inline"

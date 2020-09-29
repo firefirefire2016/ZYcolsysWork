@@ -22,11 +22,12 @@ export const onSelectToContract = async(dispatch,payload) =>{
 //加载产权列表
 export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
+    dispatch({
+        type: 'LOADING',
+    })
+
     let { page, limit, req } = payload;
 
-    // let { isInit } = req;
-
-    // let _isInit = isInit;
 
     const res = await getList(sourceUrl, page, limit, req);
 
@@ -42,8 +43,6 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
         const element = rightnos[index];
         selects.push(element.rightno);
     }
-
-    //console.log('limit = ' + limit);
 
 
     dispatch({

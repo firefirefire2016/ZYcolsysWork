@@ -26,6 +26,10 @@ export default (state = defaultState, action) => {
                 limit: action.payload.limit,
                 res: null
             };
+        case 'LOADING':
+            return {
+                isLoading:true
+            };
         case 'GET_TARGETLIST':
             console.log(action);
             return {
@@ -45,7 +49,8 @@ export default (state = defaultState, action) => {
                 list: action.payload.newList,
                 page: action.payload.page,
                 total: action.payload.newList.length,
-                limit: action.payload.limit
+                limit: action.payload.limit,
+                isLoading: false,
             };
         case 'EDIT_ON':
             console.log(action);
@@ -64,7 +69,7 @@ export default (state = defaultState, action) => {
         case 'CREATE_ONE':
             return {
                 ...state,
-                mode:'creating',
+                mode: 'creating',
             };
         case 'GET_ONEDETAIL':
             console.log(action);

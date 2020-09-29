@@ -8,6 +8,10 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'LOADING':
+            return{
+                isLoading:true,
+            }
         case 'KEEP_DATA':
             return{
                 ...state,
@@ -23,6 +27,7 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit,
                 newSelects: action.payload.newSelects,
+                isLoading:false,
                 res: null,
             };
         case 'GET_ONE':

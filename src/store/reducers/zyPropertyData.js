@@ -8,6 +8,10 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'LOADING':
+            return{
+                isLoading:true,
+            };
         case 'GET_ALL':
             //console.log(action);
             return {
@@ -18,6 +22,7 @@ export default (state = defaultState, action) => {
                 limit: action.payload.limit,
                 rightnos: action.payload.rows,
                 selects: action.payload.selects,
+                isLoading:false,
                 res: null
             };
         case 'COMMIT_CREATE':

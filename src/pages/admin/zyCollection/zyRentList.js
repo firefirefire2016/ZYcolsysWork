@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Modal } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Modal, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
 import {  RentToMergeData, onLoadTargetRent,onShowDetail,onCommitEdit } from '../../../store/actions/zyCollectionAct';
@@ -117,7 +117,7 @@ const ZyRentList = (props) => {
   });
 
 
-  const { list, page, total, limit, onLoadData, 
+  const { list, page, total, limit, onLoadData, isLoading,
     onLoadTartgetData, SelectByREQ,onShowOne,onEditClick } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -126,10 +126,6 @@ const ZyRentList = (props) => {
     message.info('加载中...');
 
     setDate(getTodayDateStr);
-
-
-    setTimeout(() => {
-    }, 1000);
 
     if (isInit) {
 
@@ -324,7 +320,7 @@ const ZyRentList = (props) => {
   return (
     <Card title="本期概况列表">
 
-
+<Spin spinning={isLoading? true : false} >
       <Form
         form={form}
         layout="inline"
@@ -379,6 +375,7 @@ const ZyRentList = (props) => {
         }
         scroll={{ y: 350 }}
       />
+      </Spin>
     </Card>
   )
 }
