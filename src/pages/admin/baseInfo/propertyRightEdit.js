@@ -29,32 +29,28 @@ function PropertyRightEdit(props) {
 
     useEffect(() => {
 
-        //console.log('isCreating!!! === ' + isCreating);
-
-        if (res) {
-            if (res.code === 0) {
+        switch (mode) {
+            case 'home':
                 props.history.push('/admin/propertyRight');
-            }
+                break;
+            case 'creating':
+                message.info('准备创建');
+                form.resetFields();
+                break;
+            case 'editing':
+                obj = new Object(record);
+    
+                form.setFieldsValue({
+                    ...obj
+                });
+                break;
+        
+            default:
+                break;
         }
 
-        if (isCreating === false) {
 
-            obj = new Object(record);
-
-
-            //obj.create_itemname = obj.itemname - 2;
-
-            form.setFieldsValue({
-                ...obj
-            });
-        }
-        else {
-            message.info('准备创建');
-            form.resetFields();
-        }
-
-
-    }, [res])
+    }, [mode])
 
     const onBackHome = () => {
         props.history.push('/admin/propertyRight');

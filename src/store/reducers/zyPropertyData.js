@@ -29,7 +29,8 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
-                res: action.payload.res
+                res: action.payload.res,
+                mode:'home',
             };
         case 'CREATE_ONE':
             return {

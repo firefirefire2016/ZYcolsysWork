@@ -190,16 +190,17 @@ export const onCommitCreate = async (dispatch, payload) => {
 
         if (res.code === 0) {
             message.info(res.msg);
+            dispatch({
+                type: 'COMMIT_CREATE',
+    
+                payload: { res }
+            })
         }
         else {
             message.warn('失败:' + res.msg);
         }
 
-        dispatch({
-            type: 'COMMIT_CREATE',
-
-            payload: { res }
-        })
+        
 
     })
 
