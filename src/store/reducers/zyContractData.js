@@ -19,7 +19,7 @@ export default (state = defaultState, action) => {
                 _tabledata:action.payload._tabledata,
             }
         case 'GET_ALL':
-            //console.log(action);
+            console.log(state);
             return {
                 ...state,
                 list: action.payload.rows,

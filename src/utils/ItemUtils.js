@@ -154,9 +154,10 @@ const getSelects = (item, selects, isValue) => {
   )
 }
 
-export const parseInputNode = (item, mode = 'screening', selects) => {
+export const parseInputNode = (item, mode, selects) => {
   let inputType = parseItemtype(item.dataIndex);
   canEdit = true;
+  console.log(mode);
   switch (mode) {
     case 'screening'://筛选模式
       //筛选模式下，所有可筛选的都在form中，且不禁用

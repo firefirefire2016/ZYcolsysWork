@@ -18,8 +18,6 @@ export const onLoadContractData = async (dispatch, payload) => {
 
     let { page, limit, req } = payload;
 
-    console.log(payload);
-
 
     const res = await getList(sourceUrl, page, limit, req);
 
@@ -50,7 +48,7 @@ export const onLoadContractData = async (dispatch, payload) => {
         type: 'GET_ALL',
         payload: { ...res, page, limit, newSelects, res, rows: list }
     })
-    //setSelects(newSelects);
+    
 
 }
 

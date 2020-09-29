@@ -64,6 +64,7 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
+                mode:'home',
                 res: action.payload.res
             };
         case 'CREATE_ONE':
@@ -77,13 +78,13 @@ export default (state = defaultState, action) => {
                 ...state,
                 record: action.payload.record,
                 id: action.payload.id,
-                isCreating: false,
                 mode: action.payload.mode,
             };
         case 'COMMIT_Edit':
             console.log(action);
             return {
                 ...state,
+                mode:'home',
                 res: action.payload.res
             };
         case 'COMMIT_GetRent':

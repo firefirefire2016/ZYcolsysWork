@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Modal } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
@@ -17,57 +17,60 @@ function ZyRentDetailEdit(props) {
 
     const { onEditClick, onCreateClick, loadContractList } = props;
 
-    const { record, isCreating, page, limit, id, res,mode } = props.zyCollectionData;
+    const { record, isCreating, page, limit, id, res, mode } = props.zyCollectionData;
 
     const { list, newSelects } = props.zyContractData;
 
     let obj;
 
-    const ResetValue = async () => {
-        console.log('res' + JSON.stringify(res));
-        //form.resetFields();
+    // const ResetValue = async () => {
+    //     console.log('res' + JSON.stringify(res));
+    //     //form.resetFields();
 
-    }
+    // }
 
     useEffect(() => {
 
-        loadContractList(1, -1);
+       // loadContractList(1, -1);
 
-        if (res) {
-            if (res.code === 0) {
+        switch (mode) {
+            case 'home':
                 props.history.push('/admin/zyRentDetailList');
-            }
-        }
+                break;
+            case 'creating':
+                console.log(mode);
+                message.info('准备创建');
+                form.resetFields();
+                break;
+            case 'editing':
+                obj = new Object(record);
 
-        if (isCreating === false) {
+                if (newSelects) {
+                    for (let index = 0; index < newSelects.length; index++) {
+                        const element = newSelects[index];
 
-            obj = new Object(record);
+                        if (element === obj['contractno']) {
+                            obj.select_contractno = index;
+                            break;
+                        }
 
-            if (newSelects) {
-                for (let index = 0; index < newSelects.length; index++) {
-                    const element = newSelects[index];
-
-                    if (element === obj['contractno']) {
-                        obj.select_contractno = index;
-                        break;
                     }
-
                 }
-            }
 
-            obj.create_itemname = obj.itemname - 2;
+                obj.create_itemname = obj.itemname - 2;
 
-            form.setFieldsValue({
-                ...obj
-            });
+                form.setFieldsValue({
+                    ...obj
+                });
+
+                break;
+            default:
+                break;
         }
-        else {
-            message.info('准备创建');
-            form.resetFields();
-        }
 
 
-    }, [res])
+
+    }, [mode])
 
     const onBackHome = () => {
         props.history.push('/admin/zyRentDetailList');
@@ -111,16 +114,62 @@ function ZyRentDetailEdit(props) {
         }
     }
 
+    //编辑
+    const selectContract = (record, index) => {
+
+        // Modal.confirm({
+        //     title: '租金标准',
+        //     visible: true,
+
+        //     content: (
+        //         <Form form={modalForm} layout="vertical" name="userForm"
+        //             initialValues={{
+        //                 ...record
+        //             }}
+        //             onFinish={values => {
+        //             }}
+        //         >
+        //             {edititems.filter(item => item.isInEdit).map(item => {
+        //                 return (
+        //                     <Form.Item
+        //                         name={item.dataIndex}
+        //                         label={item.title}
+        //                         style={{ margin: 'auto' }}
+        //                         rules={
+        //                             parseRules(item)
+        //                         }
+        //                     >
+        //                         {parseInputNode(item, mode)}
+        //                     </Form.Item>
+        //                 )
+        //             })}
+
+        //         </Form>
+        //     ),
+        //     onOk() {
+        //         let values = modalForm.getFieldsValue();
+
+        //         let newData = new Object(tabledata);
+
+        //         newData[index] = { id: newData[index].id, ...values };
+
+        //         setTableData([...newData]);
+
+        //         // console.log(tabledata);
+        //     },
+        //     onCancel() { },
+
+        //     okText: '提交',
+        //     cancelText: '取消'
+        // });
+
+    }
+
 
     //保存提交
     function onCommitButtonClick() {
 
-        // if(res.code === 0){
-        //     props.history.push('/admin/zyRentDetailList');
-        // }
-        // else{
-        //     console.log('一直执行么');
-        // }
+        
     }
 
 
@@ -145,7 +194,7 @@ function ZyRentDetailEdit(props) {
                                 parseRules(item)
                             }
                         >
-                            {parseInputNode(item,mode, newSelects)}
+                            {parseInputNode(item, mode, newSelects)}
                         </Form.Item>
                     )
                 })}
@@ -155,20 +204,20 @@ function ZyRentDetailEdit(props) {
                         //className="login-form-button"
                         className="btn" onClick={onCommitButtonClick}
                     >
-                        提交
+                        保存
                     </Button>
                     <Button type="primary" htmlType="reset"
                         //className="login-form-button"
-                        className="btn" onClick={ResetValue}
+                        className="btn" onClick={selectContract}
                     >
-                        重置
+                        选择合同
                     </Button>
                     <Button type="primary" htmlType="button"
                         //className="login-form-button"
                         className="btn"
                         onClick={onBackHome}
                     >
-                        返回
+                        关闭
                     </Button >
                 </Form.Item>
             </Form>
