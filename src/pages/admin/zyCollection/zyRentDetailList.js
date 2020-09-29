@@ -429,12 +429,6 @@ const ZyRentDetailList = (props) => {
               <Form.Item
                 name={item.dataIndex}
                 label={item.title}
-                rules={[
-                  {
-                    required: true,
-                    message: item.title,
-                  },
-                ]}
                 key={item.dataIndex}
               >
                 {parseInputNode(item, 'screening')}

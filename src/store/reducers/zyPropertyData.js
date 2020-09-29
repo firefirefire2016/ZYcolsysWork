@@ -9,7 +9,7 @@ const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case 'GET_ALL':
-            console.log(action);
+            //console.log(action);
             return {
                 ...state,
                 list: action.payload.rows,

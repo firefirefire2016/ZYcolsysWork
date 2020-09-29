@@ -17,7 +17,7 @@ export default (state = defaultState, action) => {
                 limit: action.payload.limit
             }
         case 'GET_ALL':
-            console.log(action);
+            //console.log(action);
             return {
                 ...state,
                 list: action.payload.rows,

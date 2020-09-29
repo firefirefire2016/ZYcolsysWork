@@ -17,7 +17,6 @@ export function strToTime(str) {
 }
 
 
-
 export function timeToStr(time) {
     console.log(time);
     return parseInt(time.replace(/-/g, ""));

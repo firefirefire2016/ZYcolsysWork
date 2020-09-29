@@ -178,7 +178,6 @@ function ZyContractEdit(props) {
 
     const ResetValue = async () => {
 
-        // console.log(JSON.stringify(record));
     }
 
     const loadValue = () => {
@@ -201,125 +200,120 @@ function ZyContractEdit(props) {
     }
 
     useEffect(() => {
+        
         console.log(' mode = ' + mode);
-        // console.log(res);
 
 
+        switch (mode) {
+            case 'home':
+                props.history.push('/admin/zyContract');
+                break;
 
-
-        if (mode === 'home') {
-            props.history.push('/admin/zyContract');
+            default:
+                break;
         }
 
-        if (res) {
-            console.log('res = ' + res);
-            props.history.push('/admin/zyContract');
+        loadPropertyList(1, -1);
+
+        if (rentlist) {
+            setTableData(rentlist);
         }
-        else {
-            loadPropertyList(1, -1);
 
-            if (rentlist) {
-                setTableData(rentlist);
-            }
+        let obj;
 
-            //getSelectNode();
+        let nItems;
 
-            let obj;
+        switch (mode) {
+            case 'details':
+                obj = new Object(record);
 
-            let nItems;
+                nItems = edititems.filter(item => {
+                    return (parseItemtype(item.dataIndex) === 'date')
+                })
 
-            switch (mode) {
-                case 'details':
-                    obj = new Object(record);
-
-                    nItems = edititems.filter(item => {
-                        return (parseItemtype(item.dataIndex) === 'date')
-                    })
-
-                    nItems.forEach((item, index, items) => {
-                        if (obj[item.dataIndex]) {
-                            obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
-                        }
-
-                    })
-
-                    form.setFieldsValue({
-                        ...obj
-                    });
-                    break;
-                case 'editing':
-                    obj = new Object(record);
-
-                    nItems = edititems.filter(item => {
-                        return (parseItemtype(item.dataIndex) === 'date')
-                    })
-
-                    nItems.forEach((item, index, items) => {
-                        if (obj[item.dataIndex]) {
-                            obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
-                        }
-
-                    })
-
-                    form.setFieldsValue({
-                        ...obj,
-                        ...rightnos,
-                    });
-
-                    console.log(JSON.stringify(_tabledata));
-                    if (_tabledata != null) {
-                        setTableData(_tabledata);
+                nItems.forEach((item, index, items) => {
+                    if (obj[item.dataIndex]) {
+                        obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
                     }
 
+                })
 
-                    break;
-                case 'keepon':
-                    obj = new Object(record);
+                form.setFieldsValue({
+                    ...obj
+                });
+                break;
+            case 'editing':
+                obj = new Object(record);
 
-                    nItems = edititems.filter(item => {
-                        return (parseItemtype(item.dataIndex) === 'date')
-                    })
+                nItems = edititems.filter(item => {
+                    return (parseItemtype(item.dataIndex) === 'date')
+                })
 
-                    nItems.forEach((item, index, items) => {
-                        delete obj[item.dataIndex];
-                    })
-
-                    delete obj.contractno;
-
-                    delete obj.id;
-
-                    form.setFieldsValue({
-                        ...obj,
-                        ...rightnos,
-                    });
-
-                    console.log(JSON.stringify(_tabledata));
-                    if (_tabledata != null) {
-                        setTableData(_tabledata);
+                nItems.forEach((item, index, items) => {
+                    if (obj[item.dataIndex]) {
+                        obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
                     }
-                    break;
-                case 'creating':
-                    //message.info('准备创建');
-                    form.resetFields();
 
-                    form.setFieldsValue({
-                        ...record,
-                        ...rightnos,
-                    })
-                    console.log(JSON.stringify(_tabledata));
-                    if (_tabledata != null) {
-                        setTableData(_tabledata);
-                    }
-                    break;
-                default:
-                    break;
-            }
+                })
 
+                form.setFieldsValue({
+                    ...obj,
+                    ...rightnos,
+                });
+
+                console.log(JSON.stringify(_tabledata));
+                if (_tabledata != null) {
+                    setTableData(_tabledata);
+                }
+
+
+                break;
+            case 'keepon':
+                obj = new Object(record);
+
+                nItems = edititems.filter(item => {
+                    return (parseItemtype(item.dataIndex) === 'date')
+                })
+
+                nItems.forEach((item, index, items) => {
+                    delete obj[item.dataIndex];
+                })
+
+                delete obj.contractno;
+
+                delete obj.id;
+
+                form.setFieldsValue({
+                    ...obj,
+                    ...rightnos,
+                });
+
+                console.log(JSON.stringify(_tabledata));
+                if (_tabledata != null) {
+                    setTableData(_tabledata);
+                }
+                break;
+            case 'creating':
+                form.resetFields();
+
+                form.setFieldsValue({
+                    ...record,
+                    ...rightnos,
+                })
+                
+                if (_tabledata != null) {
+                    setTableData(_tabledata);
+                }
+                break;
+            default:
+                break;
         }
 
 
 
-    }, [res, mode])
+
+
+    }, [mode])
 
     const onBackHome = () => {
 
@@ -398,9 +392,6 @@ function ZyContractEdit(props) {
 
             switch (mode) {
                 case 'creating':
-                    console.log(rightnos);
-
-                    console.log(row);
 
                     row['rightid'] = row.id;
 
@@ -418,8 +409,6 @@ function ZyContractEdit(props) {
                     let _record = new Object(record);
 
                     row['id'] = _record.id;
-
-                    console.log(row);
 
                     onEditClick(row, page, limit, tabledata);
                     break;

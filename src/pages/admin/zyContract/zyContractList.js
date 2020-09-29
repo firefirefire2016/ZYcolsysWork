@@ -26,6 +26,7 @@ const ZyContractList = (props) => {
 
   const [isInit, setIsInit] = useState(true);
 
+
   //const [ ] = useState(true);
 
   const EditableCell = ({
@@ -44,9 +45,6 @@ const ZyContractList = (props) => {
       </td>
     );
   };
-
-
-
 
 
   const mergedColumns = cols => cols.map(col => {
@@ -162,7 +160,7 @@ const ZyContractList = (props) => {
     };
   });
 
-  const { list, page, total, limit, onLoadData, onCreateClick, onUseClick,
+  const { list, page, total, limit, onLoadData, onCreateClick, onUseClick,contract_status,record,
     onEditClick, res, onConfirmDel,onDetailClick,mode,onStatusClick,onContinueClick } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -171,22 +169,31 @@ const ZyContractList = (props) => {
     //console.log(' mode = ' + mode);
 
     //console.log(' props = ' + JSON.stringify(props) );
-
-    if(mode === 'details'){
-      props.history.push('/admin/zyContract/edit');
-    }
-    else if(mode === 'editing'){
-      props.history.push('/admin/zyContract/edit');
-    }
-    else if(mode === 'keepon'){
-      props.history.push('/admin/zyContract/edit');
+    switch (mode) {
+      case 'details':
+        props.history.push('/admin/zyContract/edit');
+        break;
+      case 'editing':
+        props.history.push('/admin/zyContract/edit');
+        break;
+      case 'keepon':
+        props.history.push('/admin/zyContract/edit');
+        break;
+      case 'refunded':
+        return;
+      case 'started':
+        return;
+      case 'stoped':
+        return;
+      case 'deled':
+        return;
+    
+      default:
+        break;
     }
 
     message.info('加载中...');
 
-    //console.log(props);
-
-    //onLoadData(page, limit);
     if (isInit) {
 
       // console.log(' Init = ' + isInit);
@@ -207,7 +214,6 @@ const ZyContractList = (props) => {
 
   //启用
   const startUse = record =>{
-    record.contract_status = 1;
     onUseClick(record);
   }
 
@@ -240,7 +246,9 @@ const ZyContractList = (props) => {
       ),
       onOk() {
         let values = refundForm.getFieldsValue();
-        record.quitdate = timeToStr(values.quitdate);
+        let _record = {};
+        _record.id = record.id;
+        _record.quitdate = timeToStr(values.quitdate);
         let date = new Date();
         let year = date.getFullYear();
         let month = date.getMonth();
@@ -252,10 +260,10 @@ const ZyContractList = (props) => {
           day = '0' + day;
         }
         let stopdate = year + month + day;
-        record.stopdate = stopdate;
-        record.stopreason = '退租';
-        record.contract_status = 4;
-        onStatusClick(record,'COMMIT_REFUND');
+        _record.stopdate = stopdate;
+        _record.stopreason = '退租';
+        _record.contract_status = 4;
+        onStatusClick(record, _record,'COMMIT_REFUND');
       },
       onCancel() { },
 
@@ -294,7 +302,9 @@ const ZyContractList = (props) => {
       ),
       onOk() {
         let values = refundForm.getFieldsValue();
-        record.stopreason = values.stopreason;
+        let _record = {};
+        _record.id = record.id;
+        _record.stopreason = values.stopreason;
         let date = new Date();
         let year = date.getFullYear();
         let month = date.getMonth();
@@ -306,9 +316,9 @@ const ZyContractList = (props) => {
           day = '0' + day;
         }
         let stopdate = year + month + day;
-        record.stopdate = stopdate;
-        record.contract_status = 4;
-        onStatusClick(record,'COMMIT_STOP');
+        _record.stopdate = stopdate;
+        _record.contract_status = 4;
+        onStatusClick(record,_record,'COMMIT_STOP');
       },
       onCancel() { },
 
@@ -330,9 +340,10 @@ const ZyContractList = (props) => {
 
   //删除
   const del = record => {
-
-    record.contract_status = -1;
-    onStatusClick(record,'COMMIT_DEL'); 
+    let _record = {};
+    _record.id = record.id;
+    _record.contract_status = -1;
+    onStatusClick(record,_record,'COMMIT_DEL'); 
 
   };
 
@@ -415,12 +426,12 @@ const ZyContractList = (props) => {
             <Form.Item
               name={item.dataIndex}
               label={item.title}
-              rules={[
-                {
-                  //required: true,
-                  message: item.title,
-                },
-              ]}
+              // rules={[
+              //   {
+              //     //required: true,
+              //     message: item.title,
+              //   },
+              // ]}
               key={item.dataIndex}
             >
               {parseInputNode(item, 'screening')}
@@ -479,7 +490,7 @@ const mapDispatchToProps = (dispatch, ownprops) => {
     
     onUseClick:(record) =>{onStartEffect(dispatch,{record})},
     onContinueClick: (record) => { onContinueContract(dispatch, { record}) },
-    onStatusClick: (record,edittype) => { onCommitStatus(dispatch, { record,edittype}) },
+    onStatusClick: (record,_record,edittype) => { onCommitStatus(dispatch, { record,_record,edittype}) },
     onLoadData: (page, limit, req) => { onLoadContractData(dispatch, { page, limit, req }) },
     onDetailClick: (record) => { onShowDetail(dispatch, { record}) },
     onEditClick: (record) => { onGetEditData(dispatch, { record}) },
@@ -488,7 +499,6 @@ const mapDispatchToProps = (dispatch, ownprops) => {
   }
 }
 
-//connect(mapStateToProps)(ModalForm)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ZyContractList)
 

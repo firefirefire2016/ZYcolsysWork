@@ -185,12 +185,6 @@ const PropertyRightList = (props) => {
             <Form.Item
               name={item.dataIndex}
               label={item.title}
-              rules={[
-                {
-                  required: true,
-                  message: item.title,
-                },
-              ]}
             >
               {parseInputNode(item, 'screening')}
             </Form.Item>

@@ -15,7 +15,7 @@ export default (state = defaultState, action) => {
                 _tabledata:action.payload._tabledata,
             }
         case 'GET_ALL':
-            console.log(action);
+            //console.log(action);
             return {
                 ...state,
                 list: action.payload.rows,
@@ -50,12 +50,14 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
-                record: action.payload.record,
+                record: null,
                 list: action.payload.rows,
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                res: action.payload.res
+                res: action.payload.res,
+                _tabledata:null,
+                mode:'home',
             };
         case 'COMMIT_Edit':
             console.log(action);
@@ -66,7 +68,6 @@ export default (state = defaultState, action) => {
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                //res: action.payload.result
                 mode:'home',
             };
         case 'COMMIT_START'://启用
@@ -81,6 +82,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 res: action.payload.res,
+                record:action.payload.record,
                 mode:'refunded'
             };
         case 'COMMIT_STOP'://停用

@@ -1,7 +1,7 @@
-import { getList, createTarget, modifyOne, updateOneStatus, updateALLStatus,startContract } from '../../services/zyService'
+import { getList, createTarget, modifyOne, updateOneStatus, updateALLStatus, startContract } from '../../services/zyService'
 import store from '../store';
 import { message } from 'antd';
-import { getTodayStr,timeToStr } from '../../utils/common'
+import { getTodayStr, timeToStr } from '../../utils/common'
 //import { sourceUrl } from '../../utils/request';
 
 //const zyContractData = store.getState().zyContractData;
@@ -40,7 +40,7 @@ export const onLoadContractData = async (dispatch, payload) => {
         row['simpleaddress'] = row.zypropertyrights[0].simpleaddress;
     });
 
-
+    console.log(list);
 
     dispatch({
         type: 'GET_ALL',
@@ -59,15 +59,15 @@ export const onBackHome = async (dispatch, payload) => {
 
 }
 
-export const keepFormdata = async(dispatch,payload) =>{
+export const keepFormdata = async (dispatch, payload) => {
 
-    let { formdata,tabledata } = payload;
+    let { formdata, tabledata } = payload;
 
     //console.log(JSON.stringify(tabledata));
 
     dispatch({
         type: 'KEEP_DATA',
-        payload: { record:formdata,_tabledata:tabledata }
+        payload: { record: formdata, _tabledata: tabledata }
     })
 }
 
@@ -161,7 +161,7 @@ export const onGetEditData = async (dispatch, payload) => {
 export const onCreateData = async (dispatch, isCreating) => {
     //let {record} = payload;
 
-    console.log(isCreating);
+   // console.log(isCreating);
 
     dispatch({
         type: 'CREATE_ONE',
@@ -177,55 +177,57 @@ export const onCreateData = async (dispatch, isCreating) => {
  */
 export const onCommitStatus = async (dispatch, payload) => {
 
-    let { record, edittype } = payload;
+    let { record, _record, edittype } = payload;
 
-    console.log(JSON.stringify(record));
+    
 
-    await modifyOne(sourceUrl, record).then(async function (res) {
+    await modifyOne(sourceUrl, _record).then(async function (res) {
 
         if (res.code === 0) {
             message.info(res.msg);
+
+            switch (edittype) {
+                case 'COMMIT_REFUND':
+                    record.stopdate = _record.stopdate;
+                    record.stopreason = _record.stopreason;
+                    record.contract_status = _record.contract_status;
+                    record.quitdate = _record.quitdate;
+                    dispatch({
+                        type: edittype,
+    
+                        payload: { res }
+    
+                    })
+                    break;
+                case 'COMMIT_STOP':
+                    record.stopdate = _record.stopdate;
+                    record.stopreason = _record.stopreason;
+                    record.contract_status = _record.contract_status;
+                    dispatch({
+                        type: edittype,
+    
+                        payload: { res }
+    
+                    })
+                    break;
+                case 'COMMIT_DEL':
+                    record.contract_status = _record.contract_status;
+                    dispatch({
+                        type: edittype,
+    
+                        payload: { res }
+    
+                    })
+                    break;
+                default:
+                    break;
+            }
         }
         else {
             message.warn('失败:' + res.msg);
         }
 
-        switch (edittype) {
-            case 'COMMIT_START':
-                dispatch({
-                    type: edittype,
-
-                    payload: { res }
-
-                })
-                break;
-            case 'COMMIT_REFUND':
-                dispatch({
-                    type: edittype,
-
-                    payload: { res }
-
-                })
-                break;
-            case 'COMMIT_STOP':
-                dispatch({
-                    type: edittype,
-
-                    payload: { res }
-
-                })
-                break;
-            case 'COMMIT_DEL':
-                dispatch({
-                    type: edittype,
-
-                    payload: { res }
-
-                })
-                break;
-            default:
-                break;
-        }
+        
 
 
     })
@@ -251,15 +253,17 @@ export const onCommitEdit = async (dispatch, payload) => {
 
         if (result.code === 0) {
             message.info(result.msg);
+
+            dispatch({
+                type: "COMMIT_Edit",
+                payload: { ...result, record, result }
+            })
         }
         else {
             message.warn('修改提交失败');
         }
 
-        dispatch({
-            type: "COMMIT_Edit",
-            payload: { ...result, record, result }
-        })
+        
 
         let targetdata = { id: rightid, contractid };
 
@@ -287,15 +291,12 @@ export const onCommitEdit = async (dispatch, payload) => {
             }
             else {
 
-                console.log('修改状态成功');
+                console.log('修改租金标准成功');
             }
         })
 
-        console.log(JSON.stringify(newtable));
 
-        
-
-        for (let index = 0; index < newtable.length; index++) {            
+        for (let index = 0; index < newtable.length; index++) {
             let element = newtable[index];
 
             element.startdate = timeToStr(element.startdate);
@@ -337,7 +338,7 @@ export const onCommitEdit = async (dispatch, payload) => {
  */
 export const onCommitCreate = async (dispatch, payload) => {
 
-    let { record, page, limit, tabledata } = payload;
+    let { record, tabledata } = payload;
 
     let reData;
 
@@ -352,12 +353,13 @@ export const onCommitCreate = async (dispatch, payload) => {
 
         contractid = reData.id;
 
-        dispatch({
-            type: "COMMIT_CREATE",
-            payload: { ...res, record, res }
-        })
+        
         if (res.code === 0) {
             message.info(res.msg);
+            dispatch({
+                type: "COMMIT_CREATE",
+                payload: { ...res, record, res }
+            })
         }
         else {
             message.warn('创建失败:' + res.msg);
@@ -390,7 +392,7 @@ export const onCommitCreate = async (dispatch, payload) => {
             element.enddate = timeToStr(element.enddate);
 
             element.contractid = contractid;
-            
+
             await createTarget(_sourceUrl, element).then(function (res3) {
                 if (res3.code === 0) {
                     message.info(res3.msg);
@@ -418,21 +420,22 @@ export const onStartEffect = async (dispatch, payload) => {
     let { record } = payload;
 
 
-    await startContract(sourceUrl,record).then(function(res){
+    await startContract(sourceUrl, record).then(function (res) {
         if (res.code === 1) {
             //后台问题打印
             message.warn(res.msg);
         }
         else {
-
+            record.contract_status = 1;
+            record.once_rent = res.once_rent;
             console.log('启用合同成功');
             dispatch({
                 type: "COMMIT_START",
-                payload: { res}
+                payload: { res }
             })
         }
 
-        
+
     });
 
 
