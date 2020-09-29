@@ -69,7 +69,7 @@ const ZyContractList = (props) => {
                     编 辑
                   </Button>
                   <Popconfirm title='确定删除该合同么?' onConfirm={() => {
-
+                      del(record)
                   }}
                   >
                   <Button type="primary" style={{ marginRight: 8 }}>
