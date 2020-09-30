@@ -7,23 +7,25 @@ const defaultState = {
 }
 
 export default (state = defaultState, action) => {
-    switch (action.type) {
-        case 'BACK_Contract':
+    switch (action.type) { 
+        case 'TO_SELECT':
+            console.log(action.type);
+            return {
+                selectmode:'toselect',
+            };
+        case 'TO_Contract':
+            console.log(action.type);
+            return {
+                ...state,
+                rightnos:action.payload.rightnos,
+                selectmode:'backcontract',
+            };        
+        case 'LOADINGRight':
             return{
                 ...state,
-            }
-        case 'TO_Contract':
-            console.log(action);
-            return {
-                rightnos:action.payload.rightnos,
-                mode:'creating',
-            };
-        case 'LOADING':
-            return{
                 isLoading:true,
             };
-        case 'GET_ALL':
-            //console.log(action);
+        case 'GET_ALLRight':
             return {
                 ...state,
                 list: action.payload.rows,
@@ -31,7 +33,6 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit,
                 rightnos: action.payload.rows,
-               // selects: action.payload.selects,
                 isLoading:false,
                 res: null
             };

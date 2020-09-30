@@ -29,7 +29,7 @@ function ZyContractEdit(props) {
 
     const [count, setCount] = useState(1);
 
-    const { rightnos } = props.zyPropertyData;
+    const { rightnos, selectmode } = props.zyPropertyData;
 
     const { record, isCreating, page, limit, mode, res, rentlist, formdata, _tabledata, } = props.zyContractData;
 
@@ -180,37 +180,32 @@ function ZyContractEdit(props) {
 
     const loadValue = () => {
 
-        // console.log(rightnos);
+        
 
-        // let index = form.getFieldValue('rightno');
+       // let formdata = form.getFieldsValue();
 
-        // //console.log(index);
-        // form.setFieldsValue({
-        //     ...rightnos[index]
-        // })
+        //let _record = new Object(record);
 
         let formdata = form.getFieldsValue();
 
-        onToSelectRight(formdata, tabledata);
+        if(record){
+            formdata.id = record.id;
+        }
+        
 
-        props.history.push('/admin/propertyRight/select');
+
+        onToSelectRight(formdata, tabledata,mode);
+
+        
 
     }
 
     useEffect(() => {
-        
+
         console.log(' mode = ' + mode);
 
-        console.log( props);
+        console.log(props);
 
-        switch (mode) {
-            case 'home':
-                props.history.push('/admin/zyContract');
-                break;
-
-            default:
-                break;
-        }
 
         if (rentlist) {
             setTableData(rentlist);
@@ -218,10 +213,17 @@ function ZyContractEdit(props) {
 
         let obj;
 
-        let nItems;
+        let nItems;        
+
 
         switch (mode) {
+            case 'home':
+
+                props.history.push('/admin/zyContract');
+
+                break;
             case 'details':
+
                 obj = new Object(record);
 
                 nItems = edititems.filter(item => {
@@ -255,7 +257,7 @@ function ZyContractEdit(props) {
 
                 form.setFieldsValue({
                     ...obj,
-                    ...rightnos,
+                    ...rightnos,//注意：rightno的id会覆盖obj的id
                 });
 
                 console.log(JSON.stringify(_tabledata));
@@ -293,26 +295,49 @@ function ZyContractEdit(props) {
             case 'creating':
                 form.resetFields();
 
-               // console.log(rightnos);
-
-                form.setFieldsValue({
-                    ...record,
-                    ...rightnos,
-                })
-                
-                if (_tabledata != null) {
-                    setTableData(_tabledata);
-                }
                 break;
             default:
                 break;
         }
 
+        switch (selectmode) {
+            case 'backcontract':
+                obj = new Object(record);
+
+                nItems = edititems.filter(item => {
+                    return (parseItemtype(item.dataIndex) === 'date')
+                })
+
+                nItems.forEach((item, index, items) => {
+                    if (obj[item.dataIndex]) {
+                        obj[item.dataIndex] = strToTime(obj[item.dataIndex]);
+                    }
+
+                })
+
+                form.setFieldsValue({
+                    ...obj,
+                    ...rightnos,
+                });
+
+                console.log(JSON.stringify(_tabledata));
+                if (_tabledata != null) {
+                    setTableData(_tabledata);
+                }
+                return;
+            case 'toselect':
+                props.history.push('/admin/propertyRight/select');
+                break;
+
+            default:               
+                break;
+        }
+
+        
 
 
 
-
-    }, [mode])
+    }, [mode,selectmode])
 
     const onBackHome = () => {
 
@@ -392,24 +417,45 @@ function ZyContractEdit(props) {
             switch (mode) {
                 case 'creating':
 
-                    row['rightid'] = row.id;
+                    console.log(row);
+
+                    console.log(rightnos);
+
+                    if(rightnos){
+                        row['rightid'] = rightnos.id;
+                    }
+                    
 
                     //创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
                     break;
                 case 'keepon':
 
-                    row['rightid'] = row.id;
+                    if(rightnos){
+                        row['rightid'] = rightnos.id;
 
+                    }
+                    
                     //续租创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
+
                     break;
                 case 'editing':
+
+                    if(rightnos){
+                        row['rightid'] = rightnos.id;
+                    }                    
+
                     let _record = new Object(record);
 
-                    row['id'] = _record.id;
+                    row['id'] = _record.id;                    
+
+                    console.log(row);
+
+                    console.log(rightnos);                    
 
                     onEditClick(row, page, limit, tabledata);
+
                     break;
 
                 default:
@@ -599,9 +645,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-        onToSelectRight: (formdata, tabledata) => { keepFormdata(dispatch, { formdata, tabledata }) },
+        onToSelectRight: (formdata, tabledata,mode) => { keepFormdata(dispatch, { formdata, tabledata,mode }) },
         onBackClick: (page, limit) => { onBackHome(dispatch, { page, limit }) },
-       // loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
+        // loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
         onEditClick: (record, page, limit, newtable) => { onCommitEdit(dispatch, { record, page, limit, newtable }) },
         onCreateClick: (record, page, limit, tabledata) => { onCommitCreate(dispatch, { record, page, limit, tabledata }) },
     }

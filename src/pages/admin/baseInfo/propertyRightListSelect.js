@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, AutoComplete } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadTargetListByREQ, onShowDetail, onEditDetail, onCreateData, onCommitUpdateStatus,onSelectToContract } from '../../../store/actions/zyPropertyAct';
+import { onLoadTargetListByREQ, onShowDetail, onEditDetail, onCreateData, onCommitUpdateStatus, onSelectToContract } from '../../../store/actions/zyPropertyAct';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/ItemUtils';
-import { strToTime, timeToStr } from '../../../utils/common'
+import { strToTime, timeToStr } from '../../../utils/common';
 import Modal from 'antd/lib/modal/Modal';
 
 const cols = sysCols.propertyCol.filter(item => item.isShow);
@@ -26,7 +26,7 @@ const PropertyRightList = (props) => {
 
   const [isInit, setIsInit] = useState(true);
 
-  const [target,setTarget] = useState({});
+  const [target, setTarget] = useState({});
 
   const EditableCell = ({
     labelType,
@@ -51,11 +51,11 @@ const PropertyRightList = (props) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       // let obj = new Object(selectedRows[0]);
       // setTarget(obj);
-     // console.log(JSON.stringify(selectedRows[0]) );
-     // let obj = new Object(selectedRows[0]);
+      // console.log(JSON.stringify(selectedRows[0]) );
+      // let obj = new Object(selectedRows[0]);
       //onChangeRow(selectedRows[0]);
       setTarget(selectedRows[0]);
-      
+
     },
     getCheckboxProps: (record) => ({
       //console.log('record' + record);
@@ -68,7 +68,7 @@ const PropertyRightList = (props) => {
   const mergedColumns = cols => cols.map(col => {
     if (!col.editable) {
       if (col.isOper === true) {
-       
+
       }
     }
 
@@ -90,22 +90,28 @@ const PropertyRightList = (props) => {
   });
 
   const { list, page, total, limit, onLoadData, onCreateClick, onDetailClick,
-    onEditClick, res, onConfirmDel,onChangeRow,mode } = props;
+    onEditClick, res, onConfirmDel, onChangeRow, selectmode } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    // switch (mode) {
-    //   case 'creating':       
-    //     break;
-    
-    //   default:
-    //     break;
-    // }
+    // console.log(mode);
+
+    switch (selectmode) {
+      case 'backcontract':
+        props.history.push('/admin/zyContract/edit');
+
+        return;
+      case 'toselect':
+        //props.history.push('/admin/propertyRight/select');
+        break;
+
+      default:
+        break;
+    }
 
     if (isInit) {
 
-      // console.log(' Init = ' + isInit);
       onLoadData(1, -1, { isInit });
       setIsInit(false);
     }
@@ -113,10 +119,10 @@ const PropertyRightList = (props) => {
       onLoadData(1, limit, { isInit });
     }
 
-    
 
 
-  }, [])
+
+  }, [selectmode])
 
   const create = () => {
     onCreateClick(true);
@@ -233,18 +239,16 @@ const PropertyRightList = (props) => {
       <Button size='large' type="primary" style={{
         marginLeft: '40%'
       }}
-      onClick={()=>{
-        onChangeRow(target);
-        props.history.push('/admin/zyContract/edit');
+        onClick={() => {
+          onChangeRow(target);
         }}
       >保存</Button>
       <Button size='large' type="primary" style={{
         marginLeft: '5%'
       }}
-      onClick={()=>{
-        onChangeRow(target);
-        props.history.push('/admin/zyContract/edit');
-      }}
+        onClick={() => {
+          onChangeRow(target);
+        }}
       >取消</Button>
     </Card>
   )
@@ -256,9 +260,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-   // onSaveClick: (record) => { onGetEditData(dispatch, { record}) },
+    // onSaveClick: (record) => { onGetEditData(dispatch, { record}) },
     onLoadData: (page, limit, req) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
-    onChangeRow:(record) => { onSelectToContract(dispatch, { record}) },
+    onChangeRow: (record) => { onSelectToContract(dispatch, { record }) },
     onDetailClick: (record, isCreating) => { onShowDetail(dispatch, { record, isCreating }) },
     onEditClick: (record, isCreating) => { onEditDetail(dispatch, { record, isCreating }) },
     onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },

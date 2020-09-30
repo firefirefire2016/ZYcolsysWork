@@ -63,13 +63,17 @@ export const onBackHome = async (dispatch, payload) => {
 
 export const keepFormdata = async (dispatch, payload) => {
 
-    let { formdata, tabledata } = payload;
+    let { formdata, tabledata,mode } = payload;
 
-    //console.log(JSON.stringify(tabledata));
+    console.log(mode);
 
     dispatch({
         type: 'KEEP_DATA',
-        payload: { record: formdata, _tabledata: tabledata }
+        payload: { record: formdata, _tabledata: tabledata,mode }
+    })
+
+    dispatch({
+        type: 'TO_SELECT',
     })
 }
 

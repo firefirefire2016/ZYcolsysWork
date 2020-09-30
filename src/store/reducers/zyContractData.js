@@ -7,19 +7,22 @@ const defaultState = {
 }
 
 export default (state = defaultState, action) => {
-    switch (action.type) {        
+    switch (action.type) {  
+             
         case 'LOADING':
             return{
                 isLoading:true,
             }
         case 'KEEP_DATA':
+            console.log(action.type);
             return{
                 ...state,
+                mode:action.payload.mode,
                 record:action.payload.record,
                 _tabledata:action.payload._tabledata,
             }
         case 'GET_ALL':
-            console.log(state);
+            console.log(action.type);
             return {
                 ...state,
                 list: action.payload.rows,
@@ -41,14 +44,12 @@ export default (state = defaultState, action) => {
         case 'CREATE_ONE':
             return {
                 ...state,
-               // isCreating: true,
                 mode:'creating',
             };
         case 'BACK_HOME':
             return {
                 ...state,
                 mode: action.payload.mode,
-                isCreating: false,
             };
         case 'COMMIT_CREATE':
             console.log(action);

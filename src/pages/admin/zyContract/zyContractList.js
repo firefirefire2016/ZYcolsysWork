@@ -186,8 +186,8 @@ const ZyContractList = (props) => {
         return;
       case 'stoped':
         return;
-      case 'deled':
-        return;
+      case 'deled'://删除后需要刷新列表不能return
+        break;
     
       default:
         break;

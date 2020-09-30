@@ -22,7 +22,7 @@ function PropertyRightEdit(props) {
     let obj;
 
     const ResetValue = async () => {
-        //console.log('res' + JSON.stringify(res));
+        
         form.resetFields();
 
     }
