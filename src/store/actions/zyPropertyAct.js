@@ -8,12 +8,22 @@ const sourceUrl = 'zyProperty';
 
 export const onSelectToContract = async(dispatch,payload) =>{
 
-    let { record} = payload;
+    let { record,isCancel} = payload;
 
     dispatch({
         type: 'TO_Contract',
-        payload: { mode:'toContract',rightnos:record }
+        payload: { rightnos:record}
     })
+
+    // if(!isCancel){
+        
+    // }
+    // else{
+    //     dispatch({
+    //         type: 'BACK_Contract',
+    //     })
+    // }
+    
 
 
 }
@@ -37,17 +47,17 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let rightnos = res.rows;
 
-    let selects = [];
+    // let selects = [];
 
-    for (let index = 0; index < rightnos.length; index++) {
-        const element = rightnos[index];
-        selects.push(element.rightno);
-    }
+    // for (let index = 0; index < rightnos.length; index++) {
+    //     const element = rightnos[index];
+    //     selects.push(element.rightno);
+    // }
 
 
     dispatch({
         type: 'GET_ALL',
-        payload: { page, limit, rows, total,rightnos,selects }
+        payload: { page, limit, rows, total,rightnos}
     })
 
 

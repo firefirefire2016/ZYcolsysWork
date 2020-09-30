@@ -8,6 +8,16 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'BACK_Contract':
+            return{
+                ...state,
+            }
+        case 'TO_Contract':
+            console.log(action);
+            return {
+                rightnos:action.payload.rightnos,
+                mode:'creating',
+            };
         case 'LOADING':
             return{
                 isLoading:true,
@@ -21,7 +31,7 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit,
                 rightnos: action.payload.rows,
-                selects: action.payload.selects,
+               // selects: action.payload.selects,
                 isLoading:false,
                 res: null
             };
@@ -51,15 +61,10 @@ export default (state = defaultState, action) => {
             console.log(action);
             return {
                 ...state,
-                res: action.payload.res
+                res: action.payload.res,
+                mode:'home',
             };
-        case 'TO_Contract':
-            console.log(action);
-            return {
-                ...state,
-                mode:action.payload.mode,
-                rightnos:action.payload.rightnos,
-            };
+        
         default:
             return state;
     }

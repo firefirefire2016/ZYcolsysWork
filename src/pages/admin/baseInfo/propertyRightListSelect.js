@@ -51,7 +51,7 @@ const PropertyRightList = (props) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       // let obj = new Object(selectedRows[0]);
       // setTarget(obj);
-      console.log(JSON.stringify(selectedRows[0]) );
+     // console.log(JSON.stringify(selectedRows[0]) );
      // let obj = new Object(selectedRows[0]);
       //onChangeRow(selectedRows[0]);
       setTarget(selectedRows[0]);
@@ -68,45 +68,7 @@ const PropertyRightList = (props) => {
   const mergedColumns = cols => cols.map(col => {
     if (!col.editable) {
       if (col.isOper === true) {
-        // col.render = (text, record, index) => {
-        //   return (
-        //     <span className=''>
-        //       <Button type="primary"
-        //         style={{
-        //           marginRight: 8,
-        //         }}
-        //         onClick={() => edit(record)}
-        //       >
-        //         编辑
-        //         </Button>
-
-        //       <Button type="primary"
-        //         style={{
-        //           marginRight: 8,
-        //         }}
-        //         onClick={() => loadDetail(record)}
-        //       >
-        //         详情
-        //         </Button>
-
-        //       <Popconfirm
-        //         title='确定删除该产权么?'
-        //         onConfirm={() => {
-        //           onConfirmDel(record.id, -1, page, limit)
-        //         }}
-        //       >
-        //         <Button type="primary"
-
-        //           style={{
-        //             marginRight: 8,
-        //           }}>
-        //           删 除
-        //         </Button>
-        //       </Popconfirm>
-
-        //     </span>
-        //   );
-        // }
+       
       }
     }
 
@@ -128,16 +90,18 @@ const PropertyRightList = (props) => {
   });
 
   const { list, page, total, limit, onLoadData, onCreateClick, onDetailClick,
-    onEditClick, res, onConfirmDel,onChangeRow } = props;
+    onEditClick, res, onConfirmDel,onChangeRow,mode } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    message.info('加载中...');
-
-    setTimeout(() => {
-
-    }, 1000);
+    // switch (mode) {
+    //   case 'creating':       
+    //     break;
+    
+    //   default:
+    //     break;
+    // }
 
     if (isInit) {
 
@@ -149,8 +113,10 @@ const PropertyRightList = (props) => {
       onLoadData(1, limit, { isInit });
     }
 
+    
 
-  }, [res])
+
+  }, [])
 
   const create = () => {
     onCreateClick(true);
@@ -269,14 +235,15 @@ const PropertyRightList = (props) => {
       }}
       onClick={()=>{
         onChangeRow(target);
-        props.history.push('/admin/zyContract/createOne');}}
+        props.history.push('/admin/zyContract/edit');
+        }}
       >保存</Button>
       <Button size='large' type="primary" style={{
         marginLeft: '5%'
       }}
       onClick={()=>{
-        //onChangeRow({isCanCel:true});
-        props.history.push('/admin/zyContract/createOne');
+        onChangeRow(target);
+        props.history.push('/admin/zyContract/edit');
       }}
       >取消</Button>
     </Card>

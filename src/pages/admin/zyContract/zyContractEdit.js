@@ -29,13 +29,11 @@ function ZyContractEdit(props) {
 
     const [count, setCount] = useState(1);
 
-    const { rightnos, selects } = props.zyPropertyData;
+    const { rightnos } = props.zyPropertyData;
 
-    const { record, isCreating, page, limit, mode, res, rentlist, formdata, _tabledata } = props.zyContractData;
+    const { record, isCreating, page, limit, mode, res, rentlist, formdata, _tabledata, } = props.zyContractData;
 
-    const { onEditClick, onCreateClick, loadPropertyList, onBackClick, onToSelectRight } = props;
-
-    //const { rentList } = props.zyRentlistData;
+    const { onEditClick, onCreateClick, onBackClick, onToSelectRight } = props;
 
     const [tabledata, setTableData] = useState([]);
 
@@ -203,6 +201,7 @@ function ZyContractEdit(props) {
         
         console.log(' mode = ' + mode);
 
+        console.log( props);
 
         switch (mode) {
             case 'home':
@@ -212,8 +211,6 @@ function ZyContractEdit(props) {
             default:
                 break;
         }
-
-        loadPropertyList(1, -1);
 
         if (rentlist) {
             setTableData(rentlist);
@@ -295,6 +292,8 @@ function ZyContractEdit(props) {
                 break;
             case 'creating':
                 form.resetFields();
+
+               // console.log(rightnos);
 
                 form.setFieldsValue({
                     ...record,
@@ -602,7 +601,7 @@ const mapDispatchToProps = (dispatch, ownprops) => {
     return {
         onToSelectRight: (formdata, tabledata) => { keepFormdata(dispatch, { formdata, tabledata }) },
         onBackClick: (page, limit) => { onBackHome(dispatch, { page, limit }) },
-        loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
+       // loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
         onEditClick: (record, page, limit, newtable) => { onCommitEdit(dispatch, { record, page, limit, newtable }) },
         onCreateClick: (record, page, limit, tabledata) => { onCommitCreate(dispatch, { record, page, limit, tabledata }) },
     }

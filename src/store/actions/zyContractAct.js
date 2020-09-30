@@ -11,7 +11,7 @@ const sourceUrl = 'zyContract';
 
 //加载列表数据，推送到reducer
 export const onLoadContractData = async (dispatch, payload) => {
-
+    
     dispatch({
         type: 'LOADING',
     })

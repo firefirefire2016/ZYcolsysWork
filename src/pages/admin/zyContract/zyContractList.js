@@ -166,19 +166,20 @@ const ZyContractList = (props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    //console.log(' mode = ' + mode);
+    
 
     //console.log(' props = ' + JSON.stringify(props) );
     switch (mode) {
       case 'details':
         props.history.push('/admin/zyContract/edit');
-        break;
+        return;
       case 'editing':
+        //console.log(' mode = ' + mode );
         props.history.push('/admin/zyContract/edit');
-        break;
+        return;
       case 'keepon':
         props.history.push('/admin/zyContract/edit');
-        break;
+        return;
       case 'refunded':
         return;
       case 'started':
@@ -209,7 +210,7 @@ const ZyContractList = (props) => {
   //创建
   const create = () => {
     onCreateClick();
-    props.history.push('/admin/zyContract/createOne');
+    props.history.push('/admin/zyContract/edit');
   }
 
   //启用

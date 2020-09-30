@@ -7,7 +7,7 @@ const defaultState = {
 }
 
 export default (state = defaultState, action) => {
-    switch (action.type) {
+    switch (action.type) {        
         case 'LOADING':
             return{
                 isLoading:true,
@@ -36,13 +36,12 @@ export default (state = defaultState, action) => {
                 ...state,
                 record: action.payload.record,
                 mode: action.payload.mode,
-                isCreating: false,
                 rentlist: action.payload.rentlist,
             };
         case 'CREATE_ONE':
             return {
                 ...state,
-                isCreating: true,
+               // isCreating: true,
                 mode:'creating',
             };
         case 'BACK_HOME':
