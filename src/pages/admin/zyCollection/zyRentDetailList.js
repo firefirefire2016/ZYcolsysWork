@@ -38,12 +38,13 @@ const ZyRentDetailList = (props) => {
     children,
     dataIndex,
     record,
+    isWarn,
   }) => {
 
 
     return (
 
-      <td type='primary' >
+      <td type='primary' className={(isWarn) ? 'warn' : ''}>
 
         {parseTypeToLabel(record, dataIndex, children)}
       </td>
@@ -200,14 +201,21 @@ const ZyRentDetailList = (props) => {
   });
 
   const { page, total, limit, list, contractid, contractno, overstate,
-    onEditOne, SelectByREQ, onCreate, isLoading, onShowOne, onEditClick } = props;
+    onEditOne, SelectByREQ, onCreate, isLoading, onShowOne, onEditClick,mode} = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');
 
-
+    switch (mode) {
+      case 'creating':
+        props.history.push('/admin/zyRentDetail/edit');
+        return;
+    
+      default:
+        break;
+    }
     
 
     setDate(getTodayDateStr);
@@ -231,7 +239,7 @@ const ZyRentDetailList = (props) => {
       
     // }, 100);
 
-  }, [])
+  }, [mode])
 
 
 
@@ -412,7 +420,7 @@ const ZyRentDetailList = (props) => {
           <Button type="primary" size="large" onClick={() => {
             //设置要编辑的id
             onCreate(true);
-            props.history.push('/admin/zyRentDetail/edit');
+            
           }}>
             新增
          </Button>

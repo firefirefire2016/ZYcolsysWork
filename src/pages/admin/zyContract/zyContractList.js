@@ -39,7 +39,7 @@ const ZyContractList = (props) => {
   }) => {
 
     return (
-      <td {...restProps} type='primary' className=''>
+      <td {...restProps} type='primary' className={(isWarn) ? 'warn' : ''}>
 
         {parseTypeToLabel(record, dataIndex, children)}
       </td>
@@ -140,7 +140,7 @@ const ZyContractList = (props) => {
       }
 
 
-      return col;
+      //return col;
     }
 
     return {
@@ -365,6 +365,7 @@ const ZyContractList = (props) => {
   //重置
   const ResetValue = () => {
     form.resetFields();
+    console.log(list);
   }
 
   const onSelectByParams = () => {

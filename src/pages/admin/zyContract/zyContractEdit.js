@@ -424,6 +424,8 @@ function ZyContractEdit(props) {
                     if(rightnos){
                         row['rightid'] = rightnos.id;
                     }
+
+                    
                     
 
                     //创建合同同时，创建租金标准

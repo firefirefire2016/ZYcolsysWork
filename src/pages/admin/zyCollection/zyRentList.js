@@ -40,7 +40,7 @@ const ZyRentList = (props) => {
   }) => {
 
     return (
-      <td {...restProps} type='primary' className='' className={(isWarn) ? 'warn' : ''}>
+      <td {...restProps} type='primary'  className={(isWarn) ? 'warn' : ''}>
 
         {parseTypeToLabel(record, dataIndex, children)}
       </td>
@@ -106,7 +106,7 @@ const ZyRentList = (props) => {
           //record,
           labelType: parseItemtype(col.dataIndex),
           rowIndex,
-         // isWarn: record.isWarn === 1 ? true : false,
+          isWarn: record.isWarn ? true : false,
           //isWarn:consoleTarget(record),
           dataIndex: col.dataIndex,
           title: col.title,

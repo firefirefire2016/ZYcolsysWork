@@ -427,16 +427,19 @@ export const sysCols = {
             title: '合同编号',
             dataIndex: 'contractno',
             isShow: false,
-            isSelect:true
-        },
-        {
-            title: '合同编号',
-            dataIndex: 'select_contractno',
-            isShow: false,
             isInEdit: true,
-            editable: true,
+            editable: false,
             isMust:true,
+            isSelect:true,
         },
+        // {
+        //     title: '合同编号',
+        //     dataIndex: 'select_contractno',
+        //     isShow: false,
+        //     isInEdit: true,
+        //     editable: false,
+        //     isMust:true,
+        // },
         {
             title: '账单编号',
             dataIndex: 'billno',

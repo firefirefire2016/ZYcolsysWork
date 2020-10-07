@@ -8,6 +8,18 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'BACK_HOME':
+            return {
+                ...state,
+                mode: action.payload.mode,
+            };
+        case 'KEEP_RENTDATA':
+            console.log(action.type);
+            return {
+                ...state,
+                mode: action.payload.mode,
+                record: action.payload.record,
+            }
         case 'MERGE_REQ':
             return {
                 ...state,

@@ -12,6 +12,7 @@ import zyUnitList from "../pages/admin/baseInfo/zyUnitList";
 import zyRentDetailList from '../pages/admin/zyCollection/zyRentDetailList';
 import zyRentDetailEdit from '../pages/admin/zyCollection/zyRentDetailEdit';
 import zyRentEdit from '../pages/admin/zyCollection/zyRentEdit';
+import zyContractListSelect from "../pages/admin/zyContract/zyContractListSelect";
 
 
 
@@ -140,6 +141,10 @@ export const admins = [
                 path: '/admin/zyContract/createOne',
                 component: zyContractEdit,
                 isShow: false
+            },{
+                path: '/admin/zyContract/select',
+                component: zyContractListSelect,
+                isShow: false,
             }, {
                 path: '/admin/zyRentDetail/edit',
                 component: zyRentDetailEdit,

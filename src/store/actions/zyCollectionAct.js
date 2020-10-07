@@ -10,6 +10,32 @@ import { consoleTarget } from '../../utils/ItemUtils';
 
 const sourceUrl = 'zyCollection';
 
+export const onBackHome = async (dispatch, payload) => {
+
+    dispatch({
+        type: 'BACK_HOME',
+        payload: { mode: 'home' }
+    })
+
+}
+
+
+export const keepFormdata = async (dispatch, payload) => {
+
+    let { formdata, mode } = payload;
+
+    console.log(mode);
+
+    dispatch({
+        type: 'KEEP_RENTDATA',
+        payload: { record: formdata,mode }
+    })
+
+    dispatch({
+        type: 'TO_SELECT',
+    })
+}
+
 
 export const RentToMergeData = async (dispatch, payload) => {
 
@@ -195,7 +221,7 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let rows = res.rows;
 
-    NoticeStart(rows, _isInit);
+    //NoticeStart(rows, _isInit);
 
     let newList = [];
 

@@ -8,7 +8,7 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) { 
-        case 'TO_SELECT':
+        case 'TO_PROPERTY':
             console.log(action.type);
             return {
                 selectmode:'toselect',

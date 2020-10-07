@@ -8,26 +8,27 @@ import { getTodayStr, timeToStr } from '../../utils/common'
 
 const sourceUrl = 'zyContract';
 
+export const onSelectToRent = async(dispatch,payload) =>{
 
-//加载列表数据，推送到reducer
-export const onLoadContractData = async (dispatch, payload) => {
-    
+    let { record} = payload;
+
     dispatch({
-        type: 'LOADING',
+        type: 'TO_Rent',
+        payload: { selectdata:record}
     })
 
+    
+}
+
+export const getContractList = async (dispatch,payload)=>{
+    
     let { page, limit, req } = payload;
-
-
     const res = await getList(sourceUrl, page, limit, req);
 
     let list = res.rows;
 
     let newSelects = [];
 
-    console.log(newSelects);
-
-    console.log(res);
 
     if (list) {
         for (let index = 0; index < list.length; index++) {
@@ -40,6 +41,47 @@ export const onLoadContractData = async (dispatch, payload) => {
         row['area'] = row.zypropertyrights[0].area;
         row['insidearea'] = row.zypropertyrights[0].insidearea;
         row['simpleaddress'] = row.zypropertyrights[0].simpleaddress;
+    });
+
+
+    dispatch({
+        type: 'GET_LIST',
+        payload: { ...res, page, limit, newSelects, res, rows: list }
+    })
+}
+
+//加载列表数据，推送到reducer
+export const onLoadContractData = async (dispatch, payload) => {
+
+    
+    
+    // dispatch({
+    //     type: 'LOADING',
+    //   //  payload: { mode }
+    // })    
+
+    let { page, limit, req } = payload;
+    const res = await getList(sourceUrl, page, limit, req);
+
+    let list = res.rows;
+
+    let newSelects = [];
+
+
+    if (list) {
+        for (let index = 0; index < list.length; index++) {
+            const element = list[index];
+            newSelects.push(element.contractno);
+        }
+    }
+
+    list.forEach(row => {
+        row['area'] = row.zypropertyright.area;
+        row['insidearea'] = row.zypropertyright.insidearea;
+        row['simpleaddress'] = row.zypropertyright.simpleaddress;
+        if(row.contract_status === 2 || row.contract_status === 3){
+            row.isWarn = true;
+        }
     });
 
     console.log(list);
@@ -73,7 +115,7 @@ export const keepFormdata = async (dispatch, payload) => {
     })
 
     dispatch({
-        type: 'TO_SELECT',
+        type: 'TO_PROPERTY',
     })
 }
 
@@ -260,10 +302,7 @@ export const onCommitEdit = async (dispatch, payload) => {
         if (result.code === 0) {
             message.info(result.msg);
 
-            dispatch({
-                type: "COMMIT_Edit",
-                payload: { ...result, record, result }
-            })
+            
         }
         else {
             message.warn('修改提交失败');
@@ -277,6 +316,10 @@ export const onCommitEdit = async (dispatch, payload) => {
         await modifyOne('zyProperty', targetdata).then(function (res2) {
             if (res2.code === 0) {
                 message.info(res2.msg);
+                dispatch({
+                    type: "COMMIT_Edit",
+                    payload: { ...result, record, result }
+                })
             }
             else {
                 message.warn('绑定产权失败:' + res2.msg);
@@ -321,19 +364,19 @@ export const onCommitEdit = async (dispatch, payload) => {
             });
         }
 
-        await updateALLStatus('zyCollection', tagetdata).then(function (res) {
-            if (res.code === 1) {
-                //后台问题打印
-                message.warn(res.msg);
-            }
-            else {
+        // await updateALLStatus('zyCollection', tagetdata).then(function (res) {
+        //     if (res.code === 1) {
+        //         //后台问题打印
+        //         message.warn(res.msg);
+        //     }
+        //     else {
 
-                console.log('修改收款表状态成功');
-            }
-        }
+        //         console.log('修改收款表状态成功');
+        //     }
+        // }
 
 
-        )
+        // )
     })
 }
 
