@@ -46,7 +46,7 @@ export const sysCols = {
             isShow: false,
             editable: false,
             isInEdit:true,
-            isMust:true,
+            //isMust:true,
         },
         {
             title: '物业名称',
