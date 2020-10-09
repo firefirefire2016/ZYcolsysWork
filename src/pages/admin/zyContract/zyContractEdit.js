@@ -117,6 +117,18 @@ function ZyContractEdit(props) {
     //编辑
     const edit = (record, index) => {
 
+       // let row = form.getFieldValue();
+        
+
+        let nItems = edititems.filter(item => {
+            return (parseItemtype(item.dataIndex) === 'date')
+        })
+
+        nItems.forEach((item, index, items) => {
+            record[item.dataIndex] = strToTime(record[item.dataIndex]);
+
+        })
+
         Modal.confirm({
             title: '租金标准',
             visible: true,
@@ -180,23 +192,23 @@ function ZyContractEdit(props) {
 
     const loadValue = () => {
 
-        
 
-       // let formdata = form.getFieldsValue();
+
+        // let formdata = form.getFieldsValue();
 
         //let _record = new Object(record);
 
         let formdata = form.getFieldsValue();
 
-        if(record){
+        if (record) {
             formdata.id = record.id;
         }
-        
 
 
-        onToSelectRight(formdata, tabledata,mode);
 
-        
+        onToSelectRight(formdata, tabledata, mode);
+
+
 
     }
 
@@ -213,7 +225,7 @@ function ZyContractEdit(props) {
 
         let obj;
 
-        let nItems;        
+        let nItems;
 
 
         switch (mode) {
@@ -330,15 +342,15 @@ function ZyContractEdit(props) {
                 props.history.push('/admin/propertyRight/select');
                 break;
 
-            default:               
+            default:
                 break;
         }
 
-        
 
 
 
-    }, [mode,selectmode])
+
+    }, [mode, selectmode])
 
     const onBackHome = () => {
 
@@ -415,16 +427,16 @@ function ZyContractEdit(props) {
 
             })
 
-            
 
 
-            if(rightnos){
+
+            if (rightnos) {
                 row['rightid'] = rightnos.id;
             }
 
             console.log(row);
 
-            if(!row.rightid){
+            if (!row.rightid) {
                 message.warn('必须绑定一个产权');
                 return;
             }
@@ -434,31 +446,31 @@ function ZyContractEdit(props) {
 
                     console.log(row);
 
-                    console.log(rightnos);                  
+                    console.log(rightnos);
 
-                    
-                    
+
+
 
                     //创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
                     break;
                 case 'keepon':
 
-                    
+
                     //续租创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
 
                     break;
                 case 'editing':
-                 
+
 
                     let _record = new Object(record);
 
-                    row['id'] = _record.id;                    
+                    row['id'] = _record.id;
 
                     console.log(row);
 
-                    console.log(rightnos);                    
+                    console.log(rightnos);
 
                     onEditClick(row, page, limit, tabledata);
 
@@ -651,7 +663,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-        onToSelectRight: (formdata, tabledata,mode) => { keepFormdata(dispatch, { formdata, tabledata,mode }) },
+        onToSelectRight: (formdata, tabledata, mode) => { keepFormdata(dispatch, { formdata, tabledata, mode }) },
         onBackClick: (page, limit) => { onBackHome(dispatch, { page, limit }) },
         // loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
         onEditClick: (record, page, limit, newtable) => { onCommitEdit(dispatch, { record, page, limit, newtable }) },
