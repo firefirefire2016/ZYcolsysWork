@@ -8,20 +8,20 @@ import { getTodayStr, timeToStr } from '../../utils/common'
 
 const sourceUrl = 'zyContract';
 
-export const onSelectToRent = async(dispatch,payload) =>{
+export const onSelectToRent = async (dispatch, payload) => {
 
-    let { record} = payload;
+    let { record } = payload;
 
     dispatch({
         type: 'TO_Rent',
-        payload: { selectdata:record}
+        payload: { selectdata: record }
     })
 
-    
+
 }
 
-export const getContractList = async (dispatch,payload)=>{
-    
+export const getContractList = async (dispatch, payload) => {
+
     let { page, limit, req } = payload;
     const res = await getList(sourceUrl, page, limit, req);
 
@@ -53,8 +53,8 @@ export const getContractList = async (dispatch,payload)=>{
 //加载列表数据，推送到reducer
 export const onLoadContractData = async (dispatch, payload) => {
 
-    
-    
+
+
     // dispatch({
     //     type: 'LOADING',
     //   //  payload: { mode }
@@ -79,7 +79,7 @@ export const onLoadContractData = async (dispatch, payload) => {
         row['area'] = row.zypropertyright.area;
         row['insidearea'] = row.zypropertyright.insidearea;
         row['simpleaddress'] = row.zypropertyright.simpleaddress;
-        if(row.contract_status === 2 || row.contract_status === 3){
+        if (row.contract_status === 2 || row.contract_status === 3) {
             row.isWarn = true;
         }
     });
@@ -90,7 +90,7 @@ export const onLoadContractData = async (dispatch, payload) => {
         type: 'GET_ALL',
         payload: { ...res, page, limit, newSelects, res, rows: list }
     })
-    
+
 
 }
 
@@ -105,13 +105,13 @@ export const onBackHome = async (dispatch, payload) => {
 
 export const keepFormdata = async (dispatch, payload) => {
 
-    let { formdata, tabledata,mode } = payload;
+    let { formdata, tabledata, mode } = payload;
 
     console.log(mode);
 
     dispatch({
         type: 'KEEP_DATA',
-        payload: { record: formdata, _tabledata: tabledata,mode }
+        payload: { record: formdata, _tabledata: tabledata, mode }
     })
 
     dispatch({
@@ -209,7 +209,7 @@ export const onGetEditData = async (dispatch, payload) => {
 export const onCreateData = async (dispatch, isCreating) => {
     //let {record} = payload;
 
-   // console.log(isCreating);
+    // console.log(isCreating);
 
     dispatch({
         type: 'CREATE_ONE',
@@ -227,7 +227,7 @@ export const onCommitStatus = async (dispatch, payload) => {
 
     let { record, _record, edittype } = payload;
 
-    
+
 
     await modifyOne(sourceUrl, _record).then(async function (res) {
 
@@ -242,9 +242,9 @@ export const onCommitStatus = async (dispatch, payload) => {
                     record.quitdate = _record.quitdate;
                     dispatch({
                         type: edittype,
-    
+
                         payload: { res }
-    
+
                     })
                     break;
                 case 'COMMIT_STOP':
@@ -253,18 +253,18 @@ export const onCommitStatus = async (dispatch, payload) => {
                     record.contract_status = _record.contract_status;
                     dispatch({
                         type: edittype,
-    
+
                         payload: { res }
-    
+
                     })
                     break;
                 case 'COMMIT_DEL':
                     record.contract_status = _record.contract_status;
                     dispatch({
                         type: edittype,
-    
+
                         payload: { res }
-    
+
                     })
                     break;
                 default:
@@ -275,7 +275,7 @@ export const onCommitStatus = async (dispatch, payload) => {
             message.warn('失败:' + res.msg);
         }
 
-        
+
 
 
     })
@@ -302,13 +302,13 @@ export const onCommitEdit = async (dispatch, payload) => {
         if (result.code === 0) {
             message.info(result.msg);
 
-            
+
         }
         else {
             message.warn('修改提交失败');
         }
 
-        
+
 
         let targetdata = { id: rightid, contractid };
 
@@ -398,58 +398,61 @@ export const onCommitCreate = async (dispatch, payload) => {
     //先创建合同
     await createTarget(sourceUrl, record).then(async function (res) {
 
-        reData = res.data;
-
-        contractid = reData.id;
-
-        
         if (res.code === 0) {
             message.info(res.msg);
             dispatch({
                 type: "COMMIT_CREATE",
                 payload: { ...res, record, res }
             })
+            reData = res.data;
+
+            contractid = reData.id;
         }
         else {
             message.warn('创建失败:' + res.msg);
+            //return;
         }
     }
 
     ).then(async function (res) {
 
-        let targetdata = { id: rightid, contractid };
+        console.log(reData);
+        console.log(contractid);
+        console.log(record);
+        if (reData  && contractid ) {
+            let targetdata = { id: rightid, contractid };
 
-        //更新对应产权
-        await modifyOne('zyProperty', targetdata).then(function (res2) {
-            if (res2.code === 0) {
-                message.info(res2.msg);
-            }
-            else {
-                message.warn('绑定产权失败:' + res2.msg);
-            }
-        })
-
-
-        //创建收款标准
-        const _sourceUrl = 'zyRentlist';
-
-        for (let index = 0; index < tabledata.length; index++) {
-            let element = tabledata[index];
-
-            element.startdate = timeToStr(element.startdate);
-
-            element.enddate = timeToStr(element.enddate);
-
-            element.contractid = contractid;
-
-            await createTarget(_sourceUrl, element).then(function (res3) {
-                if (res3.code === 0) {
-                    message.info(res3.msg);
+            //更新对应产权
+            await modifyOne('zyProperty', targetdata).then(function (res2) {
+                if (res2.code === 0) {
+                    message.info(res2.msg);
                 }
                 else {
-                    message.warn('创建失败:' + res3.msg);
+                    message.warn('绑定产权失败:' + res2.msg);
                 }
-            });
+            })
+
+            //创建收款标准
+            const _sourceUrl = 'zyRentlist';
+
+            for (let index = 0; index < tabledata.length; index++) {
+                let element = tabledata[index];
+
+                element.startdate = timeToStr(element.startdate);
+
+                element.enddate = timeToStr(element.enddate);
+
+                element.contractid = contractid;
+
+                await createTarget(_sourceUrl, element).then(function (res3) {
+                    if (res3.code === 0) {
+                        message.info(res3.msg);
+                    }
+                    else {
+                        message.warn('创建失败:' + res3.msg);
+                    }
+                });
+            }
         }
 
     })

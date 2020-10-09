@@ -414,16 +414,26 @@ function ZyContractEdit(props) {
 
             })
 
+            
+
+
+            if(rightnos){
+                row['rightid'] = rightnos.id;
+            }
+
+            console.log(row);
+
+            if(!row.rightid){
+                message.warn('必须绑定一个产权');
+                return;
+            }
+
             switch (mode) {
                 case 'creating':
 
                     console.log(row);
 
-                    console.log(rightnos);
-
-                    if(rightnos){
-                        row['rightid'] = rightnos.id;
-                    }
+                    console.log(rightnos);                  
 
                     
                     
@@ -433,20 +443,13 @@ function ZyContractEdit(props) {
                     break;
                 case 'keepon':
 
-                    if(rightnos){
-                        row['rightid'] = rightnos.id;
-
-                    }
                     
                     //续租创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
 
                     break;
                 case 'editing':
-
-                    if(rightnos){
-                        row['rightid'] = rightnos.id;
-                    }                    
+                 
 
                     let _record = new Object(record);
 

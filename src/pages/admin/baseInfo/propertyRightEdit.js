@@ -16,13 +16,13 @@ function PropertyRightEdit(props) {
 
     const { onEditClick, onCreateClick } = props;
 
-    const { record, isCreating, page, limit, id, res,mode } = props;
+    const { record, isCreating, page, limit, id, res, mode } = props;
 
 
     let obj;
 
     const ResetValue = async () => {
-        
+
         form.resetFields();
 
     }
@@ -39,12 +39,18 @@ function PropertyRightEdit(props) {
                 break;
             case 'editing':
                 obj = new Object(record);
-    
+
                 form.setFieldsValue({
                     ...obj
                 });
                 break;
-        
+            case 'details':
+                obj = new Object(record);
+
+                form.setFieldsValue({
+                    ...obj
+                });
+                break;
             default:
                 break;
         }
@@ -63,7 +69,7 @@ function PropertyRightEdit(props) {
 
             if (isCreating) {
 
-        //        console.log('row:' + JSON.stringify(row));
+                //        console.log('row:' + JSON.stringify(row));
 
 
                 onCreateClick(row)
@@ -73,10 +79,10 @@ function PropertyRightEdit(props) {
 
                 row.id = id;
 
-                
+
                 console.log('row:' + JSON.stringify(row));
 
-                onEditClick(row,'COMMIT_Edit')
+                onEditClick(row, 'COMMIT_Edit')
             }
 
         } catch (error) {
@@ -116,7 +122,7 @@ function PropertyRightEdit(props) {
                                 parseRules(item)
                             }
                         >
-                            {parseInputNode(item,mode)}
+                            {parseInputNode(item, mode)}
                         </Form.Item>
                     )
                 })}
@@ -125,14 +131,14 @@ function PropertyRightEdit(props) {
                     <Button type="primary" htmlType="submit"
                         //className="login-form-button"
                         className="btn" onClick={onCommitButtonClick}
-                        hidden={mode==='details'}
+                        hidden={mode === 'details'}
                     >
                         提交
                     </Button>
                     <Button type="primary" htmlType="reset"
                         //className="login-form-button"
                         className="btn" onClick={ResetValue}
-                        hidden={mode==='details'}
+                        hidden={mode === 'details'}
                     >
                         重置
                     </Button>
@@ -155,7 +161,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-       // loadTargetList: (page, limit, req,) => { onLoadPropertyData(dispatch, { page, limit, req }) },
+        // loadTargetList: (page, limit, req,) => { onLoadPropertyData(dispatch, { page, limit, req }) },
         onEditClick: (record) => { onCommitEdit(dispatch, { record }) },
         onCreateClick: (record) => { onCommitCreate(dispatch, { record }) }
     }

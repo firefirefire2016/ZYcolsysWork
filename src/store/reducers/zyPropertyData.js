@@ -55,7 +55,7 @@ export default (state = defaultState, action) => {
                 ...state,
                 record: action.payload.record,
                 id: action.payload.id,
-                isCreating: false,
+               // isCreating: false,
                 mode: action.payload.mode,
             };
         case 'COMMIT_Edit':
