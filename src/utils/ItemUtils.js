@@ -27,11 +27,17 @@ export const selectItems = {
 
   create_itemnames: ['押金', '管理费', '其他'],
 
+  //create_itemnames: ['押金', '管理费', '其他'],
+
   overstates: ['全部', '即将逾期', '逾期', '正常'],
 
-  amountselect: ['全部', '未缴费', '其他'],
+  amountselect: ['全部', '已缴清', '其他'],
 
-  invoiceselect: ['全部', '未开票', '其他'],
+  invoiceselect: ['全部', '已开清', '其他'],
+
+  // amountselect: ['全部', '未缴费', '其他'],
+
+  // invoiceselect: ['全部', '未开票', '其他'],
 
   yesOrNo: ['否', '是'],
 
@@ -158,6 +164,7 @@ export const parseInputNode = (item, mode, selects) => {
   let inputType = parseItemtype(item.dataIndex);
   canEdit = true;
   console.log(mode);
+  let behidden = false;
   switch (mode) {
     case 'screening'://筛选模式
       //筛选模式下，所有可筛选的都在form中，且不禁用
@@ -171,14 +178,24 @@ export const parseInputNode = (item, mode, selects) => {
     case 'editing'://编辑模式
       //编辑模式下，iten.editable过滤不能编辑的字段
       canEdit = item.editable
+      // if(item.dataIndex === 'itemname'){
+      //   behidden = true;
+      // }
       break;
     case 'creating'://创建模式
       //编辑模式下，iten.editable过滤不能编辑的字段
       canEdit = item.editable
+      // if(item.dataIndex === 'itemname'){
+      //   behidden = true;
+      // }
       break;
     case 'details'://详情模式
       //详情模式下，所有字段不能使用
       canEdit = false;
+      // if(item.dataIndex === 'create_itemname'){
+      //   console.log('item.dataIndex === create_itemname');
+      //   behidden = true;
+      // }
       break;
     case 'keepon':
       //续租模式下，iten.editable过滤不能编辑的字段
@@ -191,9 +208,14 @@ export const parseInputNode = (item, mode, selects) => {
 
 
   let inputNode = <Input type={inputType} placeholder={item.title} disabled={!canEdit}
-    style={{ width: '200px' }
-    } />;
+     style={{ width: '200px' }
+  } />;
 
+
+  
+  if(behidden){
+    return inputNode;
+  }
 
   switch (inputType) {
     case 'Contractnoselect':
@@ -299,20 +321,20 @@ export const parseTypeToLabel = (record, dataIndex, chil) => {
     case 'itemname':
       return selectItems.itemnames[record.itemname];
     case 'amount_received':
-      if (parseFloat(record.amount_received) > 0) {
-        return chil;
-      }
-      if (parseFloat(record.amount_received) === 0) {
+      if (parseFloat(record.amount_received) >= parseFloat(record.amount_receivable)) {
         return selectItems.amountselect[1];
       }
+      // if (parseFloat(record.amount_received) === 0) {
+      //   return chil;
+      // }
       return chil;
     case 'invoice_amount':
-      if (parseFloat(record.invoice_amount) > 0) {
-        return chil;
-      }
-      if (parseFloat(record.invoice_amount) === 0) {
+      if (parseFloat(record.invoice_amount) >= parseFloat(record.invoice_limit)) {
         return selectItems.invoiceselect[1];
       }
+      // if (parseFloat(record.invoice_amount) === 0) {
+      //   return selectItems.invoiceselect[1];
+      // }
       return chil;
     default:
       return chil;

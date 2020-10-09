@@ -7,13 +7,13 @@ import { strToTime, timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit, keepFormdata, onBackHome } from '../../../store/actions/zyCollectionAct';
 import { getContractList } from '../../../store/actions/zyContractAct';
 
-const items = sysCols.rentCol.filter(item => item.isInEdit);
+let items = sysCols.rentCol.filter(item => (item.isInEdit));
 
 const contractCols = sysCols.contractCol.filter(item => (item.isShow && !item.isOper));
 
 const selectItems = sysCols.contractCol.filter(item => item.isSelect);
 
-const edititems = sysCols.rentCol.filter(item => item.editable);
+//const edititems = sysCols.rentCol.filter(item => item.editable);
 
 
 function ZyRentDetailEdit(props) {
@@ -49,6 +49,13 @@ function ZyRentDetailEdit(props) {
       case 'creating':
         console.log(mode);
         message.info('准备创建');
+        break;
+
+      case 'details':
+
+        form.setFieldsValue({
+          ...record
+        });
         break;
       case 'editing':
         obj = new Object(record);
@@ -392,6 +399,7 @@ function ZyRentDetailEdit(props) {
         <Form.Item>
           <Button type="primary" htmlType="submit"
             //className="login-form-button"
+            hidden={mode === 'details'}
             className="btn" onClick={onCommitButtonClick}
           >
             保存
@@ -399,6 +407,7 @@ function ZyRentDetailEdit(props) {
           <Button type="primary" htmlType="reset"
             //className="login-form-button"
             className="btn" onClick={toSelectContract}
+            hidden={mode === 'details'}
           >
             选择合同
                     </Button>

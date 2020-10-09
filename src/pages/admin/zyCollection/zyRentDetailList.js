@@ -412,11 +412,11 @@ const ZyRentDetailList = (props) => {
     <Card title="账单明细"
       extra={
         <Form.Item >
-          <Button type="primary" size="large" onClick={() => {
+          {/* <Button type="primary" size="large" onClick={() => {
             props.history.push('/admin/zyRentList');
           }}>
             本期账单
-         </Button>
+         </Button> */}
           <Button type="primary" size="large" onClick={() => {
             //设置要编辑的id
             onCreate(true);

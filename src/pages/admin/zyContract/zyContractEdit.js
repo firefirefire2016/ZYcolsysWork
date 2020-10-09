@@ -226,6 +226,7 @@ function ZyContractEdit(props) {
 
                 obj = new Object(record);
 
+
                 nItems = edititems.filter(item => {
                     return (parseItemtype(item.dataIndex) === 'date')
                 })

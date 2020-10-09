@@ -217,6 +217,8 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     console.log(req);
 
+    let {amount_select,invoice_select} = req;
+
     const res = await getList(sourceUrl, page, limit, req);
 
     let rows = res.rows;
@@ -225,22 +227,54 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let newList = [];
 
-    rows.forEach((row, index, rows) => {
-        let invoice_amount = parseFloat(row.invoice_amount);
-        let amount_received = parseFloat(row.amount_received);
-        let amount_receivable = parseFloat(row.amount_receivable);
-        let invoice_limit = parseFloat(row.invoice_limit);
+    for (let index = 0; index < rows.length; index++) {
+        const row = rows[index];
 
-       // row.simpleaddress = row.zycontract.zypropertyright.simpleaddress;
         row.rentdate = parseInt(row.zycontract.rentdate);
-        row.contractno = row.zycontract.contractno;
+        row.contractno = row.zycontract.contractno;        
 
-        if (invoice_amount < invoice_limit || amount_received < amount_receivable) {
-            row.isWarn = 1;
+        if(amount_select === '1'){
+            if(row.amount_received < row.amount_receivable){
+                continue;
+            }
+        }
+
+        if(amount_select === '2'){
+            if(row.amount_received >= row.amount_receivable){
+                continue;
+            }
+        }
+
+        if(invoice_select === '1'){
+            if(row.invoice_amount < row.invoice_limit){
+                continue;
+            }
+        }
+
+        if(invoice_select === '2'){
+            if(row.invoice_amount >= row.invoice_limit){
+                continue;
+            }
         }
 
         newList.push(row);
-    })
+    }
+
+    // rows.forEach((row, index, rows) => {
+    //     let invoice_amount = parseFloat(row.invoice_amount);
+    //     let amount_received = parseFloat(row.amount_received);
+    //     let amount_receivable = parseFloat(row.amount_receivable);
+    //     let invoice_limit = parseFloat(row.invoice_limit);
+
+    //    // row.simpleaddress = row.zycontract.zypropertyright.simpleaddress;
+        
+
+
+        
+
+
+        
+    // })
 
     let total = res.total;
 
