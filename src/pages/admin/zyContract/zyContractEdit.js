@@ -627,15 +627,15 @@ function ZyContractEdit(props) {
                         className="btn" onClick={onCommitButtonClick}
                         hidden={mode === 'details'}
                     >
-                        提交
+                        保存
                     </Button>
-                    <Button type="primary" htmlType="reset"
+                    {/* <Button type="primary" htmlType="reset"
                         //className="login-form-button"
                         className="btn" onClick={ResetValue}
                         hidden={mode === 'details'}
                     >
                         重置
-                    </Button>
+                    </Button> */}
                     <Button type="primary" htmlType="reset"
                         //className="login-form-button"
                         className="btn" onClick={loadValue}
@@ -648,7 +648,7 @@ function ZyContractEdit(props) {
                         className="btn"
                         onClick={onBackHome}
                     >
-                        返回
+                        关闭
                     </Button >
                 </Form.Item>
 

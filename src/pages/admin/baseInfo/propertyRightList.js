@@ -92,6 +92,7 @@ const PropertyRightList = (props) => {
 
     return {
       ...col,
+      align:'center',
       onCell: (record, rowIndex) => (
 
         {
@@ -113,7 +114,7 @@ const PropertyRightList = (props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    message.info('加载中...');
+    //message.info('加载中...');
 
     if (isInit) {
 

@@ -145,9 +145,11 @@ const ZyContractList = (props) => {
 
     return {
       ...col,
+      align:'center',
       onCell: (record, rowIndex) => (
 
         {
+          
           //record,
           labelType: parseItemtype(col.dataIndex),
           rowIndex,
@@ -193,7 +195,7 @@ const ZyContractList = (props) => {
         break;
     }
 
-    message.info('加载中...');
+    //message.info('加载中...');
 
     if (isInit) {
 

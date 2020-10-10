@@ -59,7 +59,7 @@ export const selectItems = {
 
   owners: ['财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
     '建安公司', '梅华办', '南利公司', '南利集团', '狮山办', '湾仔小学', '香华实验学校', '香洲区教育局', '香洲区景园小学', '香洲区科学技术委员会',
-    '香洲区园艺场', '新华公司', '珠海市第五中学', '珠海市前山中学', '珠海市香洲区房地产综合开发公司'],
+    '香洲区园艺场', '新华公司', '珠海市第五中学', '珠海市前山中学', '珠海市香洲区房地产综合开发公司','珠海市房产物业'],
 
   //_owners: ['财办', '财贸办公室', '财政局', '地属村，房屋按比例', '地属村，建筑属公司', '拱北中学', '吉大办',
   //  '建安公司', '梅华办', '南利公司', '南利集团', '狮山办', '湾仔小学', '香华实验学校', '香洲区教育局', '香洲区景园小学', '香洲区科学技术委员会',
@@ -74,7 +74,7 @@ export const selectItems = {
    */
   //contract_status: ['作废(已终止)', '执行中', '草稿', '退租中', '退租待结算', '已到期'],
 
-  property_status: ['已租', '空置', '即将空置'],
+  property_status: ['已租', '空置', '即将空置','合同已到期'],
 
   // _property_status: ['已租', '空置', '即将空置'],
 
@@ -136,6 +136,7 @@ const getSelects = (item, selects, isValue) => {
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
         showSearch={true}
+        allowClear={true}
       >
         {selects.map((temp, index) => (
           <Option key={index} value={index}>{temp}</Option>
@@ -146,13 +147,15 @@ const getSelects = (item, selects, isValue) => {
   return (
     <Select placeholder={item.title} style={{ width: '200px' }}
       disabled={!canEdit}
+      allowClear={true}
       onSelect={() => {
       }}
       optionFilterProp='children'
       filterOption={(input, option) =>
         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
-      showSearch={true}>
+      showSearch={true}
+      >
       {selects.map((temp, index) => (
         <Option key={index} >{temp}</Option>
       ))}

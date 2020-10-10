@@ -36,7 +36,7 @@ function ZyRentDetailEdit(props) {
 
   useEffect(() => {
 
-    console.log('selectdata = ' + JSON.stringify(selectdata));
+   // console.log('selectdata = ' + JSON.stringify(selectdata));
 
     let obj;
 
@@ -45,10 +45,10 @@ function ZyRentDetailEdit(props) {
     switch (mode) {
       case 'home':
         props.history.push('/admin/zyRentDetailList');
-        break;
+        return;
       case 'creating':
         console.log(mode);
-        message.info('准备创建');
+       // message.info('准备创建');
         break;
 
       case 'details':
@@ -59,18 +59,6 @@ function ZyRentDetailEdit(props) {
         break;
       case 'editing':
         obj = new Object(record);
-
-        // if (newSelects) {
-        //     for (let index = 0; index < newSelects.length; index++) {
-        //         const element = newSelects[index];
-
-        //         if (element === obj['contractno']) {
-        //             obj.select_contractno = index;
-        //             break;
-        //         }
-
-        //     }
-        // }
 
         obj.create_itemname = obj.itemname - 2;
 
@@ -107,6 +95,7 @@ function ZyRentDetailEdit(props) {
           ...obj,
           contractno: selectdata.contractno,
           rentdate: selectdata.rentdate,
+          contractid:selectdata.contractid,
         });
         console.log(obj);
         return;

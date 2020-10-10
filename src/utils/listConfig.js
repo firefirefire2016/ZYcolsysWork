@@ -55,6 +55,7 @@ export const sysCols = {
             editable: false,
             isInEdit:true,
             isSelect:true,
+            width:'15%',
         },
         {
             title: '建筑面积',
@@ -65,7 +66,7 @@ export const sysCols = {
         },
         {
             title: '套内面积',
-            isShow: true,
+           // isShow: true,
             editable: false,
             dataIndex: 'insidearea',
             isInEdit:true,
@@ -140,7 +141,7 @@ export const sysCols = {
             editable: true,
         },
         {
-            title: '当期租金',
+            title: '租金',
             dataIndex: 'once_rent',
             isShow: true,
             // editable: true,
@@ -176,13 +177,13 @@ export const sysCols = {
         //     isInEdit:true,
         //     isMust:true,
         // },
-        {
-            title: '首期收款日',
-            isShow: false,
-            dataIndex: 'firstdate',
-            editable: true,
-            isInEdit:true,
-        },
+        // {
+        //     title: '首期收款日',
+        //     isShow: false,
+        //     dataIndex: 'firstdate',
+        //     editable: true,
+        //     isInEdit:true,
+        // },
         {
             title: '签订日期',
             isShow: true,
@@ -210,7 +211,7 @@ export const sysCols = {
         // },
         {
             title: '退租日期',
-            isShow: true,
+            isShow: false,
             dataIndex: 'quitdate',
             editable: true,
         },        
@@ -579,6 +580,7 @@ export const sysCols = {
             editable: false,
             isInEdit: false,
             isShow: true,
+            width:'5%',
             render: (txt, record, index) => {
                 return index + 1
             }
@@ -586,6 +588,7 @@ export const sysCols = {
         {
             title: '物业名称',
             dataIndex: 'simpleaddress',
+            width:'15%',
             isShow: true,
             isInEdit: true,
             editable: true,
@@ -609,14 +612,7 @@ export const sysCols = {
             isSelect:true,
             isMust:true,
         },
-        {
-            title: '状态',
-            dataIndex: 'property_status',
-            isShow: true,
-            //isInEdit: true,
-            //editable: true,
-            isSelect:true,
-        },
+        
         {
             title: '物业性质',
             dataIndex: 'feature',
@@ -644,19 +640,21 @@ export const sysCols = {
             isMust:true,
         },
         {
-            title: '建筑面积(平方)',
+            title: '建筑面积(m²)',
             dataIndex: 'area',
             isInEdit: true,
             isShow: true,
             editable: true,
             isMust:true,
+          //  width:'5%',
         },
         {
-            title: '套内面积(平方)',
+            title: '套内面积(m²)',
             dataIndex: 'insidearea',
             isInEdit: true,
             isShow: true,
             editable: true,
+           // width:'5%',
         },
         {
             title: '共有情况',
@@ -706,6 +704,15 @@ export const sysCols = {
             dataIndex: 'remarks',
             isInEdit: true,
             editable: true,
+        },
+        {
+            title: '状态',
+            dataIndex: 'property_status',
+            isShow: true,
+            //isInEdit: true,
+            //editable: true,
+            isSelect:true,
+            selectMode:true,
         },
         {
             title: '操作',

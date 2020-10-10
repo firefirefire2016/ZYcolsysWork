@@ -11,7 +11,7 @@ import Modal from 'antd/lib/modal/Modal';
 
 const cols = sysCols.propertyCol.filter(item => item.isShow);
 
-const selectItems = sysCols.propertyCol.filter(item => item.isSelect);
+const selectItems = sysCols.propertyCol.filter(item => (item.isSelect && !item.selectMode));
 
 
 const { Option } = Select;
@@ -112,11 +112,11 @@ const PropertyRightList = (props) => {
 
     if (isInit) {
 
-      onLoadData(1, -1, { isInit });
+      onLoadData(1, -1, { isInit,property_status:1 });
       setIsInit(false);
     }
     else {
-      onLoadData(1, limit, { isInit });
+      onLoadData(1, limit, { isInit,property_status:1  });
     }
 
 

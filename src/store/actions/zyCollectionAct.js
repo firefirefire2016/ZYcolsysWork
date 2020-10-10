@@ -398,7 +398,7 @@ export const onCommitEdit = async (dispatch, payload) => {
 
     let { record, edittype } = payload;
 
-    console.log(JSON.stringify(record));
+   // console.log(JSON.stringify(record));
 
     await modifyOne(sourceUrl, record).then(async function (res) {
 

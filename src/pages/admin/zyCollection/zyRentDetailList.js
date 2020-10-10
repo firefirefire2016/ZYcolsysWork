@@ -5,7 +5,7 @@ import '../../demos/home.scss'
 import { onEditDetail, onLoadTargetListByREQ, onCreateData, onShowDetail, onCommitEdit } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
-import { getTodayDateStr } from '../../../utils/common';
+import { getTodayDateStr, getTodayStr } from '../../../utils/common';
 
 
 const selectItems = sysCols.rentCol.filter(item => item.isSelect);
@@ -185,6 +185,7 @@ const ZyRentDetailList = (props) => {
 
     return {
       ...col,
+      align:'center',
       onCell: (record, rowIndex) => (
 
         {
@@ -207,7 +208,7 @@ const ZyRentDetailList = (props) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    message.info('加载中...');
+    //message.info('加载中...');
     //console.log('props = ' + props);
 
     switch (mode) {
@@ -215,7 +216,7 @@ const ZyRentDetailList = (props) => {
         props.history.push('/admin/zyRentDetail/edit');
         return;
       case 'home':
-        return;
+        break;
       default:
         break;
     }
@@ -230,38 +231,35 @@ const ZyRentDetailList = (props) => {
       setIsInit(false);
       let amount_select;
       let invoice_select;
-      if(isOwe>0){
-        amount_select = '2';
+      if(isOwe && needInvoice){
+        if(isOwe>0){
+          amount_select = '2';
+        }
+        else{
+          amount_select= '0';
+        }
+        if(needInvoice>0){
+          invoice_select = '2'
+        }
+        else{
+          invoice_select = '0'
+        }
+        form.setFieldsValue({
+          contractno:contractno,
+          amount_select,
+          invoice_select,
+        })
       }
-      else{
-        amount_select= '0';
-      }
-      if(needInvoice>0){
-        invoice_select = '2'
-      }
-      else{
-        invoice_select = '0'
-      }
+      
      // console.log('来到这里');
      //console.log('contractno = ' + contractno);
-      form.setFieldsValue({
-        contractno:contractno,
-        amount_select,
-        invoice_select,
-      })
+      
       SelectByREQ(1, -1, { contractid, isInit,contractno,amount_select,invoice_select});
      //SelectByREQ(1, -1, {  isInit});
     }
     else {
 
-      
-
-      //从本期账单过来的话
-      form.setFieldsValue({
-        contractno,
-        overstate
-      })
-     // SelectByREQ(1, limit, { contractid, isInit, contractno, overstate });
+      SelectByREQ(1, limit, { contractid, isInit});
 
     }
 
@@ -326,8 +324,25 @@ const ZyRentDetailList = (props) => {
         if(values.amount === undefined){
           values.amount = 0;
         }
-        record.amount_received = parseFloat(record.amount_received) + values.amount;
+        record.amount_received =  values.amount;
         record.collectdate = values.collectdate;
+
+
+        // if((record.overstate === 1 || record.overstate === 2) &&
+        //   record.amount_received >= record.amount_receivable){
+        //     record.overstate = 3;
+        // }
+        // let today = getTodayStr();
+        // if((record.overstate === 3) &&
+        //   record.amount_received >= record.amount_receivable){
+        //     record.overstate = 3;
+        // }
+        // if((record.overstate === 1 || record.overstate === 2) &&
+        //   record.amount_received >= record.amount_receivable){
+        //     record.overstate = 3;
+        // }
+
+
         onEditClick(record, 'COMMIT_GetRent')
       },
       onCancel() { },
@@ -382,7 +397,7 @@ const ZyRentDetailList = (props) => {
         if(values.amount === undefined){
           values.amount = 0;
         }
-        record.invoice_amount = parseFloat(record.invoice_amount) + values.amount;
+        record.invoice_amount =  values.amount;
         record.invoicedate = values.invoicedate;
         //console.log(JSON.stringify(list));
         onEditClick(record, 'COMMIT_GetInvoice')

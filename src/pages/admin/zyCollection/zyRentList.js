@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Modal, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import {  RentToMergeData, onLoadTargetRent,onShowDetail,onCommitEdit,toSelectDetail } from '../../../store/actions/zyCollectionAct';
+import { RentToMergeData, onLoadTargetRent, onShowDetail, onCommitEdit, toSelectDetail } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget,parseInputNode } from '../../../utils/ItemUtils';
+import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
 import { rentMergeQuery } from '../../../utils/common';
 import { getTodayDateStr } from '../../../utils/common';
 
@@ -40,7 +40,7 @@ const ZyRentList = (props) => {
   }) => {
 
     return (
-      <td {...restProps} type='primary'  className={(isWarn) ? 'warn' : ''}>
+      <td {...restProps} type='primary' className={(isWarn) ? 'warn' : ''}>
 
         {parseTypeToLabel(record, dataIndex, children)}
       </td>
@@ -59,22 +59,22 @@ const ZyRentList = (props) => {
           return (
             <span className=''>
               <Button type="primary"
-                    style={{
-                      marginRight: 8,
-                    }}
-                    onClick={() => getRent(record)}
-                  >
-                    收款
+                style={{
+                  marginRight: 8,
+                }}
+                onClick={() => getRent(record)}
+              >
+                收款
                   </Button>
-                  <Button type="primary"
-                    style={{
-                      marginRight: 8,
-                    }}
-                    onClick={() => getInvoice(record)}
-                  >
-                    开票
+              <Button type="primary"
+                style={{
+                  marginRight: 8,
+                }}
+                onClick={() => getInvoice(record)}
+              >
+                开票
                   </Button>
-                <Button type="primary"
+              <Button type="primary"
                 style={{
                   marginRight: 8,
                 }}
@@ -88,54 +88,78 @@ const ZyRentList = (props) => {
         }
         break;
       case "isOwe":
-        col.render = (text, record,index) => {
-          if(text > 0){
+        col.render = (text, record, index) => {
+          if (text > 0) {
             return (
-              // eslint-disable-next-line jsx-a11y/anchor-is-valid
-              <a key={index} style={{textDecorationLine:'underline'}} 
-                  onClick={()=>
-                  {
-                    onClickOweInvoice(record.contractno,2,0);
+              <span className=''>
+
+                <span key={index} style={{ textDecorationLine: 'underline' }}
+                  onClick={() => {
+                    onClickOweInvoice(record.contractno, 2, 0);
                   }
                   }>
-                {text}
-              </a>
+                  {text}
+                </span>
+              </span>
+            );
+          }
+          else {
+            return (
+              <span className=''><li>{text}</li></span>
+              
+            )
+          }
+        }
+        // if(text > 0){
+        //   return (
+        //     // eslint-disable-next-line jsx-a11y/anchor-is-valid
+        //     <span key={index} style={{textDecorationLine:'underline'}} 
+        //         onClick={()=>
+        //         {
+        //           onClickOweInvoice(record.contractno,2,0);
+        //         }
+        //         }>
+        //       {text}
+        //     </span>
+        //   );
+        // }
+        // else{
+        //   return (
+        //     <li>{text}</li>
+        //   )
+        // }
+
+        break;
+      case "needInvoice":
+        col.render = (text, record,index) => {
+          if(text > 0){
+
+            return (
+              <span className=''>
+              <span key={index} style={{textDecorationLine:'underline'}} 
+                onClick={()=>
+                {onClickOweInvoice(record.contractno,0,2);}
+                }>
+                  {text}
+              </span>
+              </span>
             );
           }
           else{
             return (
+              <span className=''>
               <li>{text}</li>
+              </span>
             )
           }
+
         }
         break;
-        case "needInvoice":          
-          col.render = (text, record,index) => {
-            console.log('text = ' + text);
-            if(text > 0){
-
-              return (
-                // eslint-disable-next-line jsx-a11y/anchor-is-valid
-                <a key={index} style={{textDecorationLine:'underline'}} 
-                  onClick={()=>
-                  {onClickOweInvoice(record.contractno,0,2);}
-                  }>
-                    {text}
-                </a>
-              );
-            }
-            else{
-              return (
-                <li>{text}</li>
-              )
-            }
-            
-          }
-          break;
     }
 
     return {
       ...col,
+      align:'center',
       onCell: (record, rowIndex) => (
 
         {
@@ -153,8 +177,8 @@ const ZyRentList = (props) => {
   });
 
 
-  const { list, page, total, limit, onLoadData, isLoading,mode,
-    onLoadTartgetData, SelectByREQ,onShowOne,onEditClick,onClickOweInvoice } = props;
+  const { list, page, total, limit, onLoadData, isLoading, mode,
+    onLoadTartgetData, SelectByREQ, onShowOne, onEditClick, onClickOweInvoice } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -165,7 +189,7 @@ const ZyRentList = (props) => {
       case 'detailselect':
         props.history.push('/admin/zyRentDetailList');
         return;
-    
+
       default:
         break;
     }
@@ -233,11 +257,11 @@ const ZyRentList = (props) => {
         // console.log(JSON.stringify(modelFrom.getFieldsValue()));
         // setRentable(false);
         let values = rentForm.getFieldsValue();
-        record.totalrealAmount =  record.totalrealAmount - record.amount_received  + values.amount;
-        record.amount_received = values.amount;        
+        record.totalrealAmount = record.totalrealAmount - record.amount_received + values.amount;
+        record.amount_received = values.amount;
         record.collectdate = values.collectdate;
         record.isOwe = record.totalneedAmount - record.totalrealAmount;
-        if(record.isOwe <= 0){
+        if (record.isOwe <= 0) {
           record.isOwe = '无欠费';
         }
         onEditClick(record, 'COMMIT_GetRent')
@@ -259,7 +283,7 @@ const ZyRentList = (props) => {
         <Form form={invoiceForm} layout="vertical" name="userForm"
           initialValues={{
             //['amount']: '3',
-             'invoicedate': date
+            'invoicedate': date
           }}
           onFinish={values => {
             //console.log('检查一下' + JSON.stringify(values) + JSON.stringify(record) );
@@ -293,10 +317,10 @@ const ZyRentList = (props) => {
       onOk() {
         let values = invoiceForm.getFieldValue();
         record.totalrealInvoice = record.totalrealInvoice - record.invoice_amount + values.amount;
-        record.invoice_amount = values.amount;        
+        record.invoice_amount = values.amount;
         record.invoicedate = values.invoicedate;
         record.needInvoice = record.totalneedInvoice - record.totalrealInvoice;
-        if(record.needInvoice <= 0){
+        if (record.needInvoice <= 0) {
           record.needInvoice = '无欠票';
         }
         onEditClick(record, 'COMMIT_GetInvoice')
@@ -358,21 +382,21 @@ const ZyRentList = (props) => {
   const onChangePageOrSize = (p, size) => {
     let reqs = form.getFieldsValue();
 
-    SelectByREQ(p, size,reqs);
+    SelectByREQ(p, size, reqs);
   }
 
 
   return (
     <Card title="本期概况列表">
 
-<Spin spinning={isLoading? true : false} >
-      <Form
-        form={form}
-        layout="inline"
-        className="components-table-demo-control-bar"
-        style={{ marginBottom: 16 }}
-      >
-        {selectReqs.map(item => {
+      <Spin spinning={isLoading ? true : false} >
+        <Form
+          form={form}
+          layout="inline"
+          className="components-table-demo-control-bar"
+          style={{ marginBottom: 16 }}
+        >
+          {selectReqs.map(item => {
             return (
               <Form.Item
                 name={item.dataIndex}
@@ -384,42 +408,42 @@ const ZyRentList = (props) => {
             )
           })}
 
-        <Form.Item >
-          <Button type="primary" onClick={onSelectByParams} >筛选</Button>
-          <Button type="primary" htmlType="reset"
-            //className="login-form-button"
-            className="btn" onClick={ResetValue}
-          >
-            重置条件
+          <Form.Item >
+            <Button type="primary" onClick={onSelectByParams} >筛选</Button>
+            <Button type="primary" htmlType="reset"
+              //className="login-form-button"
+              className="btn" onClick={ResetValue}
+            >
+              重置条件
                     </Button>
-        </Form.Item>
+          </Form.Item>
 
-      </Form>
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        rowKey="id"
-        bordered
-        columns={mergedColumns(cols)}
-        dataSource={list}
-        size="lager"
-        pagination={{
+        </Form>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          rowKey="id"
+          bordered
+          columns={mergedColumns(cols)}
+          dataSource={list}
+          size="lager"
+          pagination={{
 
-          total,
-          showSizeChanger: true,
-          onChange: (p,size) => {
-            onChangePageOrSize(p, size);
-          },
-          onShowSizeChange: (current, size) => {
-            onChangePageOrSize(1, size);
+            total,
+            showSizeChanger: true,
+            onChange: (p, size) => {
+              onChangePageOrSize(p, size);
+            },
+            onShowSizeChange: (current, size) => {
+              onChangePageOrSize(1, size);
+            }
           }
-        }
-        }
-        scroll={{ y: 350 }}
-      />
+          }
+          scroll={{ y: 350 }}
+        />
       </Spin>
     </Card>
   )
@@ -431,7 +455,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    onClickOweInvoice:(contractno,isOwe,needInvoice) =>{toSelectDetail(dispatch,{contractno,isOwe,needInvoice})},
+    onClickOweInvoice: (contractno, isOwe, needInvoice) => { toSelectDetail(dispatch, { contractno, isOwe, needInvoice }) },
     onShowOne: (record) => { onShowDetail(dispatch, { record }) },
     onEditClick: (record, edittype) => { onCommitEdit(dispatch, { record, edittype }) },
     onLoadData: (page, limit, req) => { RentToMergeData(dispatch, { page, limit, req }) },

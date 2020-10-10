@@ -26,22 +26,23 @@ export function timeToStr(time) {
 export function getTodayStr(){
     var today = new Date();
 
-    var year = today.getFullYear();
+  var year = today.getFullYear();
 
-    var month = today.getMonth() + 1;
+  var month = parseInt(today.getMonth()) + 1;
 
-    var day = today.getDate();
+  var day = today.getDate();
 
-    if(month < 10){
-        month = '0' + month;
-    }
+  if (month < 10) {
+    month = '0' + month;
+  }
 
-    if(day < 10){
-        day = '0' + day;
-    }
+  if (day < 10) {
+    day = '0' + day;
+  }
 
+  let dateNo = year.toString() + month.toString() + day.toString();
 
-    return year  + month +  day;
+  return dateNo;
 }
 
 export function getTodayDateStr(){
