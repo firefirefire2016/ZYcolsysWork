@@ -36,6 +36,31 @@ export const keepFormdata = async (dispatch, payload) => {
     })
 }
 
+export const toSelectDetail = async (dispatch,payload) =>{
+
+    let {contractno,isOwe,needInvoice} = payload;
+
+    dispatch({
+        type: 'SELECT_DETAIL',
+        payload: {  isOwe ,contractno,needInvoice}
+    })
+    // if(isOwe){
+    //     dispatch({
+    //         type: 'SELECT_DETAIL',
+    //         payload: {  isOwe ,contractno}
+    //     })
+    // }
+
+    // if(needInvoice){
+    //     dispatch({
+    //         type: 'SELECT_DETAIL',
+    //         payload: {  needInvoice,contractno }
+    //     })
+    // }
+
+
+}
+
 
 export const RentToMergeData = async (dispatch, payload) => {
 
@@ -59,9 +84,9 @@ export const RentToMergeData = async (dispatch, payload) => {
     let newList = res.newList;
     //遍历每月账单，合并一起
 
-    console.log("newList:" + JSON.stringify(newList) );
+    //console.log("newList:" + JSON.stringify(newList) );
 
-
+    
 
     
 
@@ -209,13 +234,17 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
         type: 'LOADING',
     })
 
+
+
     let { page, limit, req } = payload;
 
     let { isInit } = req;
 
     let _isInit = isInit;
 
-    console.log(req);
+   // console.log(req);
+
+    //console.log('什么情况？！！！！');
 
     let {amount_select,invoice_select} = req;
 

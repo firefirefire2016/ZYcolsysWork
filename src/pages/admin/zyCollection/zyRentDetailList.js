@@ -201,39 +201,72 @@ const ZyRentDetailList = (props) => {
   });
 
   const { page, total, limit, list, contractid, contractno, overstate,
-    onEditOne, SelectByREQ, onCreate, isLoading, onShowOne, onEditClick,mode} = props;
+    onEditOne, SelectByREQ, onCreate, isLoading, onShowOne, onEditClick,
+    mode,isOwe,needInvoice} = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');
+    //console.log('props = ' + props);
 
     switch (mode) {
       case 'creating':
         props.history.push('/admin/zyRentDetail/edit');
         return;
-    
+      case 'home':
+        return;
       default:
         break;
     }
     
 
+
     setDate(getTodayDateStr);
 
     if (isInit) {
       //onLoadData(1, -1, contractid,isInit);
-      SelectByREQ(1, -1, { contractid, isInit });
+      
       setIsInit(false);
+      let amount_select;
+      let invoice_select;
+      if(isOwe>0){
+        amount_select = '2';
+      }
+      else{
+        amount_select= '0';
+      }
+      if(needInvoice>0){
+        invoice_select = '2'
+      }
+      else{
+        invoice_select = '0'
+      }
+     // console.log('来到这里');
+     //console.log('contractno = ' + contractno);
+      form.setFieldsValue({
+        contractno:contractno,
+        amount_select,
+        invoice_select,
+      })
+      SelectByREQ(1, -1, { contractid, isInit,contractno,amount_select,invoice_select});
+     //SelectByREQ(1, -1, {  isInit});
     }
     else {
+
+      
+
       //从本期账单过来的话
       form.setFieldsValue({
         contractno,
         overstate
       })
-      SelectByREQ(1, limit, { contractid, isInit, contractno, overstate });
+     // SelectByREQ(1, limit, { contractid, isInit, contractno, overstate });
 
     }
+
+
+    //console.log('props = ' + JSON.stringify(props) );
 
     // setTimeout(() => {
       
@@ -392,6 +425,7 @@ const ZyRentDetailList = (props) => {
 
     let reqs = form.getFieldsValue();
 
+    
 
     SelectByREQ(page, limit, reqs);
   }

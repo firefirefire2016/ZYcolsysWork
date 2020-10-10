@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Modal, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import {  RentToMergeData, onLoadTargetRent,onShowDetail,onCommitEdit } from '../../../store/actions/zyCollectionAct';
+import {  RentToMergeData, onLoadTargetRent,onShowDetail,onCommitEdit,toSelectDetail } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget,parseInputNode } from '../../../utils/ItemUtils';
 import { rentMergeQuery } from '../../../utils/common';
@@ -87,15 +87,51 @@ const ZyRentList = (props) => {
           );
         }
         break;
-      case "totalAmount":
+      case "isOwe":
         col.render = (text, record,index) => {
-          return (
-            // eslint-disable-next-line jsx-a11y/anchor-is-valid
-            <a key={index} className='' onClick={()=>{console.log('这里啊累计收款总额')}}>
-              {text}
-            </a>
-          );
+          if(text > 0){
+            return (
+              // eslint-disable-next-line jsx-a11y/anchor-is-valid
+              <a key={index} style={{textDecorationLine:'underline'}} 
+                  onClick={()=>
+                  {
+                    onClickOweInvoice(record.contractno,2,0);
+                  }
+                  }>
+                {text}
+              </a>
+            );
+          }
+          else{
+            return (
+              <li>{text}</li>
+            )
+          }
         }
+        break;
+        case "needInvoice":          
+          col.render = (text, record,index) => {
+            console.log('text = ' + text);
+            if(text > 0){
+
+              return (
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                <a key={index} style={{textDecorationLine:'underline'}} 
+                  onClick={()=>
+                  {onClickOweInvoice(record.contractno,0,2);}
+                  }>
+                    {text}
+                </a>
+              );
+            }
+            else{
+              return (
+                <li>{text}</li>
+              )
+            }
+            
+          }
+          break;
     }
 
     return {
@@ -117,13 +153,22 @@ const ZyRentList = (props) => {
   });
 
 
-  const { list, page, total, limit, onLoadData, isLoading,
-    onLoadTartgetData, SelectByREQ,onShowOne,onEditClick } = props;
+  const { list, page, total, limit, onLoadData, isLoading,mode,
+    onLoadTartgetData, SelectByREQ,onShowOne,onEditClick,onClickOweInvoice } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
     message.info('加载中...');
+
+    switch (mode) {
+      case 'detailselect':
+        props.history.push('/admin/zyRentDetailList');
+        return;
+    
+      default:
+        break;
+    }
 
     setDate(getTodayDateStr);
 
@@ -139,7 +184,7 @@ const ZyRentList = (props) => {
 
 
 
-  }, [])
+  }, [mode])
 
 
   //收款
@@ -386,6 +431,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
+    onClickOweInvoice:(contractno,isOwe,needInvoice) =>{toSelectDetail(dispatch,{contractno,isOwe,needInvoice})},
     onShowOne: (record) => { onShowDetail(dispatch, { record }) },
     onEditClick: (record, edittype) => { onCommitEdit(dispatch, { record, edittype }) },
     onLoadData: (page, limit, req) => { RentToMergeData(dispatch, { page, limit, req }) },

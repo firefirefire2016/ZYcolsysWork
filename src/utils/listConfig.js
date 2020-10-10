@@ -265,7 +265,7 @@ export const sysCols = {
             dataIndex: 'operation',
             editable: false,
             isOper: true,
-            width: 250
+            //width: 250
         }
     ],
 

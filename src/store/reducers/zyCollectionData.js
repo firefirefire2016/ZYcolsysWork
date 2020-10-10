@@ -8,6 +8,15 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'SELECT_DETAIL':
+            console.log(action);
+            return{
+                ...state,
+                contractno:action.payload.contractno,
+                isOwe:action.payload.isOwe,
+                needInvoice:action.payload.needInvoice,
+                mode:'detailselect',
+            };
         case 'BACK_HOME':
             return {
                 ...state,
@@ -51,6 +60,7 @@ export default (state = defaultState, action) => {
                 total: action.payload.total,
                 limit: action.payload.limit,
                 isLoading: false,
+               // mode:'home',
                 res: null
             };
 
