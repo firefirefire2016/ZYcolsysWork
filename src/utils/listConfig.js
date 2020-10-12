@@ -100,13 +100,13 @@ export const sysCols = {
             isInEdit:true,
             isShow: false,
         },
-        {
-            title: '客户地址',            
-            dataIndex: 'tenant_address',
-            editable: true,
-            isInEdit:true,
-            isShow: false,
-        },
+        // {
+        //     title: '客户地址',            
+        //     dataIndex: 'tenant_address',
+        //     editable: true,
+        //     isInEdit:true,
+        //     isShow: false,
+        // },
         {
             title: '计租日期',
             dataIndex: 'startdate',
@@ -147,13 +147,13 @@ export const sysCols = {
             // editable: true,
             // isInEdit:true,
         },
-        {
-            title: '抄表类型',
-            dataIndex: 'copytype',
-            isShow: false,
-            editable: true,
-            isInEdit:true,
-        },
+        // {
+        //     title: '抄表类型',
+        //     dataIndex: 'copytype',
+        //     isShow: false,
+        //     editable: true,
+        //     isInEdit:true,
+        // },
         {
             title: '押金',
             isShow: true,

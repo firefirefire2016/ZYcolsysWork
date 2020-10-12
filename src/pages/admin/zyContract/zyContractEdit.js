@@ -305,9 +305,13 @@ function ZyContractEdit(props) {
 
                 })
 
+                console.log(obj);
+
+                console.log(rightnos);
+
                 form.setFieldsValue({
                     ...obj,
-                    ...rightnos,//注意：rightno的id会覆盖obj的id
+                   // ...rightnos,//注意：rightno的id会覆盖obj的id
                 });
 
                 // console.log(JSON.stringify(_tabledata));
@@ -334,7 +338,7 @@ function ZyContractEdit(props) {
 
                 form.setFieldsValue({
                     ...obj,
-                    ...rightnos,
+                 //   ...rightnos,
                 });
 
                 console.log(JSON.stringify(_tabledata));
@@ -345,7 +349,9 @@ function ZyContractEdit(props) {
             case 'creating':
                 form.resetFields();
 
-                
+                form.setFieldsValue({
+                    rentdate:5
+                });
 
                 break;
             default:
@@ -476,10 +482,13 @@ function ZyContractEdit(props) {
 
             })
 
+            console.log(row);
 
             if (rightnos) {
                 row['rightid'] = rightnos.id;
             }
+
+            console.log('rightnos = ' + rightnos);
 
             console.log(row);
 
