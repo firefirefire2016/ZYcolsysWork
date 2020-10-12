@@ -231,7 +231,8 @@ const ZyRentDetailList = (props) => {
       setIsInit(false);
       let amount_select;
       let invoice_select;
-      if(isOwe && needInvoice){
+      //console.log('props = ' + props);
+      if(isOwe !== undefined && needInvoice !== undefined){
         if(isOwe>0){
           amount_select = '2';
         }

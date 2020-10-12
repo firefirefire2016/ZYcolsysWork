@@ -31,9 +31,9 @@ function ZyContractEdit(props) {
 
     const { rightnos, selectmode } = props.zyPropertyData;
 
-    const { record, isCreating, page, limit, mode, res, rentlist, formdata, _tabledata, } = props.zyContractData;
+    const { record, page, limit, mode, rentlist, _tabledata } = props.zyContractData;
 
-    const { onEditClick, onCreateClick, onBackClick, onToSelectRight } = props;
+    const { onEditClick, onCreateClick, onToSelectRight, onBackClick } = props;
 
     const [tabledata, setTableData] = useState([]);
 
@@ -117,15 +117,18 @@ function ZyContractEdit(props) {
     //编辑
     const edit = (record, index) => {
 
-       // let row = form.getFieldValue();
-        
+        // let row = form.getFieldValue();
+
 
         let nItems = edititems.filter(item => {
             return (parseItemtype(item.dataIndex) === 'date')
         })
 
         nItems.forEach((item, index, items) => {
-            record[item.dataIndex] = strToTime(record[item.dataIndex]);
+
+            if (record[item.dataIndex]) {
+                record[item.dataIndex] = strToTime(record[item.dataIndex]);
+            }
 
         })
 
@@ -139,6 +142,18 @@ function ZyContractEdit(props) {
                         ...record
                     }}
                     onFinish={values => {
+                        //console.log('这里啊');
+                        // let newData = { rowIndex: count, id: count, ...values };
+
+                        // setTableData([...tabledata, newData]);
+
+                        // setCount(count + 1);
+
+                        let newData = new Object(tabledata);
+
+                        newData[index] = { id: newData[index].id, ...values };
+
+                        setTableData([...newData]);
                     }}
                 >
                     {edititems.filter(item => item.isInEdit).map(item => {
@@ -159,13 +174,33 @@ function ZyContractEdit(props) {
                 </Form>
             ),
             onOk() {
-                let values = modalForm.getFieldsValue();
 
-                let newData = new Object(tabledata);
 
-                newData[index] = { id: newData[index].id, ...values };
 
-                setTableData([...newData]);
+                // let values = modalForm.getFieldsValue();
+
+                // let newData = new Object(tabledata);
+
+                // newData[index] = { id: newData[index].id, ...values };
+
+                // setTableData([...newData]);
+
+                try {
+                    //const values = modalForm.validateFields();
+                    // let values = addForm.getFieldsValue();
+                    modalForm.submit();
+
+                   // console.log('res = ' + res);
+                    // if(values){
+                    //     let newData = { rowIndex: count, id: count, ...values };
+
+                    //     setTableData([...tabledata, newData]);
+
+                    //     setCount(count + 1);
+                    // }
+
+                } catch (errorInfo) {
+                }
 
                 // console.log(tabledata);
             },
@@ -214,7 +249,7 @@ function ZyContractEdit(props) {
 
     useEffect(() => {
 
-        console.log(' mode = ' + mode);
+        //console.log(' mode = ' + mode);
 
         console.log(props);
 
@@ -222,6 +257,8 @@ function ZyContractEdit(props) {
         if (rentlist) {
             setTableData(rentlist);
         }
+
+        console.log(' tabledata = ' + JSON.stringify(tabledata));
 
         let obj;
 
@@ -273,7 +310,7 @@ function ZyContractEdit(props) {
                     ...rightnos,//注意：rightno的id会覆盖obj的id
                 });
 
-                console.log(JSON.stringify(_tabledata));
+                // console.log(JSON.stringify(_tabledata));
                 if (_tabledata != null) {
                     setTableData(_tabledata);
                 }
@@ -307,6 +344,8 @@ function ZyContractEdit(props) {
                 break;
             case 'creating':
                 form.resetFields();
+
+                
 
                 break;
             default:
@@ -353,8 +392,18 @@ function ZyContractEdit(props) {
     }, [mode, selectmode])
 
     const onBackHome = () => {
-
+        // console.log(' tabledata = ' + JSON.stringify(tabledata) );
         onBackClick();
+        //props.history.push('/admin/zyContract');
+    }
+
+    const onTest = () => {
+        let row = form.getFieldValue();
+        console.log(' tabledata = ' + JSON.stringify(tabledata));
+        console.log(row);
+
+        console.log(rightnos);
+        // onBackClick();
         //props.history.push('/admin/zyContract');
     }
 
@@ -428,8 +477,6 @@ function ZyContractEdit(props) {
             })
 
 
-
-
             if (rightnos) {
                 row['rightid'] = rightnos.id;
             }
@@ -441,14 +488,18 @@ function ZyContractEdit(props) {
                 return;
             }
 
+            // if(!tabledata){
+            //  message.warn('tabledata = ' + tabledata);
+            console.log('tabledata = ' + tabledata);
+            // return;
+            //}
+
             switch (mode) {
                 case 'creating':
 
                     console.log(row);
 
                     console.log(rightnos);
-
-
 
 
                     //创建合同同时，创建租金标准
@@ -471,6 +522,8 @@ function ZyContractEdit(props) {
                     console.log(row);
 
                     console.log(rightnos);
+
+                    console.log(tabledata);
 
                     onEditClick(row, page, limit, tabledata);
 
@@ -504,6 +557,13 @@ function ZyContractEdit(props) {
                     }}
 
                     onFinish={values => {
+                        // console.log('hey!');
+
+                        let newData = { rowIndex: count, id: count, ...values };
+
+                        setTableData([...tabledata, newData]);
+
+                        setCount(count + 1);
                     }}
                 >
                     {edititems.filter(item => item.isInEdit).map(item => {
@@ -521,28 +581,54 @@ function ZyContractEdit(props) {
                             </Form.Item>
                         )
                     })}
+                    {/* <Form.Item>
+                    <Button type="primary" htmlType="submit"
+                        //className="login-form-button"
+                        className="btn" 
+                        
+                    >
+                        保存
+                    </Button>
+                    </Form.Item> */}
 
                 </Form>
             ),
             onOk() {
-                let values = addForm.getFieldsValue();
 
-                let newData = { rowIndex: count, id: count, ...values };
+                try {
+                    // const values = addForm.validateFields();
+                    // console.log(values);
+                    // for (let index = 0; index < values.length; index++) {
+                    //     const element = values[index];
+                    //     console.log(element);
+                    // }
+                    addForm.submit();
+                    //e.close();
+                    // let values = addForm.getFieldsValue();
+                    // if(values){
+                    //     let newData = { rowIndex: count, id: count, ...values };
 
-                // if (tabledata.length <= 0) {
-                //     setTableData([newData]);
-                // }
-                // else {
-                setTableData([...tabledata, newData]);
-                //}
+                    //     setTableData([...tabledata, newData]);
 
-                setCount(count + 1);
+                    //     setCount(count + 1);
+                    // }
+
+                } catch (errorInfo) {
+                }
+
+                // let values = addForm.getFieldsValue();
+
+                // let newData = { rowIndex: count, id: count, ...values };
+
+                // setTableData([...tabledata, newData]);
+
+                // setCount(count + 1);
 
             },
             onCancel() { },
 
-            okText: '提交',
-            cancelText: '取消'
+            okText: '保存',
+            cancelText: '关闭'
         });
 
 
@@ -650,6 +736,13 @@ function ZyContractEdit(props) {
                     >
                         关闭
                     </Button >
+                    {/* <Button type="primary" htmlType="button"
+                        //className="login-form-button"
+                        className="btn"
+                        onClick={onTest}
+                    >
+                        调试
+                    </Button > */}
                 </Form.Item>
 
             </Form>

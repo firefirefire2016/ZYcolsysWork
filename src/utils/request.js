@@ -81,7 +81,7 @@ export function put(url, data) {
  * @param {*} data 数据
  */
 export function del(url, data) {
-  console.log(JSON.stringify(data));
+ // console.log(JSON.stringify(data));
   return instance.put(url, data);
 }
 

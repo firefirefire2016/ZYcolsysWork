@@ -68,6 +68,7 @@ export default (state = defaultState, action) => {
         case 'CREATE_ONE':
             return {
                 ...state,
+                rentlist:null,
                 mode: 'creating',
             };
         case 'BACK_HOME':

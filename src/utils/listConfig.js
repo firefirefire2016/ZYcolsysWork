@@ -454,6 +454,7 @@ export const sysCols = {
             dataIndex: 'create_itemname',
             isInEdit: true,
             editable: true,
+            isMust:true,
         },
         {
             title: '收款项目',
@@ -462,6 +463,7 @@ export const sysCols = {
             isShow: true,
             editable: true,
             isSelect:true,
+            //isMust:true,
         },
         {
             title: '物业名称',
@@ -744,6 +746,7 @@ export const sysCols = {
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },  
         {
             title: '结束日期',
@@ -751,27 +754,29 @@ export const sysCols = {
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },      
-        {
-            title: '递增率',
-            dataIndex: 'oncerate',
-            isInEdit: true,
-            editable: true,
-            isSelect:true,
-        },
-        {
-            title: '递增金额',
-            dataIndex: 'onceamount',
-            isInEdit: true,
-            editable: true,
-            isSelect:true,
-        },
+        // {
+        //     title: '递增率',
+        //     dataIndex: 'oncerate',
+        //     isInEdit: true,
+        //     editable: true,
+        //     isSelect:true,
+        // },
+        // {
+        //     title: '递增金额',
+        //     dataIndex: 'onceamount',
+        //     isInEdit: true,
+        //     editable: true,
+        //     isSelect:true,
+        // },
         {
             title: '每期金额',
             dataIndex: 'endamount',
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '付款周期',
@@ -779,6 +784,7 @@ export const sysCols = {
             isInEdit: true,
             editable: true,
             isSelect:true,
+            isMust:true,
         },
         {
             title: '合同id',

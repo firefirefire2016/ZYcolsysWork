@@ -450,7 +450,7 @@ export const onCommitEdit = async (dispatch, payload) => {
 }
 
 /**
- * 提交创建合同
+ * 提交创建
  * @param {*} dispatch 
  * @param {*} payload record,page,limit
  */

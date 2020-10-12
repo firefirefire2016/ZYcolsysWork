@@ -294,14 +294,14 @@ export const onCommitEdit = async (dispatch, payload) => {
 
     let contractid = record.id;
 
-    console.log(record);
+    
 
 
     await modifyOne(sourceUrl, record).then(async function (result) {
 
         if (result.code === 0) {
+            
             message.info(result.msg);
-
 
         }
         else {
@@ -347,6 +347,8 @@ export const onCommitEdit = async (dispatch, payload) => {
 
         for (let index = 0; index < newtable.length; index++) {
             let element = newtable[index];
+
+            console.log(element);
 
             element.startdate = timeToStr(element.startdate);
 

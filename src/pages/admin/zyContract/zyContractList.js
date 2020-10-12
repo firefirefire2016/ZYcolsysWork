@@ -190,7 +190,9 @@ const ZyContractList = (props) => {
         return;
       case 'deled'://删除后需要刷新列表不能return
         break;
-    
+      case 'creating':
+        props.history.push('/admin/zyContract/edit');
+        return;
       default:
         break;
     }
@@ -212,7 +214,7 @@ const ZyContractList = (props) => {
   //创建
   const create = () => {
     onCreateClick();
-    props.history.push('/admin/zyContract/edit');
+    
   }
 
   //启用
