@@ -8,16 +8,22 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) { 
+        case 'selectmode_NULL':
+            return{
+                selectmode:null,
+                rightno:null,
+            };
         case 'TO_PROPERTY':
             console.log(action.type);
             return {
                 selectmode:'toselect',
+                rightno:action.payload.rightno,
             };
         case 'TO_Contract':
             console.log(action.type);
             return {
                 ...state,
-                rightnos:action.payload.rightnos,
+                rightno:action.payload.rightno,
                 selectmode:'backcontract',
             };        
         case 'LOADINGRight':
@@ -32,7 +38,7 @@ export default (state = defaultState, action) => {
                 page: action.payload.page,
                 total: action.payload.total,
                 limit: action.payload.limit,
-                rightnos: action.payload.rows,
+                rightno: action.payload.rightno,
                 isLoading:false,
                 res: null
             };

@@ -1,5 +1,5 @@
 export function strToTime(str) {
-    console.log(str);
+   // console.log(str);
 
     str = str.toString();
 

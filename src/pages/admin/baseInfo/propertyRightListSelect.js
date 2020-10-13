@@ -26,7 +26,7 @@ const PropertyRightList = (props) => {
 
   const [isInit, setIsInit] = useState(true);
 
-  const [target, setTarget] = useState({});
+  const [target, setTarget] = useState(null);
 
   const EditableCell = ({
     labelType,
@@ -90,7 +90,7 @@ const PropertyRightList = (props) => {
   });
 
   const { list, page, total, limit, onLoadData, onCreateClick, onDetailClick,
-    onEditClick, res, onConfirmDel, onChangeRow, selectmode } = props;
+    onEditClick, res, onConfirmDel, onChangeRow, selectmode,rightno } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -112,11 +112,11 @@ const PropertyRightList = (props) => {
 
     if (isInit) {
 
-      onLoadData(1, -1, { isInit,property_status:1 });
+      onLoadData(1, -1, { isInit,property_status:1 },rightno);
       setIsInit(false);
     }
     else {
-      onLoadData(1, limit, { isInit,property_status:1  });
+      onLoadData(1, limit, { isInit,property_status:1  },rightno);
     }
 
 
@@ -240,14 +240,23 @@ const PropertyRightList = (props) => {
         marginLeft: '40%'
       }}
         onClick={() => {
-          onChangeRow(target);
+          //console.log(target);
+          if(target === null){
+            
+            onChangeRow(rightno);
+          }
+          else{
+            
+            onChangeRow(target);
+          }
+          
         }}
       >保存</Button>
       <Button size='large' type="primary" style={{
         marginLeft: '5%'
       }}
         onClick={() => {
-          onChangeRow(target);
+          onChangeRow(rightno);
         }}
       >取消</Button>
     </Card>
@@ -261,7 +270,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
     // onSaveClick: (record) => { onGetEditData(dispatch, { record}) },
-    onLoadData: (page, limit, req) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
+    onLoadData: (page, limit, req,rightno) => { onLoadTargetListByREQ(dispatch, { page, limit, req,rightno}) },
     onChangeRow: (record) => { onSelectToContract(dispatch, { record }) },
     onDetailClick: (record, isCreating) => { onShowDetail(dispatch, { record, isCreating }) },
     onEditClick: (record, isCreating) => { onEditDetail(dispatch, { record, isCreating }) },

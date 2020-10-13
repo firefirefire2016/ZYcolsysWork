@@ -29,7 +29,7 @@ function ZyContractEdit(props) {
 
     const [count, setCount] = useState(1);
 
-    const { rightnos, selectmode } = props.zyPropertyData;
+    const { rightno, selectmode } = props.zyPropertyData;
 
     const { record, page, limit, mode, rentlist, _tabledata } = props.zyContractData;
 
@@ -190,7 +190,7 @@ function ZyContractEdit(props) {
                     // let values = addForm.getFieldsValue();
                     modalForm.submit();
 
-                   // console.log('res = ' + res);
+                    // console.log('res = ' + res);
                     // if(values){
                     //     let newData = { rowIndex: count, id: count, ...values };
 
@@ -235,13 +235,34 @@ function ZyContractEdit(props) {
 
         let formdata = form.getFieldsValue();
 
+
+
         if (record) {
             formdata.id = record.id;
         }
 
+        // if(record && record.rightid !== undefined && formdata.rightid === undefined){
+        //     formdata.rightid = record.rightid;
+        // }
+
+        if (rightno && rightno.id !== undefined) {
+            formdata.rightid = rightno.id;
+        }
+
+        let _rightno = rightno;
+
+        
+
+        if (mode === 'editing' && record.zypropertyright) {
+            let obj = new Object(record);
+            _rightno = obj.zypropertyright;
+        }
+
+        onToSelectRight(formdata, tabledata, mode, _rightno);
 
 
-        onToSelectRight(formdata, tabledata, mode);
+
+
 
 
 
@@ -258,7 +279,7 @@ function ZyContractEdit(props) {
             setTableData(rentlist);
         }
 
-        console.log(' tabledata = ' + JSON.stringify(tabledata));
+       // console.log(' tabledata = ' + JSON.stringify(tabledata));
 
         let obj;
 
@@ -305,13 +326,13 @@ function ZyContractEdit(props) {
 
                 })
 
-                console.log(obj);
+                // console.log(obj);
 
-                console.log(rightnos);
+                // console.log(rightnos);
 
                 form.setFieldsValue({
                     ...obj,
-                   // ...rightnos,//注意：rightno的id会覆盖obj的id
+                    // ...rightnos,//注意：rightno的id会覆盖obj的id
                 });
 
                 // console.log(JSON.stringify(_tabledata));
@@ -338,7 +359,7 @@ function ZyContractEdit(props) {
 
                 form.setFieldsValue({
                     ...obj,
-                 //   ...rightnos,
+                    //   ...rightnos,
                 });
 
                 console.log(JSON.stringify(_tabledata));
@@ -350,7 +371,7 @@ function ZyContractEdit(props) {
                 form.resetFields();
 
                 form.setFieldsValue({
-                    rentdate:5
+                    rentdate: 5
                 });
 
                 break;
@@ -375,10 +396,9 @@ function ZyContractEdit(props) {
 
                 form.setFieldsValue({
                     ...obj,
-                    ...rightnos,
+                    ...rightno,
                 });
 
-                console.log(JSON.stringify(_tabledata));
                 if (_tabledata != null) {
                     setTableData(_tabledata);
                 }
@@ -408,7 +428,7 @@ function ZyContractEdit(props) {
         console.log(' tabledata = ' + JSON.stringify(tabledata));
         console.log(row);
 
-        console.log(rightnos);
+        console.log(rightno);
         // onBackClick();
         //props.history.push('/admin/zyContract');
     }
@@ -473,43 +493,27 @@ function ZyContractEdit(props) {
             let row = form.getFieldValue();
 
 
-            let nItems = edititems.filter(item => {
-                return (parseItemtype(item.dataIndex) === 'date')
-            })
+            // let nItems = edititems.filter(item => {
+            //     return (parseItemtype(item.dataIndex) === 'date')
+            // })
 
-            nItems.forEach((item, index, items) => {
-                row[item.dataIndex] = timeToStr(row[item.dataIndex]);
+            // nItems.forEach((item, index, items) => {
+            //     row[item.dataIndex] = timeToStr(row[item.dataIndex]);
 
-            })
+            // })
 
-            console.log(row);
-
-            if (rightnos) {
-                row['rightid'] = rightnos.id;
+            if (rightno) {
+                row['rightid'] = rightno.id;
             }
 
-            console.log('rightnos = ' + rightnos);
-
-            console.log(row);
 
             if (!row.rightid) {
                 message.warn('必须绑定一个产权');
                 return;
             }
 
-            // if(!tabledata){
-            //  message.warn('tabledata = ' + tabledata);
-            console.log('tabledata = ' + tabledata);
-            // return;
-            //}
-
             switch (mode) {
                 case 'creating':
-
-                    console.log(row);
-
-                    console.log(rightnos);
-
 
                     //创建合同同时，创建租金标准
                     onCreateClick(row, page, limit, tabledata);
@@ -528,11 +532,6 @@ function ZyContractEdit(props) {
 
                     row['id'] = _record.id;
 
-                    console.log(row);
-
-                    console.log(rightnos);
-
-                    console.log(tabledata);
 
                     onEditClick(row, page, limit, tabledata);
 
@@ -765,7 +764,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
-        onToSelectRight: (formdata, tabledata, mode) => { keepFormdata(dispatch, { formdata, tabledata, mode }) },
+        onToSelectRight: (formdata, tabledata, mode, rightno) => { keepFormdata(dispatch, { formdata, tabledata, mode, rightno }) },
         onBackClick: (page, limit) => { onBackHome(dispatch, { page, limit }) },
         // loadPropertyList: (page, limit, req,) => { onLoadTargetListByREQ(dispatch, { page, limit, req }) },
         onEditClick: (record, page, limit, newtable) => { onCommitEdit(dispatch, { record, page, limit, newtable }) },

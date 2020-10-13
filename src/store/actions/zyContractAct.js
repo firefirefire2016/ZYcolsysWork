@@ -1,7 +1,7 @@
 import { getList, createTarget, modifyOne, updateOneStatus, updateALLStatus, startContract } from '../../services/zyService'
 import store from '../store';
 import { message } from 'antd';
-import { getTodayStr, timeToStr } from '../../utils/common'
+//import { getTodayStr, timeToStr } from '../../utils/common'
 //import { sourceUrl } from '../../utils/request';
 
 //const zyContractData = store.getState().zyContractData;
@@ -103,9 +103,20 @@ export const onBackHome = async (dispatch, payload) => {
 
 }
 
+export const getRightno = async(dispatch,payload) =>{
+    let { record } = payload;
+
+   // console.log(mode);
+
+    // dispatch({
+    //     type: 'KEEP_DATA',
+    //    // payload: { rightno  }
+    // })
+}
+
 export const keepFormdata = async (dispatch, payload) => {
 
-    let { formdata, tabledata, mode } = payload;
+    let { formdata, tabledata, mode,rightno } = payload;
 
     console.log(mode);
 
@@ -116,6 +127,7 @@ export const keepFormdata = async (dispatch, payload) => {
 
     dispatch({
         type: 'TO_PROPERTY',
+        payload: { rightno }
     })
 }
 
@@ -194,7 +206,7 @@ export const onGetEditData = async (dispatch, payload) => {
         else {
             rentlist = res.rows;
         }
-        console.log(JSON.stringify(rentlist));
+       // console.log(JSON.stringify(rentlist));
         dispatch({
             type: 'GET_ONE',
             payload: { record, id, mode: 'editing', rentlist }
@@ -214,6 +226,11 @@ export const onCreateData = async (dispatch, isCreating) => {
     dispatch({
         type: 'CREATE_ONE',
         payload: { mode: 'creating' }
+    })
+
+    dispatch({
+        type: 'selectmode_NULL',
+        // payload: { selectmode: 'creating' }
     })
 
 }
@@ -348,12 +365,6 @@ export const onCommitEdit = async (dispatch, payload) => {
         for (let index = 0; index < newtable.length; index++) {
             let element = newtable[index];
 
-            //console.log(element);
-
-            // element.startdate = timeToStr(element.startdate);
-
-            // element.enddate = timeToStr(element.enddate);
-
             element.contractid = contractid;
 
             await createTarget(_sourceUrl, element).then(function (res) {
@@ -366,19 +377,6 @@ export const onCommitEdit = async (dispatch, payload) => {
             });
         }
 
-        // await updateALLStatus('zyCollection', tagetdata).then(function (res) {
-        //     if (res.code === 1) {
-        //         //后台问题打印
-        //         message.warn(res.msg);
-        //     }
-        //     else {
-
-        //         console.log('修改收款表状态成功');
-        //     }
-        // }
-
-
-        // )
     })
 }
 
@@ -439,10 +437,6 @@ export const onCommitCreate = async (dispatch, payload) => {
 
             for (let index = 0; index < tabledata.length; index++) {
                 let element = tabledata[index];
-
-                element.startdate = timeToStr(element.startdate);
-
-                element.enddate = timeToStr(element.enddate);
 
                 element.contractid = contractid;
 

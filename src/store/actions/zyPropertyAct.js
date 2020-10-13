@@ -1,29 +1,40 @@
 import React from 'react'
-import { getList, modifyOne, createTarget,updateOneStatus } from '../../services/zyService'
+import { getList, modifyOne, createTarget, updateOneStatus } from '../../services/zyService'
 import { message, Button, notification, Modal } from 'antd';
 import { rentMergeQuery } from '../../utils/common'
 import { consoleTarget } from '../../utils/ItemUtils';
 
 const sourceUrl = 'zyProperty';
 
-export const onSelectToContract = async(dispatch,payload) =>{
+export const onSelectToContract = async (dispatch, payload) => {
 
-    let { record} = payload;
+    let { record } = payload;
+
+    console.log(JSON.stringify(record));
 
     dispatch({
         type: 'TO_Contract',
-        payload: { rightnos:record}
+        payload: { rightno: record }
     })
 
-    
+    // dispatch({
+    //     type: 'GET_RIGHTNO',
+    //     payload: { rightno: record }
+    // })
+
+
+
 }
 
 
 //加载产权列表
 export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
+    let { rightno } = payload;
+
     dispatch({
         type: 'LOADINGRight',
+        //payload: { rightno }
     })
 
     let { page, limit, req } = payload;
@@ -35,19 +46,12 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let total = res.total;
 
-    let rightnos = res.rows;
-
-    // let selects = [];
-
-    // for (let index = 0; index < rightnos.length; index++) {
-    //     const element = rightnos[index];
-    //     selects.push(element.rightno);
-    // }
+    //let rightnos = res.rows;
 
 
     dispatch({
         type: 'GET_ALLRight',
-        payload: { page, limit, rows, total,rightnos}
+        payload: { page, limit, rows, total,rightno }
     })
 
 
@@ -192,7 +196,7 @@ export const onCommitCreate = async (dispatch, payload) => {
             message.info(res.msg);
             dispatch({
                 type: 'COMMIT_CREATE',
-    
+
                 payload: { res }
             })
         }
@@ -200,7 +204,7 @@ export const onCommitCreate = async (dispatch, payload) => {
             message.warn('失败:' + res.msg);
         }
 
-        
+
 
     })
 
