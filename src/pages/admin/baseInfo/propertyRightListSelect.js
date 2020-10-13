@@ -226,10 +226,10 @@ const PropertyRightList = (props) => {
           total,
           showSizeChanger: true,
           onChange: (p) => {
-            onLoadData(p, limit);
+            onLoadData(p, limit, { isInit,property_status:1 },rightno);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size);
+            onLoadData(1, size, { isInit,property_status:1 },rightno);
           }
         }
         }

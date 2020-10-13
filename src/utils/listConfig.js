@@ -459,11 +459,10 @@ export const sysCols = {
         {
             title: '收款项目',
             dataIndex: 'itemname',
-            isInEdit: false,
+            isInEdit: true,
             isShow: true,
             editable: true,
             isSelect:true,
-            //isMust:true,
         },
         {
             title: '物业名称',

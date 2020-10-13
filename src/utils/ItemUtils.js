@@ -98,6 +98,19 @@ export const selectItems = {
 
 }
 
+export const parseLabel = (item,mode) => {
+  if ((item.dataIndex === 'create_itemname' && mode === 'details')
+   || (item.dataIndex === 'itemname' && (mode === 'editing' || mode === 'creating'))) {
+    return ''
+  }
+  else {
+    return item.title
+  }
+
+
+}
+
+
 export const parseRules = (item) => {
   if (item.isMust === true) {
     return (
@@ -181,20 +194,23 @@ export const parseInputNode = (item, mode, selects) => {
     case 'editing'://编辑模式
       //编辑模式下，iten.editable过滤不能编辑的字段
       canEdit = item.editable
-      // if(item.dataIndex === 'itemname'){
-      //   behidden = true;
-      // }
+      if(item.dataIndex === 'itemname'){
+        behidden = true;
+      }
       break;
     case 'creating'://创建模式
       //编辑模式下，iten.editable过滤不能编辑的字段
       canEdit = item.editable
-      // if(item.dataIndex === 'itemname'){
-      //   behidden = true;
-      // }
+      if(item.dataIndex === 'itemname'){
+        behidden = true;
+      }
       break;
     case 'details'://详情模式
       //详情模式下，所有字段不能使用
       canEdit = false;
+      if(item.dataIndex === 'create_itemname'){
+        behidden = true;
+      }
       // if(item.dataIndex === 'create_itemname'){
       //   console.log('item.dataIndex === create_itemname');
       //   behidden = true;
@@ -214,9 +230,12 @@ export const parseInputNode = (item, mode, selects) => {
      style={{ width: '200px' }
   } />;
 
+  
 
   
   if(behidden){
+    inputNode = <Input type={inputType} placeholder={item.title} disabled={!canEdit}
+     style={{ width: '200px' }} hidden={behidden} />;
     return inputNode;
   }
 
@@ -383,9 +402,9 @@ export const parseItemtype = (dataIndex) => {
     case 'tel_tenant':
       itemType = 'number';
       break;
-    case 'tenant_idno':
-      itemType = 'number';
-      break;
+    // case 'tenant_idno':
+    //   itemType = 'number';
+    //   break;
     case 'latefeesrate':
       itemType = 'number';
       break;
@@ -485,20 +504,11 @@ export const parseItemtype = (dataIndex) => {
     case 'deposit':
       itemType = 'number';
       break;
-    case 'tel_tenant':
-      itemType = 'number';
-      break;
     case 'unit_type':
       itemType = 'UnitType';
       break;
     case 'renttype':
       itemType = 'RentType';
-      break;
-    case 'isOwe':
-      itemType = 'isOweType';
-      break;
-    case 'needInvoice':
-      itemType = 'needInvoiceType';
       break;
     case 'month_rent':
       itemType = 'number';

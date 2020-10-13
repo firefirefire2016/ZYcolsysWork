@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Modal } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
-import { parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
+import { parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget,parseLabel } from '../../../utils/ItemUtils';
 import { strToTime, timeToStr } from '../../../utils/common';
 import { onCommitCreate, onCommitEdit, keepFormdata, onBackHome } from '../../../store/actions/zyCollectionAct';
 import { getContractList } from '../../../store/actions/zyContractAct';
@@ -42,6 +42,8 @@ function ZyRentDetailEdit(props) {
 
     let nItems;
 
+    
+
     switch (mode) {
       case 'home':
         props.history.push('/admin/zyRentDetailList');
@@ -52,9 +54,13 @@ function ZyRentDetailEdit(props) {
         break;
 
       case 'details':
+        // obj = new Object(record);
+
+        // obj.create_itemname = obj.itemname - 2;
 
         form.setFieldsValue({
-          ...record
+          ...record,
+          create_itemname : record.itemname - 2
         });
         break;
       case 'editing':
@@ -375,7 +381,7 @@ function ZyRentDetailEdit(props) {
           return (
             <Form.Item
               name={item.dataIndex}
-              label={item.title}
+              label={parseLabel(item,mode)}
               rules={
                 parseRules(item)
               }
@@ -384,6 +390,14 @@ function ZyRentDetailEdit(props) {
             </Form.Item>
           )
         })}
+        {/* <Form.Item
+              name='收款项目1013'
+              label=''
+            >
+              <Input type='number'  hidden={false}
+     style={{ width: '200px' }
+  } />;
+            </Form.Item> */}
 
         <Form.Item>
           <Button type="primary" htmlType="submit"
