@@ -116,7 +116,8 @@ const PropertyRightList = (props) => {
       setIsInit(false);
     }
     else {
-      onLoadData(1, limit, { isInit,property_status:1  },rightno);
+      let row = form.getFieldValue();
+      onLoadData(1, limit, { property_status:1,...row },rightno);
     }
 
 
@@ -155,7 +156,7 @@ const PropertyRightList = (props) => {
 
     console.log('row=' + JSON.stringify(row));
 
-    onLoadData(page, limit, row);
+    onLoadData(page, limit, {property_status:1,...row});
 
   }
 
@@ -226,10 +227,12 @@ const PropertyRightList = (props) => {
           total,
           showSizeChanger: true,
           onChange: (p) => {
-            onLoadData(p, limit, { isInit,property_status:1 },rightno);
+            let row = form.getFieldValue();
+            onLoadData(p, limit, { property_status:1,...row },rightno);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size, { isInit,property_status:1 },rightno);
+            let row = form.getFieldValue();
+            onLoadData(1, size, { property_status:1,...row },rightno);
           }
         }
         }

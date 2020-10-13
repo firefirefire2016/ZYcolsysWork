@@ -118,11 +118,13 @@ const PropertyRightList = (props) => {
 
     if (isInit) {
 
+
       onLoadData(1, -1, { isInit });
       setIsInit(false);
     }
     else {
-      onLoadData(1, limit, { isInit });
+      let row = form.getFieldValue();
+      onLoadData(1, limit, row);
     }
 
 
@@ -157,7 +159,7 @@ const PropertyRightList = (props) => {
     let row = form.getFieldValue();
    // let { contractno, renttype, startdate, enddate } = row;
 
-    console.log('row=' + JSON.stringify(row));
+   // console.log('row=' + JSON.stringify(row));
 
     onLoadData(page, limit, row);
 
@@ -219,10 +221,12 @@ const PropertyRightList = (props) => {
           total,
           showSizeChanger: true,
           onChange: (p,size) => {
-            onLoadData(p, size);
+            let row = form.getFieldValue();
+            onLoadData(p, size,row);
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size);
+            let row = form.getFieldValue();
+            onLoadData(1, size,row);
           }
         }
         }

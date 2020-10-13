@@ -203,7 +203,8 @@ const ZyRentList = (props) => {
       setIsInit(false);
     }
     else {
-      onLoadData(1, limit, { isInit, contract_status: -2 });
+      let reqs = form.getFieldsValue();
+      onLoadData(1, limit, reqs);
     }
 
 

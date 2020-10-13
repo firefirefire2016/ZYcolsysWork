@@ -254,13 +254,18 @@ const ZyRentDetailList = (props) => {
       
      // console.log('来到这里');
      //console.log('contractno = ' + contractno);
+
+     let reqs = form.getFieldsValue();  
       
-      SelectByREQ(1, -1, { contractid, isInit,contractno,amount_select,invoice_select});
+     // SelectByREQ(1, -1, { contractid, isInit,contractno,amount_select,invoice_select});
+      SelectByREQ(1, -1, reqs);
      //SelectByREQ(1, -1, {  isInit});
     }
     else {
 
-      SelectByREQ(1, limit, { contractid, isInit});
+      let reqs = form.getFieldsValue(); 
+
+      SelectByREQ(1, limit,reqs);
 
     }
 
@@ -439,9 +444,7 @@ const ZyRentDetailList = (props) => {
    */
   const onSelectByParams = () => {
 
-    let reqs = form.getFieldsValue();
-
-    
+    let reqs = form.getFieldsValue();    
 
     SelectByREQ(page, limit, reqs);
   }
@@ -527,8 +530,6 @@ const ZyRentDetailList = (props) => {
             total,
             showSizeChanger: true,
             onChange: (p, size) => {
-              //console.log('contractid = ' + contractid);
-
               onChangeSize(p, size);
             },
             onShowSizeChange: (current, size) => {

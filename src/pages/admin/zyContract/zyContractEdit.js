@@ -744,13 +744,6 @@ function ZyContractEdit(props) {
                     >
                         关闭
                     </Button >
-                    {/* <Button type="primary" htmlType="button"
-                        //className="login-form-button"
-                        className="btn"
-                        onClick={onTest}
-                    >
-                        调试
-                    </Button > */}
                 </Form.Item>
 
             </Form>
