@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message,Modal, Spin } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Modal, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { onLoadContractData, onGetEditData, onCreateData, onCommitUpdateStatus,onShowDetail,
-  onCommitStatus,onContinueContract,onStartEffect,keepFormdata } from '../../../store/actions/zyContractAct';
+import {
+  onLoadContractData, onGetEditData, onCreateData, onCommitUpdateStatus, onShowDetail,
+  onCommitStatus, onContinueContract, onStartEffect, keepFormdata
+} from '../../../store/actions/zyContractAct';
 import { increaseAction } from '../../../store/actions/zyCounter';
 import { connect } from 'react-redux';
 import { parseItemtype, parseTypeToLabel, parseInputNode, consoleTarget } from '../../../utils/ItemUtils';
@@ -56,10 +58,10 @@ const ZyContractList = (props) => {
               return (
                 <span className=''>
                   <Popconfirm title='确定启用该合同么?' onConfirm={() => {
-                     startUse(record);
+                    startUse(record);
                   }}
                   >
-                  <Button type="primary" style={{ marginRight: 8 }}>
+                    <Button type="primary" style={{ marginRight: 8 }}>
                       启 用
                   </Button>
                   </Popconfirm>
@@ -67,11 +69,11 @@ const ZyContractList = (props) => {
                     编 辑
                   </Button>
                   <Popconfirm title='确定删除该合同么?' onConfirm={() => {
-                      del(record)
+                    del(record)
                   }}
                   >
-                  <Button type="primary" style={{ marginRight: 8 }}>
-                    删 除
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      删 除
                   </Button>
                   </Popconfirm>
                   <Button type="primary" style={{ marginRight: 8 }} onClick={() => detail(record)}>
@@ -88,46 +90,81 @@ const ZyContractList = (props) => {
                   <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
                     停 用
                   </Button>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record)}}>
+                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record) }}>
                     详 情
                   </Button>
                 </span>
               );
             case 2://即将到期
-              return (
-                <span className=''>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => {refundRent(record) }} >
-                    退 租
-                </Button>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
-                    停 用
-                </Button>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { keepOn(record)}}>
-                    续 租
-                </Button>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => {onDetailClick(record) }}>
-                    详 情
-                </Button>
-                </span>
-              );
+              console.log('record.zypropertyright.property_status = ' + record.zypropertyright.property_status);
+              if (record.zypropertyright.property_status !== 999) {
+                return (
+                  <span className=''>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { refundRent(record) }} >
+                      退 租
+                  </Button>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
+                      停 用
+                  </Button>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { keepOn(record) }}>
+                      续 租
+                  </Button>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record) }}>
+                      详 情
+                  </Button>
+                  </span>
+                );
+              }
+              else {
+                return (
+                  <span className=''>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { refundRent(record) }} >
+                      退 租
+                  </Button>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
+                      停 用
+                  </Button>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record) }}>
+                      详 情
+                  </Button>
+                  </span>
+                );
+              }
+
             case 3://已到期
-              return (
-                <span className=''>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
-                    停 用
+              console.log('record.zypropertyright.property_status = ' + record.zypropertyright.property_status);
+              if (record.zypropertyright.property_status !== 999) {
+                return (
+                  <span className=''>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
+                      停 用
                 </Button>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { keepOn(record)}}>
-                    续 租
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { keepOn(record) }}>
+                      续 租
                 </Button>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record)}}>
-                    详 情
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record) }}>
+                      详 情
                 </Button>
-                </span>
-              );
+                  </span>
+                );
+              }
+              else {
+                return (
+                  <span className=''>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
+                      停 用
+                </Button>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record) }}>
+                      详 情
+                </Button>
+                  </span>
+                );
+              }
+
             case 4://已失效
               return (
                 <span className=''>
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => {onDetailClick(record) }}>
+                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { onDetailClick(record) }}>
                     详 情
                 </Button>
                 </span>
@@ -145,11 +182,11 @@ const ZyContractList = (props) => {
 
     return {
       ...col,
-      align:'center',
+      align: 'center',
       onCell: (record, rowIndex) => (
 
         {
-          
+
           //record,
           labelType: parseItemtype(col.dataIndex),
           rowIndex,
@@ -162,13 +199,13 @@ const ZyContractList = (props) => {
     };
   });
 
-  const { list, page, total, limit, onLoadData, onCreateClick, onUseClick,contract_status,record,
-    onEditClick, res, onConfirmDel,onDetailClick,mode,onStatusClick,onContinueClick,isLoading } = props;
+  const { list, page, total, limit, onLoadData, onCreateClick, onUseClick, contract_status, record,
+    onEditClick, res, onConfirmDel, onDetailClick, mode, onStatusClick, onContinueClick, isLoading } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
 
-    
+
 
     //console.log(' props = ' + JSON.stringify(props) );
     switch (mode) {
@@ -216,16 +253,16 @@ const ZyContractList = (props) => {
   //创建
   const create = () => {
     onCreateClick();
-    
+
   }
 
   //启用
-  const startUse = record =>{
+  const startUse = record => {
     onUseClick(record);
   }
 
   //退租
-  const refundRent = record =>{
+  const refundRent = record => {
 
     Modal.confirm({
       title: '退租',
@@ -260,17 +297,17 @@ const ZyContractList = (props) => {
         let year = date.getFullYear();
         let month = date.getMonth();
         let day = date.getDate();
-        if(month < 10){
+        if (month < 10) {
           month = '0' + month;
         }
-        if(day < 10){
+        if (day < 10) {
           day = '0' + day;
         }
         let stopdate = year + month + day;
         _record.stopdate = stopdate;
         _record.stopreason = '退租';
         _record.contract_status = 4;
-        onStatusClick(record, _record,'COMMIT_REFUND');
+        onStatusClick(record, _record, 'COMMIT_REFUND');
       },
       onCancel() { },
 
@@ -281,7 +318,7 @@ const ZyContractList = (props) => {
   }
 
   //停用
-  const stopContract = record =>{
+  const stopContract = record => {
 
     Modal.confirm({
       title: '停用',
@@ -316,16 +353,16 @@ const ZyContractList = (props) => {
         let year = date.getFullYear();
         let month = date.getMonth();
         let day = date.getDate();
-        if(month < 10){
+        if (month < 10) {
           month = '0' + month;
         }
-        if(day < 10){
+        if (day < 10) {
           day = '0' + day;
         }
         let stopdate = year + month + day;
         _record.stopdate = stopdate;
         _record.contract_status = 4;
-        onStatusClick(record,_record,'COMMIT_STOP');
+        onStatusClick(record, _record, 'COMMIT_STOP');
       },
       onCancel() { },
 
@@ -340,7 +377,7 @@ const ZyContractList = (props) => {
 
     //设置要编辑的id
     onDetailClick(record);
-    
+
 
 
   };
@@ -350,19 +387,19 @@ const ZyContractList = (props) => {
     let _record = {};
     _record.id = record.id;
     _record.contract_status = -1;
-    onStatusClick(record,_record,'COMMIT_DEL'); 
+    onStatusClick(record, _record, 'COMMIT_DEL');
 
   };
 
   //编辑
   const edit = record => {
 
-    onEditClick(record); 
+    onEditClick(record);
 
   };
 
   //续租
-  const keepOn = record =>{
+  const keepOn = record => {
 
     onContinueClick(record);
 
@@ -422,76 +459,76 @@ const ZyContractList = (props) => {
 
       }>
 
-<Spin spinning={isLoading? true : false} >
-      <Form
-        form={form}
-        layout="inline"
-        className="components-table-demo-control-bar"
-        style={{ marginBottom: 16 }}
-      >
-        {selectItems.map(item => {
-          return (
-            <Form.Item
-              name={item.dataIndex}
-              label={item.title}
-              // rules={[
-              //   {
-              //     //required: true,
-              //     message: item.title,
-              //   },
-              // ]}
-              key={item.dataIndex}
+      <Spin spinning={isLoading ? true : false} >
+        <Form
+          form={form}
+          layout="inline"
+          className="components-table-demo-control-bar"
+          style={{ marginBottom: 16 }}
+        >
+          {selectItems.map(item => {
+            return (
+              <Form.Item
+                name={item.dataIndex}
+                label={item.title}
+                // rules={[
+                //   {
+                //     //required: true,
+                //     message: item.title,
+                //   },
+                // ]}
+                key={item.dataIndex}
+              >
+                {parseInputNode(item, 'screening')}
+              </Form.Item>
+            )
+          })}
+
+          <Form.Item >
+            <Button type="primary" onClick={onSelectByParams} >筛选</Button>
+            <Button type="primary" htmlType="reset"
+              //className="login-form-button"
+              className="btn" onClick={ResetValue}
             >
-              {parseInputNode(item, 'screening')}
-            </Form.Item>
-          )
-        })}
-
-        <Form.Item >
-          <Button type="primary" onClick={onSelectByParams} >筛选</Button>
-          <Button type="primary" htmlType="reset"
-            //className="login-form-button"
-            className="btn" onClick={ResetValue}
-          >
-            重置条件
+              重置条件
                     </Button>
-        </Form.Item>
+          </Form.Item>
 
-      </Form>
+        </Form>
 
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        rowKey="id"
-        bordered
-        columns={mergedColumns(cols)}
-        dataSource={list}
-        size="lager"
-        pagination={{
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          rowKey="id"
+          bordered
+          columns={mergedColumns(cols)}
+          dataSource={list}
+          size="lager"
+          pagination={{
 
-          total,
-          showSizeChanger: true,
-          onChange: (p) => {
+            total,
+            showSizeChanger: true,
+            onChange: (p) => {
 
-            let row = form.getFieldValue();
+              let row = form.getFieldValue();
 
-            onLoadData(p, limit,row);
-            
+              onLoadData(p, limit, row);
 
 
-          },
-          onShowSizeChange: (current, size) => {
-            let row = form.getFieldValue();
-            onLoadData(1, size,row);
+
+            },
+            onShowSizeChange: (current, size) => {
+              let row = form.getFieldValue();
+              onLoadData(1, size, row);
+            }
           }
-        }
-        }
-        // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
-        scroll={{ y: 350 }}
-      />
+          }
+          // scroll={{ x: 'calc(700px + 50%)', y: 350 }}
+          scroll={{ y: 350 }}
+        />
       </Spin>
     </Card>
   )
@@ -503,13 +540,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-    
-    onUseClick:(record) =>{onStartEffect(dispatch,{record})},
-    onContinueClick: (record) => { onContinueContract(dispatch, { record}) },
-    onStatusClick: (record,_record,edittype) => { onCommitStatus(dispatch, { record,_record,edittype}) },
+
+    onUseClick: (record) => { onStartEffect(dispatch, { record }) },
+    onContinueClick: (record) => { onContinueContract(dispatch, { record }) },
+    onStatusClick: (record, _record, edittype) => { onCommitStatus(dispatch, { record, _record, edittype }) },
     onLoadData: (page, limit, req) => { onLoadContractData(dispatch, { page, limit, req }) },
-    onDetailClick: (record) => { onShowDetail(dispatch, { record}) },
-    onEditClick: (record) => { onGetEditData(dispatch, { record}) },
+    onDetailClick: (record) => { onShowDetail(dispatch, { record }) },
+    onEditClick: (record) => { onGetEditData(dispatch, { record }) },
     onCreateClick: (isCreating) => { onCreateData(dispatch, { isCreating }) },
     //onConfirmDel: (id, contract_status, page, limit) => { onCommitUpdateStatus(dispatch, { id, contract_status, page, limit }) }
   }

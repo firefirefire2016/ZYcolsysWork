@@ -82,8 +82,6 @@ export const selectItems = {
 
   // _contract_status: ['未生效', '已生效', '即将到期', '已到期', '已失效'],
 
-
-
   rentmodes: ['固定租金', '费率', '其他'],
 
   copytype: ['无需', '单月', '双月', '每月'],
