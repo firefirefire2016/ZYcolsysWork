@@ -208,42 +208,38 @@ function ZyRentDetailEdit(props) {
 
     const onSelectByParams = () => {
 
-      let row = contractreqsForm.getFieldValue();
-      let { startdate, enddate } = row;
+      // let row = contractreqsForm.getFieldValue();
+      // let { startdate, enddate } = row;
 
 
-      if (startdate && startdate.indexOf('-') !== -1) {
-        row.startdate = startdate.replace(/-/g, "");
-      }
+      // if (startdate && startdate.indexOf('-') !== -1) {
+      //   row.startdate = startdate.replace(/-/g, "");
+      // }
 
-      if (enddate && enddate.indexOf('-') !== -1) {
-        row.enddate = enddate.replace(/-/g, "");
-      }
+      // if (enddate && enddate.indexOf('-') !== -1) {
+      //   row.enddate = enddate.replace(/-/g, "");
+      // }
 
-      let req = { ...row };
+      // let req = { ...row };
 
 
-      if (startdate) {
-        var str = row.startdate;
+      // if (startdate) {
+      //   var str = row.startdate;
 
-        row.startdate = strToTime(str);
-      }
+      //   row.startdate = strToTime(str);
+      // }
 
-      if (enddate) {
-        var str2 = row.enddate;
+      // if (enddate) {
+      //   var str2 = row.enddate;
 
-        row.enddate = strToTime(str2);
-      }
+      //   row.enddate = strToTime(str2);
+      // }
 
-      if (!req.contract_status && req.contract_status !== 0) {
-        req.contract_status = -2;
-      }
+      // if (!req.contract_status && req.contract_status !== 0) {
+      //   req.contract_status = -2;
+      // }
 
-      loadContractList(page, limit, req);
-    }
-
-    const ResetValue = () => {
-      contractreqsForm.resetFields();
+      // loadContractList(page, limit, req);
     }
 
     const rowSelection = {
@@ -265,34 +261,6 @@ function ZyRentDetailEdit(props) {
       // style:{width:'80%',height:'1000px'},       
       content: (
         <Card title='合同列表'>
-          <Form
-            form={contractreqsForm}
-            layout="inline"
-            className="components-table-demo-control-bar"
-            style={{ marginBottom: 'auto', width: '500' }}
-          >
-            {selectItems.map(item => {
-              return (
-                <Form.Item
-                  name={item.dataIndex}
-                  label={item.title}
-                  key={item.dataIndex}
-                >
-                  {parseInputNode(item, 'screening')}
-                </Form.Item>
-              )
-            })}
-
-            <Form.Item >
-              <Button type="primary" onClick={onSelectByParams} >筛选</Button>
-              <Button type="primary" htmlType="reset"
-                className="btn" onClick={ResetValue}
-              >
-                重置条件
-                            </Button>
-            </Form.Item>
-
-          </Form>
 
           <Table
             components={{

@@ -76,9 +76,17 @@ export const onLoadContractData = async (dispatch, payload) => {
     }
 
     list.forEach(row => {
-        row['area'] = row.zypropertyright.area;
-        row['insidearea'] = row.zypropertyright.insidearea;
-        row['simpleaddress'] = row.zypropertyright.simpleaddress;
+        if(row.zypropertyright){
+            row['area'] = row.zypropertyright.area;
+        }
+        if(row.zypropertyright){
+            row['insidearea'] = row.zypropertyright.insidearea;
+        }
+        if(row.zypropertyright){
+            row['simpleaddress'] = row.zypropertyright.simpleaddress;
+        }
+        
+        
         if (row.contract_status === 2 || row.contract_status === 3) {
             row.isWarn = true;
         }
