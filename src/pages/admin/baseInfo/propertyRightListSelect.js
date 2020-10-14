@@ -156,7 +156,7 @@ const PropertyRightList = (props) => {
 
     console.log('row=' + JSON.stringify(row));
 
-    onLoadData(page, limit, {property_status:1,...row});
+    onLoadData(1, limit, {property_status:1,...row});
 
   }
 
@@ -184,12 +184,12 @@ const PropertyRightList = (props) => {
             <Form.Item
               name={item.dataIndex}
               label={item.title}
-              rules={[
-                {
-                  required: true,
-                  message: item.title,
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: item.title,
+              //   },
+              // ]}
             >
               {parseInputNode(item, 'screening')}
             </Form.Item>

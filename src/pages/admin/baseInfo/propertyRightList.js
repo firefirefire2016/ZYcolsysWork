@@ -160,8 +160,8 @@ const PropertyRightList = (props) => {
    // let { contractno, renttype, startdate, enddate } = row;
 
    // console.log('row=' + JSON.stringify(row));
-
-    onLoadData(page, limit, row);
+    
+    onLoadData(1, limit, row);
 
   }
 

@@ -446,7 +446,7 @@ const ZyRentDetailList = (props) => {
 
     let reqs = form.getFieldsValue();    
 
-    SelectByREQ(page, limit, reqs);
+    SelectByREQ(1, limit, reqs);
   }
 
   /**

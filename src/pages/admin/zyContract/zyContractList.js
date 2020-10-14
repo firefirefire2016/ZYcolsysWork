@@ -406,7 +406,7 @@ const ZyContractList = (props) => {
       req.contract_status = -2;
     }
 
-    onLoadData(page, limit, req);
+    onLoadData(1, limit, req);
 
   }
 
