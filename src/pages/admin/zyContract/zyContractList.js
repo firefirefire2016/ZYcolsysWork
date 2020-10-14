@@ -206,7 +206,9 @@ const ZyContractList = (props) => {
       setIsInit(false);
     }
     else {
-      onLoadData(1, limit, { isInit, contract_status: -2 });
+      let row = form.getFieldValue();
+
+      onLoadData(1, limit, row);
     }
 
   }, [mode])
@@ -473,10 +475,17 @@ const ZyContractList = (props) => {
           total,
           showSizeChanger: true,
           onChange: (p) => {
-            onLoadData(p, limit);
+
+            let row = form.getFieldValue();
+
+            onLoadData(p, limit,row);
+            
+
+
           },
           onShowSizeChange: (current, size) => {
-            onLoadData(1, size);
+            let row = form.getFieldValue();
+            onLoadData(1, size,row);
           }
         }
         }

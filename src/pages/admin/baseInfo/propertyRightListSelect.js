@@ -154,7 +154,7 @@ const PropertyRightList = (props) => {
     let row = form.getFieldValue();
     // let { contractno, renttype, startdate, enddate } = row;
 
-    console.log('row=' + JSON.stringify(row));
+    //console.log('row=' + JSON.stringify(row));
 
     onLoadData(1, limit, {property_status:1,...row});
 

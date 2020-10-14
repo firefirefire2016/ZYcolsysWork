@@ -161,7 +161,7 @@ const PropertyRightList = (props) => {
 
    // console.log('row=' + JSON.stringify(row));
     
-    onLoadData(1, limit, row);
+    onLoadData(page, limit, row);
 
   }
 
@@ -206,6 +206,7 @@ const PropertyRightList = (props) => {
 
       </Form>
       <Table
+      
         components={{
           body: {
             cell: EditableCell,
@@ -220,6 +221,7 @@ const PropertyRightList = (props) => {
 
           total,
           showSizeChanger: true,
+          
           onChange: (p,size) => {
             let row = form.getFieldValue();
             onLoadData(p, size,row);
