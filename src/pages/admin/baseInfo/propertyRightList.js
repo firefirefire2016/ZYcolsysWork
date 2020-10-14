@@ -124,7 +124,7 @@ const PropertyRightList = (props) => {
     }
     else {
       let row = form.getFieldValue();
-      onLoadData(1, limit, row);
+      onLoadData(page, limit, row);
     }
 
 

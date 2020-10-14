@@ -38,9 +38,16 @@ export const getContractList = async (dispatch, payload) => {
     }
 
     list.forEach(row => {
-        row['area'] = row.zypropertyrights[0].area;
-        row['insidearea'] = row.zypropertyrights[0].insidearea;
-        row['simpleaddress'] = row.zypropertyrights[0].simpleaddress;
+        if(row.zypropertyright){
+            row['area'] = row.zypropertyright.area;
+        }
+        if(row.zypropertyright){
+            row['insidearea'] = row.zypropertyright.insidearea;
+        }
+        if(row.zypropertyright){
+            row['simpleaddress'] = row.zypropertyright.simpleaddress;
+        }
+        
     });
 
 
@@ -55,10 +62,10 @@ export const onLoadContractData = async (dispatch, payload) => {
 
 
 
-    // dispatch({
-    //     type: 'LOADING',
-    //   //  payload: { mode }
-    // })    
+    dispatch({
+        type: 'LOADING',
+      //  payload: { mode }
+    })    
 
     let { page, limit, req } = payload;
     const res = await getList(sourceUrl, page, limit, req);
@@ -284,7 +291,7 @@ export const onCommitStatus = async (dispatch, payload) => {
                     })
                     break;
                 case 'COMMIT_DEL':
-                    record.contract_status = _record.contract_status;
+                   // record.contract_status = _record.contract_status;
                     dispatch({
                         type: edittype,
 
@@ -425,9 +432,9 @@ export const onCommitCreate = async (dispatch, payload) => {
 
     ).then(async function (res) {
 
-        console.log(reData);
-        console.log(contractid);
-        console.log(record);
+        // console.log(reData);
+        // console.log(contractid);
+        // console.log(record);
         if (reData  && contractid ) {
             let targetdata = { id: rightid, contractid };
 

@@ -8,6 +8,13 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'COMMIT_DELRENT'://删除
+            console.log(state);
+            return {
+                ...state,
+                res: action.payload.res,
+                mode: 'deled'
+            };
         case 'SELECT_DETAIL':
             console.log(action);
             return{
@@ -91,7 +98,7 @@ export default (state = defaultState, action) => {
             };
         case 'CREATE_ONE':
             return {
-                ...state,
+               // ...state,
                 mode: 'creating',
             };
         case 'GET_ONEDETAIL':

@@ -96,14 +96,14 @@ const ZyRentDetailList = (props) => {
                   >
                     编辑
                   </Button>
-                  <Button type="primary"
-                    style={{
-                      marginRight: 8,
-                    }}
-                    onClick={() => del(record)}
+                  <Popconfirm title='确定删除该账单么?' onConfirm={() => {
+                    del(record)
+                  }}
                   >
-                    删除
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      删 除
                   </Button>
+                  </Popconfirm>
                   <Button type="primary"
                     style={{
                       marginRight: 8,
@@ -125,14 +125,14 @@ const ZyRentDetailList = (props) => {
                   >
                     编辑
                   </Button>
-                  <Button type="primary"
-                    style={{
-                      marginRight: 8,
-                    }}
-                    onClick={() => del(record)}
+                  <Popconfirm title='确定删除该账单么?' onConfirm={() => {
+                    del(record)
+                  }}
                   >
-                    删除
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      删 除
                   </Button>
+                  </Popconfirm>
                   <Button type="primary"
                     style={{
                       marginRight: 8,
@@ -155,14 +155,14 @@ const ZyRentDetailList = (props) => {
                   >
                     编辑
                   </Button>
-                  <Button type="primary"
-                    style={{
-                      marginRight: 8,
-                    }}
-                    onClick={() => del(record)}
+                  <Popconfirm title='确定删除该账单么?' onConfirm={() => {
+                    del(record)
+                  }}
                   >
-                    删除
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      删 除
                   </Button>
+                  </Popconfirm>
                   <Button type="primary"
                     style={{
                       marginRight: 8,
@@ -174,7 +174,34 @@ const ZyRentDetailList = (props) => {
                 </span>
               )
             default:
-              break;
+              return (
+                <span className=''>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => edit(record)}
+                  >
+                    编辑
+                  </Button>
+                  <Popconfirm title='确定删除该账单么?' onConfirm={() => {
+                    del(record)
+                  }}
+                  >
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      删 除
+                  </Button>
+                  </Popconfirm>
+                  <Button type="primary"
+                    style={{
+                      marginRight: 8,
+                    }}
+                    onClick={() => loadDetail(record)}
+                  >
+                    详情
+                  </Button>
+                </span>
+              )
           }
         }
       }
@@ -216,6 +243,8 @@ const ZyRentDetailList = (props) => {
         props.history.push('/admin/zyRentDetail/edit');
         return;
       case 'home':
+        break;
+      case 'deled':
         break;
       default:
         break;
@@ -265,7 +294,7 @@ const ZyRentDetailList = (props) => {
 
       let reqs = form.getFieldsValue(); 
 
-      SelectByREQ(1, limit,reqs);
+      SelectByREQ(page, limit,reqs);
 
     }
 
@@ -432,7 +461,10 @@ const ZyRentDetailList = (props) => {
 
   //删除
   const del = record => {
-
+    // let _record = {};
+    // _record.id = record.id;
+    record.status = -1;
+    onEditClick(record, 'COMMIT_DELRENT')
   }
 
   const ResetValue = () => {

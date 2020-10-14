@@ -204,7 +204,7 @@ const ZyRentList = (props) => {
     }
     else {
       let reqs = form.getFieldsValue();
-      onLoadData(1, limit, reqs);
+      onLoadData(page, limit, reqs);
     }
 
 

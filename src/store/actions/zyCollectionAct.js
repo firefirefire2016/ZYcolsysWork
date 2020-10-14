@@ -24,7 +24,7 @@ export const keepFormdata = async (dispatch, payload) => {
 
     let { formdata, mode } = payload;
 
-    console.log(mode);
+  //  console.log(mode);
 
     dispatch({
         type: 'KEEP_RENTDATA',
@@ -411,6 +411,14 @@ export const onCommitEdit = async (dispatch, payload) => {
         }
 
         switch (edittype) {
+            case 'COMMIT_DELRENT':
+                dispatch({
+                    type: edittype,
+
+                    payload: { res }
+
+                })
+                break;
             case 'COMMIT_Edit':
                 dispatch({
                     type: edittype,

@@ -53,6 +53,7 @@ const ZyContractList = (props) => {
     if (!col.editable) {
       if (col.isOper === true) {
         col.render = (text, record, index) => {
+          
           switch (record.contract_status) {
             case 0://未生效
               return (
@@ -96,8 +97,9 @@ const ZyContractList = (props) => {
                 </span>
               );
             case 2://即将到期
-              console.log('record.zypropertyright.property_status = ' + record.zypropertyright.property_status);
-              if (record.zypropertyright.property_status !== 999) {
+              
+             // console.log('record.zypropertyright.property_status = ' + record.zypropertyright.property_status);
+              if (record.zypropertyright && record.zypropertyright.property_status !== 999) {
                 return (
                   <span className=''>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => { refundRent(record) }} >
@@ -132,8 +134,8 @@ const ZyContractList = (props) => {
               }
 
             case 3://已到期
-              console.log('record.zypropertyright.property_status = ' + record.zypropertyright.property_status);
-              if (record.zypropertyright.property_status !== 999) {
+             // console.log('record.zypropertyright.property_status = ' + record.zypropertyright.property_status);
+              if (record.zypropertyright && record.zypropertyright.property_status !== 999) {
                 return (
                   <span className=''>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => { stopContract(record) }}>
@@ -172,7 +174,7 @@ const ZyContractList = (props) => {
             default:
               break;
           }
-
+          //record = null;
         }
       }
 
@@ -245,7 +247,7 @@ const ZyContractList = (props) => {
     else {
       let row = form.getFieldValue();
 
-      onLoadData(1, limit, row);
+      onLoadData(page, limit, row);
     }
 
   }, [mode])

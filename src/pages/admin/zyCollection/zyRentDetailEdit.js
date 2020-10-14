@@ -36,20 +36,22 @@ function ZyRentDetailEdit(props) {
 
   useEffect(() => {
 
-   // console.log('selectdata = ' + JSON.stringify(selectdata));
+    
 
     let obj;
 
     let nItems;
 
-    
+    //console.log('props = ' + JSON.stringify(props) );
+
+    console.log(props );
 
     switch (mode) {
       case 'home':
         props.history.push('/admin/zyRentDetailList');
         return;
       case 'creating':
-        console.log(mode);
+       // console.log(mode);
        // message.info('准备创建');
         break;
 
@@ -113,6 +115,8 @@ function ZyRentDetailEdit(props) {
         break;
     }
 
+    loadContractList(0, 0);
+
 
 
   }, [mode, selectmode])
@@ -144,6 +148,11 @@ function ZyRentDetailEdit(props) {
           onEditClick(row, page, limit)
           break;
         default:
+          row['itemname'] = parseInt(row.create_itemname) + 2;
+
+          console.log('row=' + JSON.stringify(row));
+
+          onCreateClick(row, page, limit)
           break;
       }
 
@@ -157,9 +166,10 @@ function ZyRentDetailEdit(props) {
     }
   }
 
-  //编辑
+  //弹窗出合同
   const selectContract = (record, index) => {
 
+    
 
 
     const EditableCell = ({
@@ -282,11 +292,11 @@ function ZyRentDetailEdit(props) {
 
               total,
               showSizeChanger: false,
-              onChange: (p) => {
-                loadContractList(p, limit);
+              onChange: (p,size) => {
+             //   loadContractList(p, size);
               },
               onShowSizeChange: (current, size) => {
-                loadContractList(1, size);
+              //  loadContractList(1, size);
               }
             }
             }
@@ -296,7 +306,7 @@ function ZyRentDetailEdit(props) {
         </Card>
       ),
       onOk() {
-        console.log('mode = ' + mode);
+       // console.log('mode = ' + mode);
       },
       onCancel() { },
 
@@ -377,7 +387,7 @@ function ZyRentDetailEdit(props) {
                     </Button>
           <Button type="primary" htmlType="reset"
             //className="login-form-button"
-            className="btn" onClick={toSelectContract}
+            className="btn" onClick={selectContract}
             hidden={mode === 'details'}
           >
             选择合同

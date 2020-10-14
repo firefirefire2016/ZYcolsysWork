@@ -95,6 +95,7 @@ const ZyContractList = (props) => {
   useEffect(() => {
 
     
+    
     switch (selectmode) {
       case 'backrent':
         props.history.push('/admin/zyRentDetail/edit');
@@ -118,6 +119,8 @@ const ZyContractList = (props) => {
       let row = form.getFieldValue();
       onLoadData(1, limit, row);
     }
+
+   
 
   }, [selectmode])
 
@@ -249,7 +252,8 @@ const ZyContractList = (props) => {
         marginLeft: '5%'
       }}
         onClick={() => {
-          onChangeRow(target);
+          //console.log(props);
+         onChangeRow(target);
         }}
       >取消</Button>
       </Spin>
