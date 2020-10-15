@@ -38,16 +38,16 @@ export const getContractList = async (dispatch, payload) => {
     }
 
     list.forEach(row => {
-        if(row.zypropertyright){
+        if (row.zypropertyright) {
             row['area'] = row.zypropertyright.area;
         }
-        if(row.zypropertyright){
+        if (row.zypropertyright) {
             row['insidearea'] = row.zypropertyright.insidearea;
         }
-        if(row.zypropertyright){
+        if (row.zypropertyright) {
             row['simpleaddress'] = row.zypropertyright.simpleaddress;
         }
-        
+
     });
 
 
@@ -64,8 +64,8 @@ export const onLoadContractData = async (dispatch, payload) => {
 
     dispatch({
         type: 'LOADINGContract',
-      //  payload: { mode }
-    })    
+        //  payload: { mode }
+    })
 
     let { page, limit, req } = payload;
     const res = await getList(sourceUrl, page, limit, req);
@@ -83,17 +83,17 @@ export const onLoadContractData = async (dispatch, payload) => {
     }
 
     list.forEach(row => {
-        if(row.zypropertyright){
+        if (row.zypropertyright) {
             row['area'] = row.zypropertyright.area;
         }
-        if(row.zypropertyright){
+        if (row.zypropertyright) {
             row['insidearea'] = row.zypropertyright.insidearea;
         }
-        if(row.zypropertyright){
+        if (row.zypropertyright) {
             row['simpleaddress'] = row.zypropertyright.simpleaddress;
         }
-        
-        
+
+
         if (row.contract_status === 2 || row.contract_status === 3) {
             row.isWarn = true;
         }
@@ -118,10 +118,10 @@ export const onBackHome = async (dispatch, payload) => {
 
 }
 
-export const getRightno = async(dispatch,payload) =>{
+export const getRightno = async (dispatch, payload) => {
     let { record } = payload;
 
-   // console.log(mode);
+    // console.log(mode);
 
     // dispatch({
     //     type: 'KEEP_DATA',
@@ -131,7 +131,7 @@ export const getRightno = async(dispatch,payload) =>{
 
 export const keepFormdata = async (dispatch, payload) => {
 
-    let { formdata, tabledata, mode,rightno } = payload;
+    let { formdata, tabledata, mode, rightno } = payload;
 
     console.log(mode);
 
@@ -221,11 +221,17 @@ export const onGetEditData = async (dispatch, payload) => {
         else {
             rentlist = res.rows;
         }
-       // console.log(JSON.stringify(rentlist));
+        // console.log(JSON.stringify(rentlist));
+        dispatch({
+            type: 'selectmode_NULL',
+            // payload: { selectmode: 'creating' }
+        })
         dispatch({
             type: 'GET_ONE',
             payload: { record, id, mode: 'editing', rentlist }
         })
+
+
     });
 
 
@@ -291,7 +297,7 @@ export const onCommitStatus = async (dispatch, payload) => {
                     })
                     break;
                 case 'COMMIT_DEL':
-                   // record.contract_status = _record.contract_status;
+                    // record.contract_status = _record.contract_status;
                     dispatch({
                         type: edittype,
 
@@ -326,7 +332,7 @@ export const onCommitEdit = async (dispatch, payload) => {
 
     let contractid = record.id;
 
-    
+
 
 
     await modifyOne(sourceUrl, record).then(async function (result) {
@@ -435,7 +441,7 @@ export const onCommitCreate = async (dispatch, payload) => {
         // console.log(reData);
         // console.log(contractid);
         // console.log(record);
-        if (reData  && contractid ) {
+        if (reData && contractid) {
 
             //创建收款标准
             const _sourceUrl = 'zyRentlist';
@@ -469,7 +475,7 @@ export const onCommitCreate = async (dispatch, payload) => {
                 }
             })
 
-            
+
         }
 
     })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getList, modifyOne, createTarget,getMergeList } from '../../services/zyService'
+import { getList, modifyOne, createTarget, getMergeList } from '../../services/zyService'
 import { message, Button, notification, Modal } from 'antd';
 import { rentMergeQuery } from '../../utils/common'
 import { consoleTarget } from '../../utils/ItemUtils';
@@ -24,11 +24,11 @@ export const keepFormdata = async (dispatch, payload) => {
 
     let { formdata, mode } = payload;
 
-  //  console.log(mode);
+    //  console.log(mode);
 
     dispatch({
         type: 'KEEP_RENTDATA',
-        payload: { record: formdata,mode }
+        payload: { record: formdata, mode }
     })
 
     dispatch({
@@ -36,13 +36,13 @@ export const keepFormdata = async (dispatch, payload) => {
     })
 }
 
-export const toSelectDetail = async (dispatch,payload) =>{
+export const toSelectDetail = async (dispatch, payload) => {
 
-    let {contractno,isOwe,needInvoice} = payload;
+    let { contractno, isOwe, needInvoice } = payload;
 
     dispatch({
         type: 'SELECT_DETAIL',
-        payload: {  isOwe ,contractno,needInvoice}
+        payload: { isOwe, contractno, needInvoice }
     })
     // if(isOwe){
     //     dispatch({
@@ -78,7 +78,7 @@ export const RentToMergeData = async (dispatch, payload) => {
 
     const res = await getMergeList(sourceUrl, page, limit, req);
 
-    
+
 
     //加载数据需要合并分析
     let newList = res.newList;
@@ -86,9 +86,9 @@ export const RentToMergeData = async (dispatch, payload) => {
 
     //console.log("newList:" + JSON.stringify(newList) );
 
-    
 
-    
+
+
 
     dispatch({
         type: 'MERGE_ALL',
@@ -227,6 +227,83 @@ const NoticeStart = (rows, isInit) => {
     })
 }
 
+//弹窗加载账单详情列表
+export const onLoadTargetListByREQ2 = async (dispatch, payload) => {
+
+    // dispatch({
+    //     type: 'LOADING',
+    // })
+
+    let { page, limit, req } = payload;
+
+    let { isInit } = req;
+
+    let _isInit = isInit;
+
+    // console.log(req);
+
+    //console.log('什么情况？！！！！');
+
+    let { amount_select, invoice_select } = req;
+
+    await getList(sourceUrl, page, limit, req).then(async function (res) {
+        let rows = res.rows;
+
+        //NoticeStart(rows, _isInit);
+
+        let newList = [];
+
+        for (let index = 0; index < rows.length; index++) {
+            const row = rows[index];
+
+            row.rentdate = parseInt(row.zycontract.rentdate);
+            row.contractno = row.zycontract.contractno;
+
+            if (amount_select === '1') {
+                if (parseFloat(row.amount_received) < parseFloat(row.amount_receivable)) {
+                    continue;
+                }
+            }
+
+            if (amount_select === '2') {
+                if (parseFloat(row.amount_received) >= parseFloat(row.amount_receivable)) {
+                    continue;
+                }
+            }
+
+            if (invoice_select === '1') {
+                if (parseFloat(row.invoice_amount) < parseFloat(row.invoice_limit)) {
+                    continue;
+                }
+            }
+
+            if (invoice_select === '2') {
+                if (parseFloat(row.invoice_amount) >= parseFloat(row.invoice_limit)) {
+                    continue;
+                }
+            }
+
+            newList.push(row);
+        }
+
+        let total = res.total;
+
+        dispatch({
+            type: 'MODAL_TARGETLIST',
+            //  payload: { page, limit, newList, total }
+            payload: { newList }
+        })
+    });
+
+}
+
+export const onCleanRentlist = async(dispatch)=>{
+    dispatch({
+        type: 'MODAL_NULLLIST',
+        //  payload: { page, limit, newList, total }
+    })
+}
+
 //加载账单详情列表
 export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
@@ -242,11 +319,11 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
 
     let _isInit = isInit;
 
-   // console.log(req);
+    // console.log(req);
 
     //console.log('什么情况？！！！！');
 
-    let {amount_select,invoice_select} = req;
+    let { amount_select, invoice_select } = req;
 
     const res = await getList(sourceUrl, page, limit, req);
 
@@ -260,28 +337,28 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
         const row = rows[index];
 
         row.rentdate = parseInt(row.zycontract.rentdate);
-        row.contractno = row.zycontract.contractno;        
+        row.contractno = row.zycontract.contractno;
 
-        if(amount_select === '1'){
-            if(parseFloat(row.amount_received ) < parseFloat(row.amount_receivable) ){
+        if (amount_select === '1') {
+            if (parseFloat(row.amount_received) < parseFloat(row.amount_receivable)) {
                 continue;
             }
         }
 
-        if(amount_select === '2'){
-            if(parseFloat(row.amount_received ) >= parseFloat(row.amount_receivable) ){
+        if (amount_select === '2') {
+            if (parseFloat(row.amount_received) >= parseFloat(row.amount_receivable)) {
                 continue;
             }
         }
 
-        if(invoice_select === '1'){
-            if(parseFloat(row.invoice_amount ) < parseFloat(row.invoice_limit) ){
+        if (invoice_select === '1') {
+            if (parseFloat(row.invoice_amount) < parseFloat(row.invoice_limit)) {
                 continue;
             }
         }
 
-        if(invoice_select === '2'){
-            if(parseFloat(row.invoice_amount)  >= parseFloat(row.invoice_limit) ){
+        if (invoice_select === '2') {
+            if (parseFloat(row.invoice_amount) >= parseFloat(row.invoice_limit)) {
                 continue;
             }
         }
@@ -295,14 +372,8 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
     //     let amount_receivable = parseFloat(row.amount_receivable);
     //     let invoice_limit = parseFloat(row.invoice_limit);
 
-    //    // row.simpleaddress = row.zycontract.zypropertyright.simpleaddress;
-        
+    //    // row.simpleaddress = row.zycontract.zypropertyright.simpleaddress;   
 
-
-        
-
-
-        
     // })
 
     let total = res.total;
@@ -360,12 +431,12 @@ export const onCreateData = async (dispatch, isCreating) => {
 
     dispatch({
         type: 'CREATE_ONE',
-      //  payload: { res }
+        //  payload: { res }
     })
 
     dispatch({
         type: 'selectnullContract',
-      //  payload: { res }
+        //  payload: { res }
     })
 
 
@@ -404,7 +475,7 @@ export const onCommitEdit = async (dispatch, payload) => {
 
     let { record, edittype } = payload;
 
-   // console.log(JSON.stringify(record));
+    // console.log(JSON.stringify(record));
 
     await modifyOne(sourceUrl, record).then(async function (res) {
 

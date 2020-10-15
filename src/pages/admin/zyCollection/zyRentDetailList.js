@@ -100,7 +100,12 @@ const ZyRentDetailList = (props) => {
                     del(record)
                   }}
                   >
-                    <Button type="primary" style={{ marginRight: 8 }}>
+                    <Button type="primary" style={{ marginRight: 8 }}
+                      onClick={()=>{
+                        //console.log('不删除！！！！');
+                        
+                      }}
+                    >
                       删 除
                   </Button>
                   </Popconfirm>
@@ -129,7 +134,11 @@ const ZyRentDetailList = (props) => {
                     del(record)
                   }}
                   >
-                    <Button type="primary" style={{ marginRight: 8 }}>
+                    <Button type="primary" style={{ marginRight: 8 }}
+                    // onClick={()=>{
+                    //   console.log('不删除！！！！');
+                    // }}
+                    >
                       删 除
                   </Button>
                   </Popconfirm>

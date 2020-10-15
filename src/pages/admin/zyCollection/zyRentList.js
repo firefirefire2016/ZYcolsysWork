@@ -2,15 +2,17 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, InputNumber, message, Modal, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import '../../demos/home.scss'
-import { RentToMergeData, onLoadTargetRent, onShowDetail, onCommitEdit, toSelectDetail } from '../../../store/actions/zyCollectionAct';
+import { RentToMergeData, onLoadTargetRent, onShowDetail, onCommitEdit, toSelectDetail,onLoadTargetListByREQ2,onCleanRentlist } from '../../../store/actions/zyCollectionAct';
 import { connect } from 'react-redux';
-import { selectItems, parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
-import { rentMergeQuery } from '../../../utils/common';
+import {  parseItemtype, parseTypeToLabel, consoleTarget, parseInputNode } from '../../../utils/ItemUtils';
+//import { rentMergeQuery } from '../../../utils/common';
 import { getTodayDateStr } from '../../../utils/common';
 
 const cols = sysCols.MergeRentCol.filter(item => item.isShow);
 
 const selectReqs = sysCols.MergeRentCol.filter(item => item.isSelect);
+
+const modalCols = sysCols.rentCol.filter(item => item.isShow);
 
 //const renttypes = selectItems.renttypes;
 
@@ -92,14 +94,24 @@ const ZyRentList = (props) => {
           if (text > 0) {
             return (
               <span className=''>
-
+              {/* <Popconfirm title='确认打开?' onConfirm={() => {
+                    //del(record)
+                    console.log('确认打开！！！！');
+                    modalDetails();
+                  }}
+                  > */}
                 <span key={index} style={{ textDecorationLine: 'underline' }}
                   onClick={() => {
-                    onClickOweInvoice(record.contractno, 2, 0);
+                    //onClickOweInvoice(record.contractno, 2, 0);
+                    getTargetOweInvoice(0,0,{contractid:record.contractid,amount_select:'2',
+                    invoice_select:'0'})
+                  //  console.log('累计未收！');
+                    
                   }
                   }>
                   {text}
                 </span>
+                {/* </Popconfirm> */}
               </span>
             );
           }
@@ -110,24 +122,6 @@ const ZyRentList = (props) => {
             )
           }
         }
-        // if(text > 0){
-        //   return (
-        //     // eslint-disable-next-line jsx-a11y/anchor-is-valid
-        //     <span key={index} style={{textDecorationLine:'underline'}} 
-        //         onClick={()=>
-        //         {
-        //           onClickOweInvoice(record.contractno,2,0);
-        //         }
-        //         }>
-        //       {text}
-        //     </span>
-        //   );
-        // }
-        // else{
-        //   return (
-        //     <li>{text}</li>
-        //   )
-        // }
 
         break;
       case "needInvoice":
@@ -137,9 +131,11 @@ const ZyRentList = (props) => {
             return (
               <span className=''>
               <span key={index} style={{textDecorationLine:'underline'}} 
-                onClick={()=>
-                {onClickOweInvoice(record.contractno,0,2);}
-                }>
+                onClick={()=>{
+                getTargetOweInvoice(0,0,{contractid:record.contractid,amount_select:'0',
+                invoice_select:'2'})
+                }}
+                >
                   {text}
               </span>
               </span>
@@ -177,11 +173,21 @@ const ZyRentList = (props) => {
   });
 
 
-  const { list, page, total, limit, onLoadData, isLoading, mode,
-    onLoadTartgetData, SelectByREQ, onShowOne, onEditClick, onClickOweInvoice } = props;
+  const { onLoadTartgetData, SelectByREQ, onShowOne, onEditClick, 
+  getTargetOweInvoice,onLoadData,onCleanModal} = props;
+
+  const {list, page, total, limit,  isLoading, mode} = props.zyCollectionData;
+
+  const {targetRentlist,completeRentlist} = props.zyContractData;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
+
+    if(completeRentlist){
+      modalDetails();
+      return;
+    }
+    
 
     message.info('加载中...');
 
@@ -209,7 +215,7 @@ const ZyRentList = (props) => {
 
 
 
-  }, [mode])
+  }, [mode,targetRentlist])
 
 
   //收款
@@ -333,6 +339,120 @@ const ZyRentList = (props) => {
     });
   }
 
+  //弹窗出详细账单
+  const modalDetails = (record, index) => {   
+
+
+    const EditableCell = ({
+      labelType,
+      dataIndex,
+      children,
+      record,
+      isWarn,
+      ...restProps
+    }) => {
+
+      return (
+        <td {...restProps} type='primary' className=''>
+
+          {parseTypeToLabel(record, dataIndex, children)}
+        </td>
+      );
+    };
+
+
+    const modalColumns = cols => cols.map(col => {
+      if (!col.editable) {
+        if (col.isOper === true) {
+          col.render = (text, record, index) => {
+          }
+        }
+
+        return col;
+      }
+
+      return {
+        ...col,
+        onCell: (record, rowIndex) => (
+
+          {
+            labelType: parseItemtype(col.dataIndex),
+            rowIndex,
+            isWarn: record.isWarn ? true : false,
+            dataIndex: col.dataIndex,
+            title: col.title,
+            record
+          }
+        )
+      };
+    });
+
+
+    // const rowSelection = {
+    //   onChange: (selectedRowKeys, selectedRows) => {
+    //     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    //     setTarget(selectedRows[0]);
+
+    //   },
+    //   getCheckboxProps: (record) => ({
+    //   }),
+    // };
+
+    Modal.info({
+      title: '',
+      visible: true,
+      width: '80%',
+      size: 'lager',
+      height: '80%',
+      // style:{width:'80%',height:'1000px'},       
+      content: (
+        <Card title='账单列表'>
+
+          <Table
+            components={{
+              body: {
+                cell: EditableCell,
+              },
+            }}
+            // rowSelection={{
+            //   type: "radio",
+            //   ...rowSelection,
+            // }}
+            rowKey="id"
+            bordered
+            columns={modalColumns(modalCols)}
+            dataSource={targetRentlist}
+            size="lager"
+            style={{ width: '100%', height: '100%' }}
+            pagination={{
+
+              total,
+              showSizeChanger: false,
+              onChange: (p,size) => {
+             //   loadContractList(p, size);
+              },
+              onShowSizeChange: (current, size) => {
+              //  loadContractList(1, size);
+              }
+            }
+            }
+            scroll={{ y: 350 }}
+          />
+
+        </Card>
+      ),
+      onOk() {
+       // console.log('mode = ' + mode);
+       onCleanModal();
+      },
+      //onCancel() { },
+
+      okText: '好的',
+     // cancelText: '取消'
+    });
+
+  }
+
 
   const getOwe = record => {
     //设置要编辑的id
@@ -451,7 +571,7 @@ const ZyRentList = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  return state.zyCollectionData;
+  return state;
 }
 
 const mapDispatchToProps = (dispatch, ownprops) => {
@@ -462,6 +582,8 @@ const mapDispatchToProps = (dispatch, ownprops) => {
     onLoadData: (page, limit, req) => { RentToMergeData(dispatch, { page, limit, req }) },
     onLoadTartgetData: (page, limit, record) => { onLoadTargetRent(dispatch, { page, limit, record }) },
     SelectByREQ: (page, limit, req) => { RentToMergeData(dispatch, { page, limit, req }) },
+    getTargetOweInvoice:(page,limit,req) =>{onLoadTargetListByREQ2(dispatch,{page,limit,req})},
+    onCleanModal:()=>{onCleanRentlist(dispatch)},
   }
 }
 

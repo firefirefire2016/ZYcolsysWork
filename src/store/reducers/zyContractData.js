@@ -8,6 +8,17 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'MODAL_NULLLIST':
+            return{
+              //  targetRentlist:null,
+                completeRentlist:null,
+            }
+        case 'MODAL_TARGETLIST':
+            return{
+                ...state,
+                targetRentlist:action.payload.newList,
+                completeRentlist:true,
+            }
         case 'selectnullContract':
             return{
                 selectmode:null,  

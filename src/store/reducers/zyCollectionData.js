@@ -58,6 +58,11 @@ export default (state = defaultState, action) => {
             return {
                 isLoading:true
             };
+        // case 'MODAL_TARGETLIST':
+        //     return{
+        //         ...state,
+        //         targetRentlist:action.payload.newList,
+        //     }
         case 'GET_TARGETLIST':
             console.log(action);
             return {

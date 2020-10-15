@@ -540,7 +540,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownprops) => {
   return {
-
     onUseClick: (record) => { onStartEffect(dispatch, { record }) },
     onContinueClick: (record) => { onContinueContract(dispatch, { record }) },
     onStatusClick: (record, _record, edittype) => { onCommitStatus(dispatch, { record, _record, edittype }) },
