@@ -63,7 +63,7 @@ export const onLoadContractData = async (dispatch, payload) => {
 
 
     dispatch({
-        type: 'LOADING',
+        type: 'LOADINGContract',
       //  payload: { mode }
     })    
 
@@ -436,17 +436,6 @@ export const onCommitCreate = async (dispatch, payload) => {
         // console.log(contractid);
         // console.log(record);
         if (reData  && contractid ) {
-            let targetdata = { id: rightid, contractid };
-
-            //更新对应产权
-            await modifyOne('zyProperty', targetdata).then(function (res2) {
-                if (res2.code === 0) {
-                    message.info(res2.msg);
-                }
-                else {
-                    message.warn('绑定产权失败:' + res2.msg);
-                }
-            })
 
             //创建收款标准
             const _sourceUrl = 'zyRentlist';
@@ -465,6 +454,22 @@ export const onCommitCreate = async (dispatch, payload) => {
                     }
                 });
             }
+
+
+
+            let targetdata = { id: rightid, contractid };
+
+            //更新对应产权
+            await modifyOne('zyProperty', targetdata).then(function (res2) {
+                if (res2.code === 0) {
+                    message.info(res2.msg);
+                }
+                else {
+                    message.warn('绑定产权失败:' + res2.msg);
+                }
+            })
+
+            
         }
 
     })

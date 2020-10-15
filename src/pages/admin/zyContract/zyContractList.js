@@ -519,8 +519,6 @@ const ZyContractList = (props) => {
 
               onLoadData(p, limit, row);
 
-
-
             },
             onShowSizeChange: (current, size) => {
               let row = form.getFieldValue();

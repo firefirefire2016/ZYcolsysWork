@@ -8,17 +8,27 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'selectnullContract':
+            return{
+                selectmode:null,  
+                selectdata:null,
+            };
         case 'TO_Rent':
             return {
                 ...state,
-                selectdata:action.payload.selectdata,
-                selectmode:'backrent',
-            }; 
+                selectdata: action.payload.selectdata,
+                selectmode: 'backrent',
+            };
         case 'TO_SELECT':
             return {
-                selectmode:'toselect',
+                selectmode: 'toselect',
             };
-        case 'LOADING':
+        // case 'LOADING':
+        //     return {
+        //         isLoading: true,
+        //         //  mode:action.payload.mode,
+        //     }
+        case 'LOADINGContract':
             return {
                 isLoading: true,
                 //  mode:action.payload.mode,
@@ -68,7 +78,7 @@ export default (state = defaultState, action) => {
         case 'CREATE_ONE':
             return {
                 ...state,
-                rentlist:null,
+                rentlist: null,
                 mode: 'creating',
             };
         case 'BACK_HOME':

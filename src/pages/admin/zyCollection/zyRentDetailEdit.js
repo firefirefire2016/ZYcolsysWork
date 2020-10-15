@@ -105,7 +105,7 @@ function ZyRentDetailEdit(props) {
           rentdate: selectdata.rentdate,
           contractid:selectdata.contractid,
         });
-        console.log(obj);
+       // console.log(obj);
         return;
       case 'toselect':
         props.history.push('/admin/zyContract/select');
@@ -115,7 +115,7 @@ function ZyRentDetailEdit(props) {
         break;
     }
 
-    loadContractList(0, 0);
+   // loadContractList(0, 0);
 
 
 
@@ -387,7 +387,7 @@ function ZyRentDetailEdit(props) {
                     </Button>
           <Button type="primary" htmlType="reset"
             //className="login-form-button"
-            className="btn" onClick={selectContract}
+            className="btn" onClick={toSelectContract}
             hidden={mode === 'details'}
           >
             选择合同

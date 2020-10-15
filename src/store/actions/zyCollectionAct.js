@@ -263,25 +263,25 @@ export const onLoadTargetListByREQ = async (dispatch, payload) => {
         row.contractno = row.zycontract.contractno;        
 
         if(amount_select === '1'){
-            if(row.amount_received < row.amount_receivable){
+            if(parseFloat(row.amount_received ) < parseFloat(row.amount_receivable) ){
                 continue;
             }
         }
 
         if(amount_select === '2'){
-            if(row.amount_received >= row.amount_receivable){
+            if(parseFloat(row.amount_received ) >= parseFloat(row.amount_receivable) ){
                 continue;
             }
         }
 
         if(invoice_select === '1'){
-            if(row.invoice_amount < row.invoice_limit){
+            if(parseFloat(row.invoice_amount ) < parseFloat(row.invoice_limit) ){
                 continue;
             }
         }
 
         if(invoice_select === '2'){
-            if(row.invoice_amount >= row.invoice_limit){
+            if(parseFloat(row.invoice_amount)  >= parseFloat(row.invoice_limit) ){
                 continue;
             }
         }
@@ -362,6 +362,12 @@ export const onCreateData = async (dispatch, isCreating) => {
         type: 'CREATE_ONE',
       //  payload: { res }
     })
+
+    dispatch({
+        type: 'selectnullContract',
+      //  payload: { res }
+    })
+
 
 }
 

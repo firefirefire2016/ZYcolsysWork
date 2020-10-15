@@ -117,7 +117,7 @@ const ZyContractList = (props) => {
     }
     else {
       let row = form.getFieldValue();
-      onLoadData(1, limit, row);
+   //   onLoadData(1, limit, row);
     }
 
    
@@ -246,6 +246,15 @@ const ZyContractList = (props) => {
       }}
         onClick={() => {
           onChangeRow(target);
+
+          // if(target === null){
+            
+          //   onChangeRow(rightno);
+          // }
+          // else{
+            
+          //   onChangeRow(target);
+          // }
         }}
       >保存</Button>
       <Button size='large' type="primary" style={{
@@ -254,6 +263,7 @@ const ZyContractList = (props) => {
         onClick={() => {
           //console.log(props);
          onChangeRow(target);
+        // onChangeRow(rightno);
         }}
       >取消</Button>
       </Spin>
