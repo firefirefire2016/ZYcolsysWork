@@ -417,7 +417,7 @@ const ZyContractList = (props) => {
     let row = form.getFieldValue();
     let { startdate, enddate } = row;
 
-    console.log(startdate);
+    //console.log(startdate);
 
     if (startdate && startdate.indexOf('-') !== -1) {
       row.startdate = startdate.replace(/-/g, "");
@@ -431,17 +431,17 @@ const ZyContractList = (props) => {
 
     console.log(row);
 
-    if (startdate) {
-      var str = row.startdate;
+    // if (startdate) {
+    //   var str = row.startdate;
 
-      row.startdate = strToTime(str);
-    }
+    //   row.startdate = strToTime(str);
+    // }
 
-    if (enddate) {
-      var str2 = row.enddate;
+    // if (enddate) {
+    //   var str2 = row.enddate;
 
-      row.enddate = strToTime(str2);
-    }
+    //   row.enddate = strToTime(str2);
+    // }
 
     if (!req.contract_status && req.contract_status !== 0) {
       req.contract_status = -2;
