@@ -9,7 +9,7 @@ import { parseItemtype, parseTypeToLabel, parseInputNode } from '../../../utils/
 import { strToTime, timeToStr } from '../../../utils/common';
 import Modal from 'antd/lib/modal/Modal';
 
-const cols = sysCols.propertyCol.filter(item => item.isShow);
+const cols = sysCols.propertyCol.filter(item => (item.isShow && !item.isOper) );
 
 const selectItems = sysCols.propertyCol.filter(item => (item.isSelect && !item.selectMode));
 

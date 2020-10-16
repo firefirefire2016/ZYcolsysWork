@@ -417,15 +417,16 @@ export const onCommitCreate = async (dispatch, payload) => {
 
     let rightid = record.rightid;
 
+    let createContractData;
+
     //先创建合同
     await createTarget(sourceUrl, record).then(async function (res) {
 
         if (res.code === 0) {
             message.info(res.msg);
-            dispatch({
-                type: "COMMIT_CREATE",
-                payload: { ...res, record, res }
-            })
+
+            createContractData = res.data;
+            
             reData = res.data;
 
             contractid = reData.id;
@@ -469,6 +470,11 @@ export const onCommitCreate = async (dispatch, payload) => {
             await modifyOne('zyProperty', targetdata).then(function (res2) {
                 if (res2.code === 0) {
                     message.info(res2.msg);
+
+                    dispatch({
+                        type: "COMMIT_CREATE",
+                        payload: { data:createContractData }
+                    })
                 }
                 else {
                     message.warn('绑定产权失败:' + res2.msg);

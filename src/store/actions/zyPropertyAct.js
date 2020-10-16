@@ -213,5 +213,24 @@ export const onCommitCreate = async (dispatch, payload) => {
 
 
 
+export const onfetchContract = async(dispatch,payload)=>{
+
+    dispatch({
+        type:'FETCHING_Contract',
+    })
+
+    let { billno } = payload;
+
+    let _sourceUrl = 'zyCollection';
+
+    await getList(_sourceUrl,0,0,{billno}).then(async function(res){
+        dispatch({
+            type: 'FETCHED_Contract',
+            payload: { data:res.rows }
+        })
+    });
+
+}
+
 
 

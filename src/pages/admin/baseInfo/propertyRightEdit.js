@@ -1,22 +1,33 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message } from 'antd'
+import { Card, Table, Button, Select, Popconfirm, Radio, Input, Form, Switch, message, Spin } from 'antd'
 import { sysCols } from '../../../utils/listConfig'
 import { connect } from 'react-redux';
 import { selectItems, parseItemtype, parseTypeToLabel, parseInputNode, parseRules, consoleTarget } from '../../../utils/ItemUtils';
 import { strToTime, timeToStr } from '../../../utils/common';
-import { onCommitCreate, onCommitEdit } from '../../../store/actions/zyPropertyAct';
+import { onCommitCreate, onCommitEdit,onfetchContract } from '../../../store/actions/zyPropertyAct';
+
 
 const items = sysCols.propertyCol.filter(item => item.isInEdit);
 
-
+const { Option } = Select;
 
 function PropertyRightEdit(props) {
 
     const [form] = Form.useForm();
 
-    const { onEditClick, onCreateClick } = props;
+    const [value, setValue] = useState('');
 
-    const { record, isCreating, page, limit, id, res, mode } = props;
+    const [isInitDrop,setInitDrop] = useState(true);
+
+    // const [data, setData] = useState([]);
+
+    // const [fetching, setFetching] = useState(false);
+
+    const { onEditClick, onCreateClick,fetchContract } = props;
+
+    const { record, isCreating, page, limit, id, res, mode } = props.zyPropertyData;
+
+    const { fetchData,fetching } = props.zyContractData;
 
 
     let obj;
@@ -100,6 +111,40 @@ function PropertyRightEdit(props) {
 
     }
 
+    const fetchContractClick = value => {
+
+       // console.log('fetching user', value);
+        // this.lastFetchId += 1;
+        // const fetchId = this.lastFetchId;
+
+        // setData([]);
+        // setFetching(true);
+
+        // fetch('https://randomuser.me/api/?results=5')
+        //     .then(response => response.json())
+        //     .then(body => {
+        //         // if (fetchId !== this.lastFetchId) {
+        //         //     // for fetch callback order
+        //         //     return;
+        //         // }
+        //         const _data = body.results.map(user => ({
+        //             text: `${user.name.first} ${user.name.last}`,
+        //             value: user.login.username,
+        //         }));
+        //         //this.setState({ data, fetching: false });
+        //         setData(_data);
+        //         setFetching(false);
+        //     });
+        console.log('value = ' + value);
+        fetchContract(value);
+    }
+
+    const handleChange = value => {
+         setValue(value);
+        // setData([]);
+        // setFetching(false);
+    };
+
 
     return (
         <Card>
@@ -126,7 +171,42 @@ function PropertyRightEdit(props) {
                         </Form.Item>
                     )
                 })}
-
+                <Form.Item
+                  //  hidden={true}
+                           // name={item.dataIndex}
+                            label={'选择合同(动态加载)'}
+                        >
+                <Select
+                    //mode="tags"
+                    allowClear={true}
+                    showSearch={true}
+                    labelInValue
+                    value={value}
+                    placeholder="加载合同（测试）"
+                    notFoundContent={fetching ? <Spin size="small" /> : null}
+                    filterOption={false}
+                    onSearch={fetchContractClick}
+                    onChange={handleChange}
+                    onFocus={()=>{
+                        if(isInitDrop){
+                            setInitDrop(false);
+                            fetchContract('');
+                        }
+                    }}
+                    style={{ width: '200px' }}
+                    onSelect={(data,option)=>{
+                        const _data = JSON.parse(data.key);
+                        form.setFieldsValue({
+                            ..._data
+                        })
+                        console.log(_data.simpleaddress);
+                    }}
+                >
+                    {fetchData.map(d => (
+                        <Option key={JSON.stringify(d)} >{d.billno}</Option>
+                    ))}
+                </Select>
+                </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit"
                         //className="login-form-button"
@@ -156,14 +236,15 @@ function PropertyRightEdit(props) {
 }
 
 const mapStateToProps = (state) => {
-    return state.zyPropertyData;
+    return state;
 }
 
 const mapDispatchToProps = (dispatch, ownprops) => {
     return {
         // loadTargetList: (page, limit, req,) => { onLoadPropertyData(dispatch, { page, limit, req }) },
         onEditClick: (record) => { onCommitEdit(dispatch, { record }) },
-        onCreateClick: (record) => { onCommitCreate(dispatch, { record }) }
+        onCreateClick: (record) => { onCommitCreate(dispatch, { record }) },
+        fetchContract:(billno) =>{ onfetchContract(dispatch,{billno}) },
     }
 }
 

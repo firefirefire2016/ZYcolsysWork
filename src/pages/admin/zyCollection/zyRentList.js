@@ -12,7 +12,7 @@ const cols = sysCols.MergeRentCol.filter(item => item.isShow);
 
 const selectReqs = sysCols.MergeRentCol.filter(item => item.isSelect);
 
-const modalCols = sysCols.rentCol.filter(item => item.isShow);
+const modalCols = sysCols.rentCol.filter(item => (item.isShow && !item.isOper) );
 
 //const renttypes = selectItems.renttypes;
 

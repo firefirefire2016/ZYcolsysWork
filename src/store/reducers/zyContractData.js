@@ -4,10 +4,23 @@ const defaultState = {
     page: 1,
     limit: 10,
     total: 0,
+    fetchData:[],
 }
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'FETCHING_Contract':
+            return{
+                ...state,
+               // fetchData:[],
+                fetching:true,
+            }
+        case 'FETCHED_Contract':
+            return{
+                ...state,
+                fetchData:action.payload.data,
+                fetching:false,
+            }
         case 'MODAL_NULLLIST':
             return{
               //  targetRentlist:null,
@@ -41,6 +54,7 @@ export default (state = defaultState, action) => {
         //     }
         case 'LOADINGContract':
             return {
+                
                 isLoading: true,
                 //  mode:action.payload.mode,
             }
@@ -102,11 +116,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 record: null,
-                list: action.payload.rows,
-                page: action.payload.page,
-                total: action.payload.total,
-                limit: action.payload.limit,
-                res: action.payload.res,
+                data:action.payload.data,
                 _tabledata: null,
                 mode: 'home',
             };
