@@ -172,7 +172,7 @@ function PropertyRightEdit(props) {
                     )
                 })}
                 <Form.Item
-                  //  hidden={true}
+                    hidden={true}
                            // name={item.dataIndex}
                             label={'选择合同(动态加载)'}
                         >
@@ -202,9 +202,9 @@ function PropertyRightEdit(props) {
                         console.log(_data.simpleaddress);
                     }}
                 >
-                    {fetchData.map(d => (
+                    {/* {fetchData.map(d => (
                         <Option key={JSON.stringify(d)} >{d.billno}</Option>
-                    ))}
+                    ))} */}
                 </Select>
                 </Form.Item>
                 <Form.Item>
